@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f7f5f1">
-<title>لوحة تالتة ثانوي</title>
+<title>Thanawya Plus</title>
 <script>(function(){var t=null;try{t=localStorage.getItem('dash-theme.v1')}catch(e){}if(t!=='dark'&&t!=='light')t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t)})()</script>
 <style>
 :root{--page:#f7f5f1;--card:#fff;--ink:#1b2430;--ink2:#6a707a;--teal:#9a7b45;--teal2:#b8975a;--deep:#14233a;--hair:#e8e4dc;--red:#a8324a;--sand:#f1ece1;--head:#14233a;--sh:0 1px 2px rgba(20,35,58,.05),0 8px 22px rgba(20,35,58,.05)}
@@ -121,7 +121,8 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 .seg button.pop[aria-pressed=true]{animation:chipOn .34s cubic-bezier(.2,.9,.3,1.2)}
 .row.pop,.mark.pop{animation:rowOn .3s cubic-bezier(.2,.9,.3,1.2)}
 .fadein{animation:listIn .3s ease-out both}
-.mark[data-on=true]:not(.no){background:#1f7a4d!important;border-color:#1f7a4d!important;color:#fff!important}.mark.no[data-on=true]{background:#b3362f!important;border-color:#b3362f!important;color:#fff!important}.xrow{display:flex;gap:8px;align-items:center;margin:0 0 8px}.xrow .row{flex:1;min-width:0;margin:0}.xrow .mark{flex:none;font-size:14px;padding:0 12px}.xrow.editing .row{border-color:var(--deep)}.field input::placeholder{color:var(--ink2);opacity:.7}
+.mark[data-on=true]:not(.no){background:#1f7a4d!important;border-color:#1f7a4d!important;color:#fff!important}.mark.no[data-on=true]{background:#b3362f!important;border-color:#b3362f!important;color:#fff!important}.brand{margin:2px 0 0;font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--teal2);text-align:right}
+.xrow{display:flex;gap:8px;align-items:center;margin:0 0 8px}.xrow .row{flex:1;min-width:0;margin:0}.xrow .mark{flex:none;font-size:14px;padding:0 12px}.xrow.editing .row{border-color:var(--deep)}.field input::placeholder{color:var(--ink2);opacity:.7}
 .mark.sure{background:#b3362f!important;border-color:#b3362f!important;color:#fff!important;font-size:13px;padding:0 10px}.plan.editing{border-color:var(--deep)}.pbtns .mark:not([data-on]){font-size:14px;padding:0 12px}
 .fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:200}.fx span{position:absolute;top:-44px;animation:fxfall linear forwards;will-change:transform}
 @keyframes fxfall{0%{transform:translate3d(0,0,0) rotate(0);opacity:0}8%{opacity:1}85%{opacity:1}100%{transform:translate3d(var(--sw,20px),112vh,0) rotate(var(--rt,300deg));opacity:0}}
@@ -135,7 +136,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ٧:٤٠ م';
+var UPDATED='الخميس ٢٦ نوفمبر ٧:٤٥ م';
 (function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}})();
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -263,7 +264,7 @@ function screenHome(){
  var ex=EXAMS.filter(function(e){return (S.mine||[]).indexOf(e.teacher)>=0&&e.at>now}).sort(function(a,b){return a.at-b.at})[0];
  var tch=ex?TEACHERS.filter(function(t){return t.id===ex.teacher})[0]:null;
  var nm=(S.profile.name||'').trim();
- f.appendChild(header(nm?'أهلاً يا '+nm:'لوحة تالتة ثانوي',null,null));
+ f.appendChild(h('p',{class:'brand',dir:'ltr',text:'Thanawya Plus'}));f.appendChild(header(nm?'أهلاً يا '+nm:'أهلاً بيك',null,null));
  var sr=storiesRow();if(sr)f.appendChild(sr);
  var g=group('الإعلانات','آخر تحديث');g.appendChild(h('p',{text:UPDATED}));
  var n=newIds().length;
