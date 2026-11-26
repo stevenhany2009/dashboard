@@ -105,7 +105,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ٦:٤٦ م';
+var UPDATED='الخميس ٢٦ نوفمبر ٦:٣٥ م';
 (function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}})();
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -190,31 +190,34 @@ function storyUnseen(t){var l=latest(t);return !!l&&SS[t.id]!==l.id}
 function ringEl(t,cls){var on=storyUnseen(t);return h('span',{class:'ring'+(on?'':' seen')+(cls?' '+cls:'')},(AV[t.id]?h('span',{class:'av'},h('img',{src:AV[t.id],alt:'',draggable:'false'})):h('span',{class:'av',text:shortName(t).charAt(0)})))}
 function closeStory(){var o=document.getElementById('sv');if(o){o.parentNode.removeChild(o);document.removeEventListener('keydown',storyKey)}if(ui.tab==='home')render()}
 var curNav=null;function storyKey(e){if(e.key==='Escape')closeStory();else if(curNav&&e.key==='ArrowLeft')curNav.next();else if(curNav&&e.key==='ArrowRight')curNav.prev()}
-function openStory(list,i){
+function sortedItems(t){return t.items.slice().sort(function(a,b){var d=(b.date||'').localeCompare(a.date||'');return d!==0?d:b.id-a.id})}
+function openStory(list,i,j){
+ j=j||0;
  var old=document.getElementById('sv');if(old)old.parentNode.removeChild(old);
- var t=list[i],l=latest(t);if(l){SS[t.id]=l.id;save('dash-story.v1',SS)}
- var bars=h('div',{class:'sbars'});list.forEach(function(x,k){bars.appendChild(h('i',{class:k<=i?'on':''}))});
+ var t=list[i],its=sortedItems(t),l=its[j]||null;if(its.length&&j===0){SS[t.id]=its[0].id;save('dash-story.v1',SS)}
+ var n=Math.max(its.length,1),bars=h('div',{class:'sbars'});for(var k=0;k<n;k++)bars.appendChild(h('i',{class:k<=j?'on':''}));
  var card=h('div',{class:'svc',role:'dialog','aria-modal':'true'});
- var ring=ringEl(t);
- var head=h('div',{class:'shead'},ring,h('div',{},h('strong',{text:t.name}),h('span',{class:'sub',text:t.subject})),h('button',{class:'x',type:'button','aria-label':'إغلاق',text:'✕',onclick:function(e){e.stopPropagation();closeStory()}}));
+ var head=h('div',{class:'shead'},ringEl(t),h('div',{},h('strong',{text:t.name}),h('span',{class:'sub',text:t.subject+(its.length>1?' · '+(j+1)+' من '+its.length:'')})),h('button',{class:'x',type:'button','aria-label':'إغلاق',text:'✕',onclick:function(e){e.stopPropagation();closeStory()}}));
  var body=h('div',{class:'sbody'});
  if(l){var m=h('div',{class:'meta'});m.appendChild(h('span',{class:'tag',text:l.tag}));m.appendChild(h('span',{text:l.when}));body.appendChild(m);
   body.appendChild(h('p',{class:'title',text:l.title}));body.appendChild(h('p',{class:'stx',text:l.text}));
   var lk=h('div',{class:'links'});l.links.forEach(function(x){lk.appendChild(h('a',{href:x[1],target:'_blank',rel:'noopener noreferrer',text:x[0]}))});body.appendChild(lk)}
  else{body.appendChild(h('p',{class:'stx',text:t.empty||'مفيش إعلان متأكد منه لحد دلوقتي.'}));if(t.channel)body.appendChild(h('div',{class:'links'},h('a',{href:t.channel[1],target:'_blank',rel:'noopener noreferrer',text:t.channel[0]})))}
- card.appendChild(bars);card.appendChild(head);card.appendChild(body);card.appendChild(h('p',{class:'shint',text:'اسحب أو دوس على جنب الشاشة'}));
+ card.appendChild(bars);card.appendChild(head);card.appendChild(body);card.appendChild(h('p',{class:'shint',text:'دوس على الجنب للإعلان اللي بعده، واسحب للمدرس التاني'}));
  var o=h('div',{class:'sv',id:'sv'},card);
- function next(){if(i<list.length-1)openStory(list,i+1);else closeStory()}
- function prev(){if(i>0)openStory(list,i-1)}
- var sx=0,sy=0,st=0,down=false;
- o.addEventListener('pointerdown',function(e){down=true;sx=e.clientX;sy=e.clientY;st=Date.now()});
+ function nextT(){if(i<list.length-1)openStory(list,i+1,0);else closeStory()}
+ function prevT(){if(i>0)openStory(list,i-1,0)}
+ function nextI(){if(j<its.length-1)openStory(list,i,j+1);else nextT()}
+ function prevI(){if(j>0)openStory(list,i,j-1);else prevT()}
+ var sx=0,sy=0,down=false;
+ o.addEventListener('pointerdown',function(e){down=true;sx=e.clientX;sy=e.clientY});
  o.addEventListener('pointercancel',function(){down=false});
  o.addEventListener('pointerup',function(e){if(!down)return;down=false;var dx=e.clientX-sx,dy=e.clientY-sy;
   if(e.target.closest&&e.target.closest('a,.x'))return;
   if(dy>90&&Math.abs(dy)>Math.abs(dx)){closeStory();return}
-  if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){if(dx<0)next();else prev();return}
-  if(Math.abs(dx)<12&&Math.abs(dy)<12){var r=o.getBoundingClientRect();if(e.clientX-r.left<r.width/2)next();else prev()}});
- curNav={next:next,prev:prev};document.body.appendChild(o);document.removeEventListener('keydown',storyKey);document.addEventListener('keydown',storyKey)}
+  if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){if(dx<0)nextT();else prevT();return}
+  if(Math.abs(dx)<12&&Math.abs(dy)<12){var r=o.getBoundingClientRect();if(e.clientX-r.left<r.width/2)nextI();else prevI()}});
+ curNav={next:nextT,prev:prevT};document.body.appendChild(o);document.removeEventListener('keydown',storyKey);document.addEventListener('keydown',storyKey)}
 function storiesRow(){
  var ms=mine();if(!ms.length)return null;
  var list=ms.slice().sort(function(a,b){return (storyUnseen(b)?1:0)-(storyUnseen(a)?1:0)});
