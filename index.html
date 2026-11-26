@@ -136,7 +136,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ١٠:٥٠ م';
+var UPDATED='الخميس ٢٦ نوفمبر ١٠:٥٥ م';
 setTimeout(function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}},3500);
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -270,7 +270,7 @@ function rvDraw(auto){var o=document.getElementById('rvh');if(!o||!rvOpen)return
  o.querySelectorAll('.rvs').forEach(function(s,k){if((k===rvOpen.i||k===rvOpen.i+1)&&s._u&&!s.style.backgroundImage)s.style.backgroundImage=s._u;var fr=s.querySelector('iframe');if(k===rvOpen.i){if(!fr){fr=rvMk(rvOpen.list[k],auto);s._paused=false;s.classList.remove('rvpz');s.insertBefore(fr,s.firstChild);void 0}}else if(fr){s.removeChild(fr)}});
 }
 function rvBuild(auto){
- var list=rvList(),key=list.map(function(r){return r.url}).join('|'),old=document.getElementById('rvh');
+ var list=rvList(),key=list.map(function(r){return r.url}).join('|'),old=document.getElementById('rvh');list=list.slice();for(var q=list.length-1;q>0;q--){var j=Math.floor(Math.random()*(q+1)),tmp=list[q];list[q]=list[j];list[j]=tmp}
  if(old&&old._k===key)return old;if(old){old.parentNode.removeChild(old);rvOpen=null}
  if(!list.length)return null;
  var box=h('div',{id:'rvh',class:'rv rvtab'});box._k=key;rvOpen={list:list,i:0};
@@ -285,7 +285,7 @@ function rvShow(on){var o=document.getElementById('rvh');if(!o)return;
  if(on){var nv=document.getElementById('nav').getBoundingClientRect();o.style.bottom=Math.max(0,window.innerHeight-nv.top+6)+'px';o.classList.add('on');var f=o.querySelector('.rvfeed');
   if(ui.ri!=null&&ui.ri!==rvOpen.i&&ui.ri<rvOpen.list.length){rvOpen.i=ui.ri;rvDraw(true);f.scrollTop=ui.ri*f.clientHeight}
   var s=rvActive(),fr=s&&s.querySelector('iframe');if(fr)setTimeout(function(){var q=s.querySelector('iframe');if(q&&o.classList.contains('on'))rvCmd(q,'playVideo')},700)}
- else if(o.classList.contains('on')){o.classList.remove('on');var s2=rvActive(),f2=s2&&s2.querySelector('iframe');if(f2)rvCmd(f2,'pauseVideo')}}
+ else if(o.classList.contains('on')){o.classList.remove('on');var s2=rvActive(),f2=s2&&s2.querySelector('iframe');if(f2)rvCmd(f2,'pauseVideo');setTimeout(function(){if(ui.tab==='reels')return;var h0=document.getElementById('rvh');if(h0){h0.parentNode.removeChild(h0)}rvOpen=null;ui.ri=0;try{rvBuild(false)}catch(e){}},400)}}
 function screenReels(){
  var list=rvList();
  if(!list.length){return h('div',{class:'rvempty'},h('p',{text:'لسه مفيش ريلز متأكد منها لمدرسينك. هتظهر هنا أول ما تتضاف.'}))}
