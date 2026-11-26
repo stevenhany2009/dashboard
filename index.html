@@ -136,7 +136,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ١٠:٤٥ م';
+var UPDATED='الخميس ٢٦ نوفمبر ١٠:٥٠ م';
 setTimeout(function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}},3500);
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -276,7 +276,7 @@ function rvBuild(auto){
  var box=h('div',{id:'rvh',class:'rv rvtab'});box._k=key;rvOpen={list:list,i:0};
  var feed=h('div',{class:'rvfeed'});
  list.forEach(function(r){var s=h('div',{class:'rvs'});s._u="url('https://i.ytimg.com/vi/"+reelId(r.url)+"/hqdefault.jpg')";
-  s.appendChild(h('div',{class:'rvedge rvel'}));s.appendChild(h('div',{class:'rvedge rver'}));s.appendChild(h('a',{class:'rvyt',href:r.url,target:'_blank',rel:'noopener noreferrer',text:'يوتيوب ↗'}));feed.appendChild(s)});
+  s.appendChild(h('div',{class:'rvedge rvel'}));s.appendChild(h('div',{class:'rvedge rver'}));feed.appendChild(s)});
  box.appendChild(feed);document.body.appendChild(box);
  if(!rvKeyOn){rvKeyOn=true;document.addEventListener('keydown',rvKey)}
  var tm=null;feed.addEventListener('scroll',function(){clearTimeout(tm);tm=setTimeout(function(){if(!rvOpen)return;var n=Math.round(feed.scrollTop/feed.clientHeight);if(n!==rvOpen.i&&n>=0&&n<rvOpen.list.length){rvOpen.i=n;ui.ri=n;rvDraw(true)}},90)},{passive:true});
