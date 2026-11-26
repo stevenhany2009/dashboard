@@ -32,7 +32,7 @@ p{margin:0 0 12px}
 .row{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:8px 14px;margin:0 0 8px;font:inherit;color:var(--ink);text-align:start;cursor:pointer;box-shadow:var(--sh)}
 .box{flex:none;width:24px;height:24px;border:2px solid #b8c6c8;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
 .row[aria-pressed=true] .box{background:var(--deep);border-color:var(--deep)}
-.done{color:var(--ink2);text-decoration:line-through}
+.done{color:var(--ink2);text-decoration:line-through}.sdone{opacity:.55}.sdone strong{text-decoration:line-through;text-decoration-thickness:2px}.wkr.sdone span:first-child{text-decoration:line-through}
 .bar{height:10px;border-radius:999px;background:#dbe6e7;overflow:hidden;margin:10px 0}
 .bar span{display:block;height:100%;border-radius:999px;background:var(--teal2);transition:width .3s}
 .teacher{margin:22px 0 8px}
@@ -136,7 +136,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ١٠:٥٥ م';
+var UPDATED='الخميس ٢٦ نوفمبر ١١:٠٥ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -473,14 +473,20 @@ function screenHome(){
   exl.slice(1,4).forEach(function(e){var dd=Math.max(1,Math.ceil((e.at-Date.now())/86400000));g2.appendChild(h('div',{class:'xrow'},h('div',{},h('strong',{text:e.text}),h('span',{class:'sub',text:cairoLabel(e.at,e.timed)})),h('span',{class:'xchip',text:'بعد '+AR(dd)+' يوم'})))})}
  else g2.appendChild(h('p',{text:'مفيش امتحان متأكد منه بتاريخ عند المدرسين اللي اخترتهم لحد دلوقتي.'}));
  f.appendChild(g2);
- var g3=group('الجدول','مذاكرتك');
+ var g3=group('الجدول اليومي','مذاكرتك النهارده');
  try{
-var hv=ui.hv==='week'?'week':'day';var hs=h('div',{class:'seg hseg',role:'group','aria-label':'عرض الجدول'});[['day','اليوم'],['week','الأسبوع']].forEach(function(o){hs.appendChild(h('button',{type:'button','aria-pressed':String(hv===o[0]),text:o[1],onclick:function(){ui.hv=o[0];render()}}))});g3.appendChild(hs);var list=entries(sday().getDay()),dm=S.marks[dkey(sday())]||{},nw=new Date(),hm=pad(nw.getHours())+':'+pad(nw.getMinutes());
- if(hv==='week'){var tdn=sday().getDay(),any=false;DAYS.forEach(function(d){var l=entries(d[0]);if(l.length)any=true;var c=h('div',{class:'wk'+(d[0]===tdn?' today':'')},h('div',{class:'wkh'},h('strong',{text:d[1]}),d[0]===tdn?h('span',{class:'xchip',text:'النهارده'}):h('span',{class:'sub',text:l.length===1?'مادة':l.length===2?'مادتين':l.length?AR(l.length)+' مواد':'فاضي'})));l.forEach(function(e){c.appendChild(h('div',{class:'wkr'},h('span',{text:e.subject}),h('span',{class:'time',text:e.time?fmtT(e.time):'من غير ميعاد'})))});g3.appendChild(c)});if(!any)g3.appendChild(h('p',{class:'sub',text:'لسه مضفتش حاجة في الجدول. ضيف موادك من تبويب «الجدول».'}));g3.appendChild(h('button',{class:'btn',type:'button',text:'عدّل جدولك',onclick:function(){ui.pmode='edit';setTab('plan')}}))}
- else if(list.length){g3.appendChild(h('p',{class:'sub',text:list.filter(function(e){return dm[e.id]===true}).length+' من '+list.length+' خلصتهم النهارده. علّم ✓ أو ✗ على كل مادة.'}));list.forEach(function(e){g3.appendChild(markRow(e,dm,hm))});g3.appendChild(h('button',{class:'btn',type:'button',text:'عدّل جدولك',onclick:function(){ui.pmode='edit';setTab('plan')}}))}
- else{g3.appendChild(h('p',{class:'sub',text:'مفيش جدول لليوم ده. ضيف موادك من تبويب «الجدول» وهتظهر هنا.'}));g3.appendChild(h('button',{class:'btn',type:'button',text:'افتح الجدول',onclick:function(){setTab('plan')}}))}
+var dl=(S.schedule.daily||[]).slice().sort(function(a,b){return (a.time||'99:99').localeCompare(b.time||'99:99')}),dm=S.marks[dkey(sday())]||{},nw=new Date(),hm=pad(nw.getHours())+':'+pad(nw.getMinutes());
+ if(dl.length){g3.appendChild(h('p',{class:'sub',text:dl.filter(function(e){return dm[e.id]===true}).length+' من '+dl.length+' خلصتهم النهارده. علّم ✓ أو ✗ على كل مادة.'}));dl.forEach(function(e){g3.appendChild(markRow(e,dm,hm))})}
+ else g3.appendChild(h('p',{class:'sub',text:'مفيش مواد في جدولك اليومي. ضيفها من تبويب «الجدول».'}));
+ g3.appendChild(h('button',{class:'btn',type:'button',text:'عدّل جدولك',onclick:function(){ui.pmode='edit';setTab('plan')}}));
  }catch(err){g3.appendChild(h('p',{class:'ferr',text:'مقدرتش أعرض الجدول هنا. حدّث الصفحة. (خطأ: '+String(err&&err.message||err).slice(0,60)+')'}));g3.appendChild(h('button',{class:'btn',type:'button',text:'حدّث الصفحة',onclick:function(){location.replace(location.pathname+'?v='+Date.now())}}))}
  f.appendChild(g3);
+ try{var g4=group('الجدول الأسبوعي','المواد على أيام الأسبوع'),tdn=sday().getDay(),dmw=S.marks[dkey(sday())]||{},any=false,nw2=new Date(),hm2=pad(nw2.getHours())+':'+pad(nw2.getMinutes());
+ DAYS.forEach(function(d){var l=(S.schedule.week[String(d[0])]||[]).slice().sort(function(a,b){return (a.time||'99:99').localeCompare(b.time||'99:99')});if(l.length)any=true;var c=h('div',{class:'wk'+(d[0]===tdn?' today':'')},h('div',{class:'wkh'},h('strong',{text:d[1]}),d[0]===tdn?h('span',{class:'xchip',text:'النهارده'}):h('span',{class:'sub',text:l.length===1?'مادة':l.length===2?'مادتين':l.length?AR(l.length)+' مواد':'فاضي'})));
+  l.forEach(function(e){if(d[0]===tdn)c.appendChild(markRow(e,dmw,hm2));else c.appendChild(h('div',{class:'wkr'},h('span',{text:e.subject}),h('span',{class:'time',text:e.time?fmtT(e.time):'من غير ميعاد'})))});g4.appendChild(c)});
+ if(!any)g4.appendChild(h('p',{class:'sub',text:'لسه مضفتش مواد أسبوعية. اختار «أسبوعي» من تبويب «الجدول».'}));
+ g4.appendChild(h('button',{class:'btn',type:'button',text:'عدّل الجدول الأسبوعي',onclick:function(){ui.pmode='edit';var sc0=S.schedule;sc0.mode='weekly';save('dash-schedule.v1',sc0);setTab('plan')}}));
+ f.appendChild(makeFoldable(g4,'wk',false))}catch(err){}
  try{f.appendChild(makeFoldable(statsSection(),'stats',true))}catch(err){var gs=group('إحصائياتي','إحصائياتي الدراسية');gs.appendChild(h('p',{class:'ferr',text:'مقدرتش أعرض الإحصائيات. (خطأ: '+String(err&&err.message||err).slice(0,60)+')'}));f.appendChild(gs)}
  var rr=lecturesSection();if(rr)f.appendChild(makeFoldable(rr,'lec',true));
  f.appendChild(g);
@@ -537,7 +543,7 @@ function fx(ok){var old=document.getElementById('fx');if(old)old.remove();
 function setMark(id,v){var k=dkey(sday()),cur=(S.marks[k]||{})[id];S.marks[k]=Object.assign({},S.marks[k]||{});if(cur===v)delete S.marks[k][id];else{S.marks[k][id]=v;fx(v)}var keep=Object.keys(S.marks).sort().slice(-14),o={};keep.forEach(function(x){o[x]=S.marks[x]});S.marks=o;save('dash-marks.v1',S.marks);render()}
 function markRow(e,day,hhmm){var m=day[e.id],late=m===undefined&&e.time&&hhmm>=e.time;
   var st=m===true?'خلصتها':m===false?'ما خلصتهاش':late?'فات ميعادها ('+fmtT(e.time)+')':e.time?'ميعادها '+fmtT(e.time):'من غير ميعاد';
-  return h('div',{class:'plan'},h('div',{class:'pmain'},h('strong',{text:e.subject}),h('span',{class:late?'late':'time',text:st})),
+  return h('div',{class:'plan'},h('div',{class:'pmain'+(m===true?' sdone':'')},h('strong',{text:e.subject}),h('span',{class:late?'late':'time',text:st})),
    h('div',{class:'pbtns'},h('button',{type:'button',class:'mark','data-on':String(m===true),'aria-pressed':String(m===true),'aria-label':'خلصت '+e.subject,text:'✓',onclick:function(){setMark(e.id,true)}}),
     h('button',{type:'button',class:'mark no','data-on':String(m===false),'aria-pressed':String(m===false),'aria-label':'ما خلصتش '+e.subject,text:'✗',onclick:function(){setMark(e.id,false)}})))}
 function todayView(){
@@ -689,4 +695,4 @@ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.c
 document.addEventListener('click',function(){if(idx<0)return;var i=idx;idx=-1;var all=document.querySelectorAll(SEL),el=all[i];if(!el)return;el.classList.add('pop');
 var isChip=el.parentNode&&el.parentNode.classList.contains('seg');if(isChip){var n=0;document.querySelectorAll('#screen .teacher,#screen .callout,#screen .plan').forEach(function(x){x.style.animationDelay=(n++*30)+'ms';x.classList.add('fadein')})}})})()</script>
 </body>
- </html>
+</html>
