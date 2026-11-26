@@ -160,6 +160,8 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 .sx .lbr{flex-wrap:wrap;gap:8px;align-items:center}.sx .lbr>span{flex:1 1 120px;min-width:0}.sx .lbr .btn.sm{flex:0 0 auto;width:auto;min-width:64px;padding:0 14px}.sx .lbx{display:inline-block}
 .wzav{display:flex;align-items:center;gap:12px;margin:10px 0;flex-wrap:wrap}.lba.ini{display:inline-flex;align-items:center;justify-content:center;background:var(--deep);color:#fff;font-weight:700;font-size:14px}
 .lbr .lba.ini,.sx .lbr>.lba.ini{flex:none!important;width:28px;height:28px;min-width:28px;border-radius:50%}
+.wzstep{margin:0 0 6px;font-size:13px;color:var(--gold,#b9954f);font-weight:700}.wzdots i{width:22px}.wzsum .lbr{margin:6px 0}
+.btn.wide{width:100%;margin-top:10px}
 </style>
 </head>
 <body>
@@ -167,7 +169,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ١٢:٤٢ ص';
+var UPDATED='الجمعة ٢٧ نوفمبر ١٢:٤٤ ص';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -665,9 +667,9 @@ function lbPush(){if(!AU||!LB.on||!LB.nick)return;if(lbT)clearTimeout(lbT);lbT=s
 function lbLoad(){if(!AU)return;sbAuthed('/rest/v1/rpc/get_leaderboard',{method:'POST',body:{}}).then(function(x){AUI.lb=x.ok&&Array.isArray(x.j)?x.j:[];if(!x.ok)AUI.lbMsg='الليدر بورد مش متاح دلوقتي.';if(ui.tab==='profile')render()})}
 function lbSet(on,nick){if(on){var e=nickOk(nick);if(e){AUI.lbMsg=e;render();return}LB={on:true,nick:nick.trim()};save('dash-lb.v1',LB);sbAuthed('/rest/v1/rpc/sync_board',{method:'POST',body:lbArgs()}).then(function(x){AUI.lbMsg=x.ok?'':'مقدرتش أضيفك. جرب تاني.';if(!x.ok){LB.on=false;save('dash-lb.v1',LB)}lbLoad();render()})}
  else{LB.on=false;save('dash-lb.v1',LB);sbAuthed('/rest/v1/rpc/remove_leaderboard',{method:'POST',body:{}}).then(function(){AUI.lb=null;AUI.lbMsg='';lbLoad();render()})}}
-function acctGroup(){var g=pgroup('الحساب','حسابك والليدر بورد','user');g.classList.add('acctg');
+function acctGroup(wz){var g=wz?h('div',{}):pgroup('الحساب','حسابك والليدر بورد','user');g.classList.add('acctg');
  if(!AU){var up=AUI.mode==='up';
-  g.appendChild(h('p',{class:'sub',text:'اعمل حساب بيوزرنيم وباسورد علشان بياناتك (الجدول، الإحصائيات، الامتحانات، النقاط) تلاقيها على أي جهاز. من غير إيميل. التطبيق شغال من غير حساب كمان.'}));
+  if(!wz)g.appendChild(h('p',{class:'sub',text:'اعمل حساب بيوزرنيم وباسورد علشان بياناتك (الجدول، الإحصائيات، الامتحانات، النقاط) تلاقيها على أي جهاز. من غير إيميل. التطبيق شغال من غير حساب كمان.'}));
   var sg=h('div',{class:'seg'});[['in','دخول'],['up','حساب جديد']].forEach(function(o){sg.appendChild(h('button',{type:'button','aria-pressed':String((o[0]==='up')===up),text:o[1],onclick:function(){AUI.mode=o[0];AUI.msg='';render()}}))});g.appendChild(sg);
   var iu=h('input',{type:'text',autocomplete:'username',placeholder:'اليوزرنيم',value:AUI.un||'',maxlength:'20',autocapitalize:'none',spellcheck:'false'}),ip=h('input',{type:'password',autocomplete:up?'new-password':'current-password',placeholder:'الباسورد (٨ حروف على الأقل)'}),ip2=h('input',{type:'password',autocomplete:'new-password',placeholder:'اكتب الباسورد تاني'});
   g.appendChild(iu);g.appendChild(ip);if(up)g.appendChild(ip2);
@@ -946,20 +948,22 @@ function screenProfile(){
  try{var pc=[].slice.call(f.childNodes).filter(function(n){return n.classList&&n.classList.contains('pcard')});pc.forEach(function(n,i){pfold(n,'pf'+i,i===0)})}catch(e){}
  f.appendChild(h('div',{class:'callout'},h('strong',{text:'عن التطبيق'}),'التطبيق بيحفظ اختياراتك وجدولك وعلاماتك وصورك على جهازك. لو عملت حساب، بياناتك بتتحفظ على حسابك. مفيش إشعارات على الموبايل.'));return f}
 function screenTeachers(){
- var first=S.mine===null;if(ui.pick===null)ui.pick=(S.mine||[]).slice();
- var f=document.createDocumentFragment();if(!first)f.appendChild(h('button',{class:'btn back',type:'button',text:'رجوع لملفي',onclick:function(){ui.pick=null;setTab('profile')}}));f.appendChild(header(first?'اختار مدرسينك':'عدّل مدرسينك','اختار المدرسين اللي بتتابعهم، وبعدها الرئيسية هتعرض إعلاناتهم بس. الاختيار بيتحفظ على جهازك.'));
+ var first=S.mine===null||!!(OB&&OB.step==='teachers');if(ui.pick===null)ui.pick=(S.mine||[]).slice();
+ var f=document.createDocumentFragment();if(OB&&OB.step==='teachers')f.appendChild(wizCard(3,'مدرسينك','اختار المدرسين اللي بتتابعهم. الرئيسية هتعرض إعلاناتهم بس.'));else{if(!first)f.appendChild(h('button',{class:'btn back',type:'button',text:'رجوع لملفي',onclick:function(){ui.pick=null;setTab('profile')}}));if(1)f.appendChild(header(first?'اختار مدرسينك':'عدّل مدرسينك','اختار المدرسين اللي بتتابعهم، وبعدها الرئيسية هتعرض إعلاناتهم بس. الاختيار بيتحفظ على جهازك.'))}
  var g=group('المدرسين','مين بتتابع؟');
  TEACHERS.forEach(function(t){var on=ui.pick.indexOf(t.id)>=0;g.appendChild(h('button',{type:'button',class:'row','aria-pressed':String(on),onclick:function(){var i=ui.pick.indexOf(t.id);if(i>=0)ui.pick.splice(i,1);else ui.pick.push(t.id);render()}},h('span',{class:'box','aria-hidden':'true',text:on?'✓':''}),h('span',{},t.name,h('span',{class:'sub',text:' · '+t.subject}))))});
- var go=h('button',{class:'btn primary',type:'button',text:first?'ادخل اللوحة':'احفظ',onclick:function(){S.mine=ui.pick.slice();save('dash-teachers.v1',S.mine);var was=first;ui.pick=null;if(was&&OB){obFinish()}else setTab(was?'home':'profile')}});go.disabled=ui.pick.length===0;
- g.appendChild(h('div',{class:'cta'},go));g.appendChild(h('p',{class:'sub',text:ui.pick.length===0?'اختار مدرس واحد على الأقل.':'اخترت '+ui.pick.length+' من '+TEACHERS.length+'.'}));f.appendChild(g);return f}
+ var go=h('button',{class:'btn primary',type:'button',text:OB?'التالي':first?'ادخل اللوحة':'احفظ',onclick:function(){S.mine=ui.pick.slice();save('dash-teachers.v1',S.mine);var was=first;ui.pick=null;if(OB){obNext()}else setTab(was?'home':'profile')}});go.disabled=ui.pick.length===0;
+ g.appendChild(h('div',{class:'cta'},go));g.appendChild(h('p',{class:'sub',text:ui.pick.length===0?'اختار مدرس واحد على الأقل.':'اخترت '+ui.pick.length+' من '+TEACHERS.length+'.'}));f.appendChild(g);if(OB&&OB.step==='teachers')f.appendChild(wzBack());return f}
 
 function footer(){
  var f=h('footer',{class:'foot'});var fn=h('p',{class:'fine'});fn.appendChild(h('b',{text:'Created by Steven Hany'}));fn.appendChild(document.createTextNode(' \u00b7 '));fn.appendChild(h('bdi',{text:'جميع الحقوق محفوظة © ٢٠٢٦'}));f.appendChild(fn);return f}
 
 var OB=null;(function(){try{var done=localStorage.getItem('dash-onboard.v1')==='1';if(!done&&S.mine===null&&!(S.profile.name||'').trim())OB={step:'name'}}catch(e){}})();
 function obFinish(){OB=null;try{localStorage.setItem('dash-onboard.v1','1')}catch(e){}ui.tab='home';render()}
-function obNext(){if(!OB)return;if(OB.step==='name'){OB.step=AC?'acct':'teachers'}else if(OB.step==='acct'){OB.step='teachers'}render()}
-function wizCard(n,title,sub){var f=document.createDocumentFragment();var wd=h('div',{class:'wzdots','aria-label':'الخطوة '+AR(n)+' من ٣'});[1,2,3].forEach(function(i){wd.appendChild(h('i',{class:i===n?'on':''}))});f.appendChild(wd);f.appendChild(h('p',{class:'label',text:'Thanawya Plus'}));f.appendChild(h('h1',{text:title}));if(sub)f.appendChild(h('p',{class:'sub',text:sub}));return f}
+function obNext(){if(!OB)return;if(OB.step==='name'){OB.step=AC?'acct':'teachers';AUI.mode='up'}else if(OB.step==='acct'){OB.step='teachers'}else if(OB.step==='teachers'){OB.step='done'}render()}
+function obBack(){if(!OB)return;if(OB.step==='done'){OB.step='teachers';ui.pick=(S.mine||[]).slice()}else if(OB.step==='teachers'){ui.pick=null;OB.step=AC?'acct':'name'}else if(OB.step==='acct'){OB.step='name'}render()}
+function wzBack(){return h('button',{class:'btn ghost back',type:'button',text:'رجوع',onclick:obBack})}
+function wizCard(n,title,sub){var f=document.createDocumentFragment();var wd=h('div',{class:'wzdots','aria-label':'الخطوة '+AR(n)+' من ٤'});[1,2,3,4].forEach(function(i){wd.appendChild(h('i',{class:i===n?'on':''}))});f.appendChild(wd);f.appendChild(h('p',{class:'wzstep',text:'الخطوة '+AR(n)+' من ٤'}));f.appendChild(h('p',{class:'label',text:'Thanawya Plus'}));f.appendChild(h('h1',{text:title}));if(sub)f.appendChild(h('p',{class:'sub',text:sub}));return f}
 function screenWizard(){var st=OB.step,f;
  if(st==='name'){f=wizCard(1,'أهلًا بيك','اكتب اسمك، وضيف صورة لو حابب (اختياري). الاسم والصورة بيظهروا في ملفك، ولو عملت حساب هيظهروا في الليدربورد.');
   var inp=h('input',{type:'text',maxlength:'40',placeholder:'اسمك',id:'wzn','aria-label':'اسمك',value:S.profile.name||'',autocomplete:'given-name'});var go=h('button',{class:'btn primary',type:'button',text:'التالي',onclick:function(){var v=inp.value.trim();if(v.length<2){m.textContent='اكتب اسمك (حرفين على الأقل).';return}S.profile.name=v.slice(0,40);save('dash-profile.v1',S.profile);obNext()}});var m=h('p',{class:'late',role:'alert'});
@@ -967,10 +971,13 @@ function screenWizard(){var st=OB.step,f;
   inp.addEventListener('keydown',function(e){if(e.key==='Enter')go.click()});
   var ar=h('div',{class:'wzav'},avBox(PH.me,((S.profile.name||'').trim()||'؟').charAt(0),'big'));var ac=h('div',{class:'sacts'},photoPicker('me',PH.me?'غيّر الصورة':'ضيف صورة (اختياري)'));if(PH.me)ac.appendChild(h('button',{class:'btn sm',type:'button',text:'شيل الصورة',onclick:function(){dropPhoto('me')}}));ar.appendChild(ac);if(PMSG){ar.appendChild(h('p',{class:'late',text:PMSG}));PMSG=''}
   f.appendChild(ar);f.appendChild(h('label',{class:'field'},h('span',{text:'اسمك'}),inp));f.appendChild(m);f.appendChild(h('div',{class:'cta'},go));ui.focus='wzn';return f}
- if(st==='acct'){f=wizCard(2,'حسابك','اعمل حساب بيوزرنيم وباسورد علشان بياناتك تتحفظ وتلاقيها على أي جهاز وتدخل الليدربورد. اسمك وصورتك (لو ضفتها) ونقاطك بتظهر لباقي المستخدمين. أو كمّل من غير حساب وكل حاجة هتتحفظ على جهازك بس.');
+ if(st==='acct'){f=wizCard(2,'حسابك','سجّل بيوزرنيم وباسورد (من غير إيميل) علشان بياناتك تتحفظ على أي جهاز. أو كمّل من غير حساب وكل حاجة تفضل على جهازك.');
   if(AU){f.appendChild(h('p',{class:'sub',text:'داخل بـ '+(AU.un||'')}));f.appendChild(h('div',{class:'cta'},h('button',{class:'btn primary',type:'button',text:'التالي',onclick:obNext})))}
-  else{f.appendChild(acctGroup());f.appendChild(h('button',{class:'btn ghost',type:'button',text:'كمّل من غير حساب',onclick:function(){SY={uid:null,mode:'off'};save('dash-sync.v1',SY);obNext()}}));f.appendChild(h('p',{class:'sub',text:'من غير حساب مفيش ليدر بورد ولا مزامنة. تقدر تسجّل بعدين من ملفي.'}))}
-  return f}
+  else{f.appendChild(acctGroup(true));f.appendChild(h('button',{class:'btn ghost wide',type:'button',text:'كمّل من غير حساب',onclick:function(){SY={uid:null,mode:'off'};save('dash-sync.v1',SY);obNext()}}));f.appendChild(h('p',{class:'sub',text:'من غير حساب مفيش ليدر بورد ولا مزامنة. تقدر تسجّل بعدين من ملفي.'}))}
+  f.appendChild(wzBack());return f}
+ if(st==='done'){f=wizCard(4,'تمام','ده اللي اتظبط. تقدر تغيّر أي حاجة بعدين من ملفي.');var rows=h('div',{class:'wzsum'});function sr(k,v){rows.appendChild(h('div',{class:'lbr'},h('span',{text:k}),h('em',{text:v})))}
+  sr('الاسم',(S.profile.name||'').trim()||'—');sr('الصورة',PH.me?'متضافة':'من غير صورة (حرف أول)');sr('الحساب',AU?('@'+(AU.un||'')):'من غير حساب (على جهازك بس)');sr('الليدربورد',AU?(LB.on?'شغّال':'مقفول'):'مش متاح من غير حساب');sr('المدرسين',AR((S.mine||[]).length)+' مدرس');f.appendChild(rows);
+  f.appendChild(h('div',{class:'cta'},h('button',{class:'btn primary',type:'button',text:'ابدأ',onclick:obFinish})));f.appendChild(wzBack());return f}
  f=wizCard(4,'امتحانك الجاي','ضيف أقرب امتحان علشان العداد يظهر في الرئيسية. تقدر تتخطى وتضيفه بعدين.');
  var xs=h('input',{type:'text',maxlength:'40',placeholder:'المادة (مثلًا: فيزياء)','aria-label':'المادة'}),xd=h('input',{type:'date','aria-label':'التاريخ'}),xm=h('p',{class:'late',role:'alert'});
  f.appendChild(h('label',{class:'field'},h('span',{text:'المادة'}),xs));f.appendChild(h('label',{class:'field'},h('span',{text:'التاريخ'}),xd));f.appendChild(xm);
@@ -979,7 +986,7 @@ function screenWizard(){var st=OB.step,f;
 function render(){
  clockEl=null;var sc=document.getElementById('screen'),top=sc.scrollTop;sc.textContent='';
  var tab=S.mine===null?'teachers':ui.tab;
- var v;try{v=(OB&&(OB.step==='name'||OB.step==='acct'||OB.step==='exam'))?screenWizard():tab==='home'?screenHome():tab==='news'?screenNews():tab==='plan'?screenPlan():tab==='reels'?screenReels():tab==='profile'?screenProfile():screenTeachers();}catch(err){v=document.createDocumentFragment();v.appendChild(h('p',{class:'ferr',text:'حصلت مشكلة في عرض الصفحة. (خطأ: '+String(err&&err.message||err).slice(0,80)+')'}));v.appendChild(h('button',{class:'btn',type:'button',text:'حدّث الصفحة',onclick:function(){location.replace(location.pathname+'?v='+Date.now())}}))}
+ var v;try{v=(OB&&(OB.step==='name'||OB.step==='acct'||OB.step==='done'||OB.step==='exam'))?screenWizard():tab==='home'?screenHome():tab==='news'?screenNews():tab==='plan'?screenPlan():tab==='reels'?screenReels():tab==='profile'?screenProfile():screenTeachers();}catch(err){v=document.createDocumentFragment();v.appendChild(h('p',{class:'ferr',text:'حصلت مشكلة في عرض الصفحة. (خطأ: '+String(err&&err.message||err).slice(0,80)+')'}));v.appendChild(h('button',{class:'btn',type:'button',text:'حدّث الصفحة',onclick:function(){location.replace(location.pathname+'?v='+Date.now())}}))}
  sc.classList.toggle('rvscr',tab==='reels');sc.appendChild(v);if(tab!=='reels')sc.appendChild(footer());sc.scrollTop=top;renderNav();if(OB)document.getElementById('nav').hidden=true;rvShow(tab==='reels'&&!!document.getElementById('rvh'));if(ui.focus){var fid=ui.focus===true?'subin':ui.focus;ui.focus=false;var fi=document.getElementById(fid);if(fi){fi.focus({preventScroll:true});fi.scrollIntoView({block:'nearest'})}}}
 if(clockTimer)clearInterval(clockTimer);clockTimer=setInterval(clockTick,1000);
 setInterval(function(){var a=document.activeElement;rollover();if((ui.tab==='home'||ui.tab==='plan')&&!(a&&a.tagName==='INPUT'))render()},60000);
