@@ -178,7 +178,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ١:٢٦ ص';
+var UPDATED='الجمعة ٢٧ نوفمبر ١:٢٨ ص';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -677,7 +677,7 @@ function acctDelete(){if(!confirm('ده هيمسح حسابك وكل بيانا�
 var BADW=['fuck','shit','sex','porn','كس','طيز','شرموط','متناك','عرص','خول','زب','نيك'];
 function nickOk(n){n=(n||'').trim();if(n.length<2||n.length>20)return 'الاسم من ٢ لـ ٢٠ حرف.';if(n.indexOf('@')>=0||/https?:|www\./i.test(n))return 'من غير @ أو لينكات.';var low=n.toLowerCase().replace(/[\s._\-]/g,'');for(var i=0;i<BADW.length;i++)if(low.indexOf(BADW[i])>=0)return 'اختار اسم تاني.';return ''}
 function lbPush(){if(!AU||!LB.on||!LB.nick)return;if(lbT)clearTimeout(lbT);lbT=setTimeout(function(){sbAuthed('/rest/v1/rpc/sync_board',{method:'POST',body:lbArgs()}).then(function(x){if(!x.ok)AUI.lbMsg='مقدرتش أحدّث الليدر بورد.'})},4000)}
-function lbLoad(){if(!AU)return;sbAuthed('/rest/v1/rpc/get_leaderboard',{method:'POST',body:{}}).then(function(x){AUI.lb=x.ok&&Array.isArray(x.j)?x.j:[];if(!x.ok)AUI.lbMsg='الليدر بورد مش متاح دلوقتي.';if(ui.tab==='profile')render()})}
+function lbLoad(){if(!AU)return;sbAuthed('/rest/v1/rpc/get_my_week',{method:'POST',body:{}}).then(function(x){AUI.lb=[];if(x.ok&&typeof x.j==='number')AUI.myw=x.j;if(ui.tab==='profile')render()})}
 function lbSet(on,nick){if(on){var e=nickOk(nick);if(e){AUI.lbMsg=e;render();return}LB={on:true,nick:nick.trim()};save('dash-lb.v1',LB);sbAuthed('/rest/v1/rpc/sync_board',{method:'POST',body:lbArgs()}).then(function(x){AUI.lbMsg=x.ok?'':'مقدرتش أضيفك. جرب تاني.';if(!x.ok){LB.on=false;save('dash-lb.v1',LB)}lbLoad();render()})}
  else{LB.on=false;save('dash-lb.v1',LB);sbAuthed('/rest/v1/rpc/remove_leaderboard',{method:'POST',body:{}}).then(function(){AUI.lb=null;AUI.lbMsg='';lbLoad();render()})}}
 function acctGroup(wz){var g=wz?h('div',{}):pgroup('الحساب','حسابك والليدر بورد','user');g.classList.add('acctg');
@@ -701,7 +701,7 @@ function lbArgs(){var l=(S.pts&&S.pts.l)||{},td=dkey(sday()),st=0,d=sday();if(!l
 function socialRender(){if(ui.tab==='profile')render()}
 function socialLoad(){if(!AU)return;admLoad();rpc('is_admin').then(function(x){AUI.adm=x.ok&&x.j===true;if(AUI.adm){rpc('admin_board').then(function(y){AUI.ab=y.ok&&Array.isArray(y.j)?y.j:[];socialRender()});rpc('admin_stories').then(function(y){AUI.as=y.ok&&Array.isArray(y.j)?y.j:[];socialRender()})}socialRender()});
  if(!LB.on)return;rpc('my_code').then(function(x){if(x.ok&&typeof x.j==='string')AUI.code=x.j;socialRender()});friendsLoad();
- rpc('get_weekly').then(function(x){AUI.wk=x.ok&&Array.isArray(x.j)?x.j:[];socialRender()});groupsLoad()}
+ rpc('get_my_week').then(function(x){if(x.ok&&typeof x.j==='number')AUI.myw=x.j;socialRender()});groupsLoad()}
 function admLoad(){if(!AU)return;sbAuthed('/rest/v1/admin_messages?select=id,body,created_at&order=created_at.desc&limit=5').then(function(x){if(x.ok&&Array.isArray(x.j)){ADMN=x.j.map(function(m){return {id:m.id,text:m.body,at:m.created_at}});AUI.am=x.j;if(ui.tab==='home'||ui.tab==='profile')render()}})}
 function friendsLoad(){rpc('friend_list').then(function(x){AUI.fr=x.ok&&Array.isArray(x.j)?x.j:[];socialRender();chUnread()})}
 function groupsLoad(){rpc('group_list').then(function(x){AUI.gr=x.ok&&Array.isArray(x.j)?x.j:[];socialRender()})}
@@ -819,17 +819,12 @@ function secLb(){var s=h('div',{});
   if(!bn)a.appendChild(h('p',{class:'pmsg',role:'status',text:'اسمك مش مناسب للليدربورد (٢ لـ ٢٠ حرف من غير @ أو لينكات). غيّره من «بياناتك».'}));
   else a.appendChild(h('button',{class:'btn',type:'button',text:'ضيفني في الليدربورد',onclick:function(){avSync(function(){lbSet(true,bn)})}}));
   if(AUI.lbMsg)a.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.lbMsg}));s.appendChild(a);return s}
- var all=myRow(AUI.lb),wk=myRow(AUI.wk);
- var rk=h('div',{class:'rk'},h('div',{},h('small',{text:'ترتيبك العام'}),h('b',{text:all?AR(all.pos):'—'})),h('div',{},h('small',{text:'ترتيبك الأسبوعي'}),h('b',{text:wk?AR(wk.pos):'—'})),h('div',{},h('small',{text:'نقاطك'}),h('b',{text:AR(ptsTotal())})));
- s.appendChild(rk);
- var bt=AUI.bt||'all',tb=h('div',{class:'seg seg3'});[['all','العام'],['fr','الأصدقاء'],['wk','الأسبوعي']].forEach(function(o){tb.appendChild(h('button',{type:'button','aria-pressed':String(o[0]===bt),text:o[1],onclick:function(){AUI.bt=o[0];render()}}))});s.appendChild(tb);
- var t=h('div',{class:'lbt'}),empty='';
- if(bt==='all'){(AUI.lb||[]).forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.pts,r.me,'',r.avatar))});empty='لسه مفيش حد في الليدربورد.'}
- else if(bt==='wk'){s.appendChild(h('p',{class:'sub',text:'نقاط الأسبوع. بتتصفّر كل اثنين.'}));(AUI.wk||[]).forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.pts,r.me,'',r.avatar))});empty='لسه مفيش نقاط الأسبوع ده.'}
- else{s.appendChild(h('p',{class:'sub',text:'ترتيبك انت وأصحابك بنقاط الأسبوع.'}));var rows=(AUI.fr||[]).filter(function(f){return f.kind==='friend'}).map(function(f){var ex=[];if(f.streak!==null&&f.streak>0)ex.push('🔥'+AR(f.streak));if(f.fin_today===true)ex.push('خلّص النهارده ✓');return {nick:f.nick,pts:f.weekly,me:false,ex:ex.join(' '),av:f.avatar}});
-  if(rows.length){rows.push({nick:LB.nick||'أنت',pts:wk?wk.pts:0,me:true,ex:'',av:LB.av});rows.sort(function(a,b){return b.pts-a.pts});rows.forEach(function(r,i){t.appendChild(lbRow(i+1,r.nick,r.pts,r.me,r.ex,r.av))})}
-  else{s.appendChild(h('p',{class:'sub',text:'لسه معندكش أصحاب. ضيف صحابك من «٣ أصدقائي».'}))}}
- if(t.childNodes.length)s.appendChild(t);else if(bt!=='fr')s.appendChild(h('p',{class:'sub',text:empty}));
+ var rows=(AUI.fr||[]).filter(function(f){return f.kind==='friend'}).map(function(f){var ex=[];if(f.streak!==null&&f.streak>0)ex.push('🔥'+AR(f.streak));if(f.fin_today===true)ex.push('خلّص النهارده ✓');return {nick:f.nick,pts:f.weekly,me:false,ex:ex.join(' '),av:f.avatar}});
+ var mw=typeof AUI.myw==='number'?AUI.myw:0;rows.push({nick:LB.nick||'أنت',pts:mw,me:true,ex:'',av:LB.av});rows.sort(function(a,b){return b.pts-a.pts});var mypos=0;rows.forEach(function(r,i){if(r.me)mypos=i+1});
+ s.appendChild(h('div',{class:'rk'},h('div',{},h('small',{text:'ترتيبك بين أصحابك'}),h('b',{text:rows.length>1?AR(mypos):'—'})),h('div',{},h('small',{text:'نقاط الأسبوع'}),h('b',{text:AR(mw)})),h('div',{},h('small',{text:'نقاطك'}),h('b',{text:AR(ptsTotal())}))));
+ s.appendChild(h('h3',{class:'ssub',text:'ليدربورد الأصدقاء'}));s.appendChild(h('p',{class:'sub',text:'ترتيبك انت وأصحابك بنقاط الأسبوع. بتتصفّر كل اثنين.'}));
+ var t=h('div',{class:'lbt'});if(rows.length>1){rows.forEach(function(r,i){t.appendChild(lbRow(i+1,r.nick,r.pts,r.me,r.ex,r.av))});s.appendChild(t)}
+ else s.appendChild(h('p',{class:'sub',text:'لسه معندكش أصحاب. ضيف صحابك من «٣ أصدقائي» وهتظهروا هنا.'}));
  var bn2=boardName();if(bn2&&bn2!==LB.nick){LB.nick=bn2;save('dash-lb.v1',LB);lbPush()}
  var st=h('div',{});st.appendChild(h('p',{class:'sub',text:'اسمك وصورتك (لو ضفتها) ونقاطك بتظهر لباقي المستخدمين. الاسم والصورة من «ملفي».'}));
  var dt=h('details',{class:'frm'},h('summary',{text:'إعدادات الليدربورد'}));
