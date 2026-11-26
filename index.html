@@ -138,7 +138,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ١١:٤٩ م';
+var UPDATED='الخميس ٢٦ نوفمبر ١١:٥٢ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -478,9 +478,9 @@ function screenHome(){
  f.appendChild(g2);
  var g3=group('الجدول اليومي','مذاكرتك النهارده');
  try{
-var dl=(S.schedule.daily||[]).slice().sort(function(a,b){return (a.time||'99:99').localeCompare(b.time||'99:99')}),dm=S.marks[dkey(sday())]||{},nw=new Date(),hm=pad(nw.getHours())+':'+pad(nw.getMinutes());
+var dl=entries(sday().getDay()),dm=S.marks[dkey(sday())]||{},nw=new Date(),hm=pad(nw.getHours())+':'+pad(nw.getMinutes());
  if(dl.length){g3.appendChild(h('p',{class:'sub',text:dl.filter(function(e){return dm[e.id]===true}).length+' من '+dl.length+' خلصتهم النهارده. علّم ✓ أو ✗ على كل مادة.'}));dl.forEach(function(e){g3.appendChild(markRow(e,dm,hm))})}
- else g3.appendChild(h('p',{class:'sub',text:'مفيش مواد في جدولك اليومي. ضيفها من تبويب «الجدول».'}));
+ else g3.appendChild(h('p',{class:'sub',text:'مفيش مواد في جدول النهارده. ضيفها من تبويب «الجدول».'}));
  g3.appendChild(h('button',{class:'btn',type:'button',text:'عدّل جدولك',onclick:function(){ui.pmode='edit';setTab('plan')}}));
  }catch(err){g3.appendChild(h('p',{class:'ferr',text:'مقدرتش أعرض الجدول هنا. حدّث الصفحة. (خطأ: '+String(err&&err.message||err).slice(0,60)+')'}));g3.appendChild(h('button',{class:'btn',type:'button',text:'حدّث الصفحة',onclick:function(){location.replace(location.pathname+'?v='+Date.now())}}))}
  f.appendChild(g3);
