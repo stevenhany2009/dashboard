@@ -138,7 +138,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ١١:٤٠ م';
+var UPDATED='الخميس ٢٦ نوفمبر ١١:٤٦ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -732,7 +732,7 @@ function screenTeachers(){
  var f=document.createDocumentFragment();if(!first)f.appendChild(h('button',{class:'btn back',type:'button',text:'رجوع لملفي',onclick:function(){ui.pick=null;setTab('profile')}}));f.appendChild(header(first?'اختار مدرسينك':'عدّل مدرسينك','اختار المدرسين اللي بتتابعهم، وبعدها الرئيسية هتعرض إعلاناتهم بس. الاختيار بيتحفظ على جهازك.'));
  var g=group('المدرسين','مين بتتابع؟');
  TEACHERS.forEach(function(t){var on=ui.pick.indexOf(t.id)>=0;g.appendChild(h('button',{type:'button',class:'row','aria-pressed':String(on),onclick:function(){var i=ui.pick.indexOf(t.id);if(i>=0)ui.pick.splice(i,1);else ui.pick.push(t.id);render()}},h('span',{class:'box','aria-hidden':'true',text:on?'✓':''}),h('span',{},t.name,h('span',{class:'sub',text:' · '+t.subject}))))});
- var go=h('button',{class:'btn primary',type:'button',text:first?'ادخل اللوحة':'احفظ',onclick:function(){S.mine=ui.pick.slice();save('dash-teachers.v1',S.mine);var was=first;ui.pick=null;if(was&&OB){OB.step='exam';ui.tab='home';render()}else setTab(was?'home':'profile')}});go.disabled=ui.pick.length===0;
+ var go=h('button',{class:'btn primary',type:'button',text:first?'ادخل اللوحة':'احفظ',onclick:function(){S.mine=ui.pick.slice();save('dash-teachers.v1',S.mine);var was=first;ui.pick=null;if(was&&OB){obFinish()}else setTab(was?'home':'profile')}});go.disabled=ui.pick.length===0;
  g.appendChild(h('div',{class:'cta'},go));g.appendChild(h('p',{class:'sub',text:ui.pick.length===0?'اختار مدرس واحد على الأقل.':'اخترت '+ui.pick.length+' من '+TEACHERS.length+'.'}));f.appendChild(g);return f}
 
 function footer(){
@@ -741,7 +741,7 @@ function footer(){
 var OB=null;(function(){try{var done=localStorage.getItem('dash-onboard.v1')==='1';if(!done&&S.mine===null&&!(S.profile.name||'').trim())OB={step:'name'}}catch(e){}})();
 function obFinish(){OB=null;try{localStorage.setItem('dash-onboard.v1','1')}catch(e){}ui.tab='home';render()}
 function obNext(){if(!OB)return;if(OB.step==='name'){OB.step=AC?'acct':'teachers'}else if(OB.step==='acct'){OB.step='teachers'}render()}
-function wizCard(n,title,sub){var f=document.createDocumentFragment();var wd=h('div',{class:'wzdots','aria-label':'الخطوة '+AR(n)+' من ٤'});[1,2,3,4].forEach(function(i){wd.appendChild(h('i',{class:i===n?'on':''}))});f.appendChild(wd);f.appendChild(h('p',{class:'label',text:'Thanawya Plus'}));f.appendChild(h('h1',{text:title}));if(sub)f.appendChild(h('p',{class:'sub',text:sub}));return f}
+function wizCard(n,title,sub){var f=document.createDocumentFragment();var wd=h('div',{class:'wzdots','aria-label':'الخطوة '+AR(n)+' من ٣'});[1,2,3].forEach(function(i){wd.appendChild(h('i',{class:i===n?'on':''}))});f.appendChild(wd);f.appendChild(h('p',{class:'label',text:'Thanawya Plus'}));f.appendChild(h('h1',{text:title}));if(sub)f.appendChild(h('p',{class:'sub',text:sub}));return f}
 function screenWizard(){var st=OB.step,f;
  if(st==='name'){f=wizCard(1,'أهلًا بيك','اكتب اسمك الأول. هنستخدمه في الترحيب والملف بتاعك.');
   var inp=h('input',{type:'text',maxlength:'40',placeholder:'اسمك',id:'wzn','aria-label':'اسمك',value:S.profile.name||'',autocomplete:'given-name'});var go=h('button',{class:'btn primary',type:'button',text:'التالي',onclick:function(){var v=inp.value.trim();if(v.length<2){m.textContent='اكتب اسمك (حرفين على الأقل).';return}S.profile.name=v.slice(0,40);save('dash-profile.v1',S.profile);obNext()}});var m=h('p',{class:'late',role:'alert'});
