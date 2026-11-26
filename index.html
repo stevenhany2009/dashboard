@@ -158,6 +158,8 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 .acctg input,.sx input[type=text],.sx input[type=password]{display:block;width:100%;box-sizing:border-box;min-height:46px;padding:0 14px;margin:8px 0;border-radius:14px;border:1px solid var(--hair);background:var(--card);color:var(--ink);font:inherit;font-size:15px}.acctg .seg{margin:10px 0}
 .seg4{display:grid;grid-template-columns:1fr 1fr}.seg3{display:grid;grid-template-columns:repeat(3,1fr)}.sx{margin:12px 0;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--hair)}.sx .ssub{margin:0 0 4px}.rk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.rk>div{text-align:center;padding:12px 6px;border-radius:16px;background:var(--card);border:1px solid var(--hair)}.rk small{display:block;font-size:11px;opacity:.7}.rk b{display:block;font-size:22px;margin-top:4px}.codebox{font-size:26px;font-weight:800;letter-spacing:4px;text-align:center;padding:12px;margin:8px 0;border-radius:14px;border:1px dashed var(--hair);direction:ltr}
 .sx .lbr{flex-wrap:wrap;gap:8px;align-items:center}.sx .lbr>span{flex:1 1 120px;min-width:0}.sx .lbr .btn.sm{flex:0 0 auto;width:auto;min-width:64px;padding:0 14px}.sx .lbx{display:inline-block}
+.wzav{display:flex;align-items:center;gap:12px;margin:10px 0;flex-wrap:wrap}.lba.ini{display:inline-flex;align-items:center;justify-content:center;background:var(--deep);color:#fff;font-weight:700;font-size:14px}
+.lbr .lba.ini,.sx .lbr>.lba.ini{flex:none!important;width:28px;height:28px;min-width:28px;border-radius:50%}
 </style>
 </head>
 <body>
@@ -165,7 +167,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ١٢:٣٥ ص';
+var UPDATED='الجمعة ٢٧ نوفمبر ١٢:٤٢ ص';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -629,7 +631,7 @@ function pwErr(x){var c=(x.j&&(x.j.error_code||x.j.code))||'',m=(x.j&&(x.j.msg||
 function acctAuth(mode,u,p,p2){var e=unOk(u);if(e){AUI.msg=e;render();return}if(!p||p.length<8){AUI.msg='الباسورد ٨ حروف على الأقل.';render();return}if(mode==='up'&&p!==p2){AUI.msg='الباسوردين مش زي بعض.';render();return}
  AUI.busy=true;AUI.msg='';AUI.un=unNorm(u);render();
  return unEmail(u).then(function(em){var path=mode==='up'?'/auth/v1/signup':'/auth/v1/token?grant_type=password',body=mode==='up'?{email:em,password:p,data:{username:unNorm(u)}}:{email:em,password:p};
-  return sbf(path,{method:'POST',body:body},false).then(function(x){AUI.busy=false;if(x.ok&&x.j&&x.j.access_token){setSession(x.j,unNorm(u));AUI.msg='';AUI.mode='in';firstSync()}else if(x.ok&&mode==='up'){AUI.msg='التسجيل مش شغال دلوقتي من السيرفر. جرب بعدين.';render()}else{AUI.msg=pwErr(x);render()}})},function(){AUI.busy=false;AUI.msg='المتصفح ده مش بيدعم التسجيل. جرب متصفح تاني.';render()})}
+  return sbf(path,{method:'POST',body:body},false).then(function(x){AUI.busy=false;if(x.ok&&x.j&&x.j.access_token){setSession(x.j,unNorm(u));AUI.msg='';AUI.mode='in';if(mode==='up')autoBoard();firstSync()}else if(x.ok&&mode==='up'){AUI.msg='التسجيل مش شغال دلوقتي من السيرفر. جرب بعدين.';render()}else{AUI.msg=pwErr(x);render()}})},function(){AUI.busy=false;AUI.msg='المتصفح ده مش بيدعم التسجيل. جرب متصفح تاني.';render()})}
 function localData(){var d={};SYNCK.forEach(function(k){var v=null;try{v=localStorage.getItem(k)}catch(e){}if(v!==null){try{d[k]=JSON.parse(v)}catch(e){}}});d._t=SYT;return d}
 function localEmpty(){var sc=S.schedule||{},n=(sc.daily||[]).length;Object.keys(sc.week||{}).forEach(function(k){n+=sc.week[k].length});return n===0&&!(S.exams||[]).length&&!(S.grades||[]).length&&!Object.keys((S.stats&&S.stats.days)||{}).length&&ptsTotal()===0}
 function pullRemote(){return sbAuthed('/rest/v1/user_data?select=data,updated_at&user_id=eq.'+AU.uid).then(function(x){if(!x.ok)return {err:true,x:x};return {row:(x.j&&x.j[0])||null}})}
@@ -672,7 +674,7 @@ function acctGroup(){var g=pgroup('الحساب','حسابك والليدر بو
   g.appendChild(h('button',{class:'btn',type:'button',disabled:AUI.busy,text:AUI.busy?'استنى...':up?'اعمل الحساب':'ادخل',onclick:function(){acctAuth(up?'up':'in',iu.value,ip.value,ip2.value)}}));
   if(AUI.msg)g.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.msg}));
   g.appendChild(h('p',{class:'sub',text:'مهم: مفيش استرجاع للباسورد بالإيميل. اختار باسورد تفتكره، لو نسيته مش هنقدر نرجّع الحساب.'}));
-  g.appendChild(h('p',{class:'sub',text:'بنحفظ اليوزرنيم وبيانات مذاكرتك بس. محدش بيشوف بياناتك غيرك.'}));return g}
+  g.appendChild(h('p',{class:'sub',text:'بنحفظ اليوزرنيم وبيانات مذاكرتك. اسمك وصورتك (لو ضفتها) ونقاطك بتظهر لباقي المستخدمين في الليدربورد. جدولك وامتحاناتك محدش بيشوفها.'}));return g}
  var sec=AUI.sec||'me';var tabs=[['me','١ حسابي'],['lb','٢ الليدربورد'],['fr','٣ أصدقائي'],['gr','٤ مجموعاتي']];if(AUI.adm)tabs.push(['ad','أدمن']);
  var nav=h('div',{class:'seg seg4'});tabs.forEach(function(o){nav.appendChild(h('button',{type:'button','aria-pressed':String(o[0]===sec),text:o[1],onclick:function(){AUI.sec=o[0];render()}}))});g.appendChild(nav);
  if(AUI.lb===null)lbLoadOnce();if(!AUI.sl){AUI.sl=true;socialLoad()}
@@ -680,7 +682,7 @@ function acctGroup(){var g=pgroup('الحساب','حسابك والليدر بو
  if(AUI.msg)g.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.msg}));return g}
 function rpc(n,b){return sbAuthed('/rest/v1/rpc/'+n,{method:'POST',body:b||{}})}
 function lbArgs(){var l=(S.pts&&S.pts.l)||{},td=dkey(sday()),st=0,d=sday();if(!l['full:'+dkey(d)])d=dayAdd(d,-1);while(l['full:'+dkey(d)]&&st<400){st++;d=dayAdd(d,-1)}
- return {p_nick:LB.nick,p_points:ptsTotal(),p_name:((S.profile.name||'').replace(/@/g,'').trim().slice(0,40))||null,p_avatar:LB.av||null,p_streak:st,p_fin:!!l['full:'+td],p_share:LB.share!==false}}
+ return {p_nick:boardName()||LB.nick,p_points:ptsTotal(),p_name:((S.profile.name||'').replace(/@/g,'').trim().slice(0,40))||null,p_avatar:LB.av||null,p_streak:st,p_fin:!!l['full:'+td],p_share:LB.share!==false}}
 function socialRender(){if(ui.tab==='profile')render()}
 function socialLoad(){if(!AU)return;admLoad();rpc('is_admin').then(function(x){AUI.adm=x.ok&&x.j===true;if(AUI.adm)rpc('admin_board').then(function(y){AUI.ab=y.ok&&Array.isArray(y.j)?y.j:[];socialRender()});socialRender()});
  if(!LB.on)return;rpc('my_code').then(function(x){if(x.ok&&typeof x.j==='string')AUI.code=x.j;socialRender()});friendsLoad();
@@ -690,7 +692,10 @@ function friendsLoad(){rpc('friend_list').then(function(x){AUI.fr=x.ok&&Array.is
 function groupsLoad(){rpc('group_list').then(function(x){AUI.gr=x.ok&&Array.isArray(x.j)?x.j:[];socialRender()})}
 function sbMsgOf(s){return {not_found:'الكود ده مش موجود.',self:'ده كودك انت.',exists:'موجود بالفعل.',limit:'وصلت للحد الأقصى.',full:'المجموعة اتملت.',sent:'الطلب اتبعت.',joined:'دخلت المجموعة.'}[s]||'تمام.'}
 function avatarResize(file,cb){var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){var c=document.createElement('canvas'),s=Math.min(im.width,im.height),n=96;c.width=n;c.height=n;c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,n,n);cb(c.toDataURL('image/jpeg',0.7))};im.onerror=function(){cb(null)};im.src=fr.result};fr.onerror=function(){cb(null)};fr.readAsDataURL(file)}
-function lbRow(pos,nick,pts,me,extra,av){var r=h('div',{class:'lbr'+(me?' me':'')},h('b',{text:AR(pos)}));if(av&&/^data:image\//.test(av)){var im=h('img',{class:'lba',alt:''});im.src=av;r.appendChild(im)}
+function avSync(cb){if(!PH.me){LB.av=null;save('dash-lb.v1',LB);if(AU&&LB.on)lbPush();if(cb)cb();return}var im=new Image();im.onload=function(){try{var c=document.createElement('canvas'),q=Math.min(im.width,im.height),n=96;c.width=n;c.height=n;c.getContext('2d').drawImage(im,(im.width-q)/2,(im.height-q)/2,q,q,0,0,n,n);LB.av=c.toDataURL('image/jpeg',0.7)}catch(e){}save('dash-lb.v1',LB);if(AU&&LB.on)lbPush();if(cb)cb()};im.onerror=function(){if(cb)cb()};im.src=PH.me}
+function boardName(){var n=(S.profile.name||'').trim().slice(0,20);return nickOk(n)===''?n:''}
+function autoBoard(){var n=boardName();if(!n||LB.on)return;LB={on:true,nick:n,av:LB.av||null};save('dash-lb.v1',LB);avSync(function(){sbAuthed('/rest/v1/rpc/sync_board',{method:'POST',body:lbArgs()}).then(function(x){if(!x.ok){LB.on=false;save('dash-lb.v1',LB)}lbLoad();render()})})}
+function lbRow(pos,nick,pts,me,extra,av){var r=h('div',{class:'lbr'+(me?' me':'')},h('b',{text:AR(pos)}));if(av&&/^data:image\//.test(av)){var im=h('img',{class:'lba',alt:''});im.src=av;r.appendChild(im)}else r.appendChild(h('span',{class:'lba ini',text:(nick||'؟').charAt(0)}));
  var sp=h('span',{text:nick+(me?' (أنت)':'')});if(extra)sp.appendChild(h('small',{class:'lbx',text:' '+extra}));r.appendChild(sp);r.appendChild(h('em',{text:AR(pts)}));return r}
 function sxHead(t,l){var d=h('div',{class:'sx'});d.appendChild(h('h3',{class:'ssub',text:t}));if(l)d.appendChild(h('p',{class:'sub',text:l}));return d}
 function sxMsg(t){AUI.smsg=t;socialRender()}
@@ -706,33 +711,30 @@ function secMe(){var s=sxHead('حسابي','الحساب بيحفظ بيانات
  s.appendChild(h('p',{class:'sub',text:'مفيش استرجاع للباسورد بالإيميل. افتكر باسوردك.'}));return s}
 function lockNote(){var s=sxHead('الليدربورد مقفول','شغّله الأول علشان تستخدم القسم ده.');s.appendChild(h('button',{class:'btn',type:'button',text:'روح للليدربورد',onclick:function(){AUI.sec='lb';render()}}));return s}
 function secLb(){var s=h('div',{});
- if(!LB.on){var a=sxHead('الليدربورد','ترتيب بالنقاط للتسلية. الناس بتشوف اسمك المستعار ونقاطك بس.');var sug=(AU.un||'').slice(0,20);
-  var ni=h('input',{type:'text',maxlength:'20',placeholder:'اسمك المستعار',value:LB.nick||'',id:'lbn'});a.appendChild(ni);
-  if(sug&&nickOk(sug)==='')a.appendChild(h('button',{class:'btn ghost sm',type:'button',text:'استخدم «'+sug+'»',onclick:function(){ni.value=sug}}));
-  a.appendChild(h('button',{class:'btn',type:'button',text:'ضيفني في الليدربورد',onclick:function(){lbSet(true,ni.value)}}));
-  if(AUI.lbMsg)a.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.lbMsg}));
-  a.appendChild(h('p',{class:'sub',text:'اسمك الحقيقي وصورتك (لو ضفتها) بيظهروا للأدمن بس.'}));s.appendChild(a);return s}
+ if(!LB.on){var a=sxHead('الليدربورد','ترتيب بالنقاط للتسلية. اسمك وصورتك (لو ضفتها) ونقاطك بتظهر لباقي المستخدمين.');var bn=boardName();
+  a.appendChild(h('div',{class:'lbr me'},PH.me?h('img',{class:'lba',alt:'',src:PH.me}):h('span',{class:'lba ini',text:(S.profile.name||'؟').charAt(0)}),h('span',{text:bn||(S.profile.name||'')})));
+  if(!bn)a.appendChild(h('p',{class:'pmsg',role:'status',text:'اسمك مش مناسب للليدربورد (٢ لـ ٢٠ حرف من غير @ أو لينكات). غيّره من «بياناتك».'}));
+  else a.appendChild(h('button',{class:'btn',type:'button',text:'ضيفني في الليدربورد',onclick:function(){avSync(function(){lbSet(true,bn)})}}));
+  if(AUI.lbMsg)a.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.lbMsg}));s.appendChild(a);return s}
  var all=myRow(AUI.lb),wk=myRow(AUI.wk);
  var rk=h('div',{class:'rk'},h('div',{},h('small',{text:'ترتيبك العام'}),h('b',{text:all?AR(all.pos):'—'})),h('div',{},h('small',{text:'ترتيبك الأسبوعي'}),h('b',{text:wk?AR(wk.pos):'—'})),h('div',{},h('small',{text:'نقاطك'}),h('b',{text:AR(ptsTotal())})));
  s.appendChild(rk);
  var bt=AUI.bt||'all',tb=h('div',{class:'seg seg3'});[['all','العام'],['fr','الأصدقاء'],['wk','الأسبوعي']].forEach(function(o){tb.appendChild(h('button',{type:'button','aria-pressed':String(o[0]===bt),text:o[1],onclick:function(){AUI.bt=o[0];render()}}))});s.appendChild(tb);
  var t=h('div',{class:'lbt'}),empty='';
- if(bt==='all'){(AUI.lb||[]).forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.pts,r.me))});empty='لسه مفيش حد في الليدربورد.'}
- else if(bt==='wk'){s.appendChild(h('p',{class:'sub',text:'نقاط الأسبوع. بتتصفّر كل اثنين.'}));(AUI.wk||[]).forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.pts,r.me))});empty='لسه مفيش نقاط الأسبوع ده.'}
- else{s.appendChild(h('p',{class:'sub',text:'ترتيبك انت وأصحابك بنقاط الأسبوع.'}));var rows=(AUI.fr||[]).filter(function(f){return f.kind==='friend'}).map(function(f){var ex=[];if(f.streak!==null&&f.streak>0)ex.push('🔥'+AR(f.streak));if(f.fin_today===true)ex.push('خلّص النهارده ✓');return {nick:f.nick,pts:f.weekly,me:false,ex:ex.join(' ')}});
-  if(rows.length){rows.push({nick:LB.nick||'أنت',pts:wk?wk.pts:0,me:true,ex:''});rows.sort(function(a,b){return b.pts-a.pts});rows.forEach(function(r,i){t.appendChild(lbRow(i+1,r.nick,r.pts,r.me,r.ex))})}
+ if(bt==='all'){(AUI.lb||[]).forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.pts,r.me,'',r.avatar))});empty='لسه مفيش حد في الليدربورد.'}
+ else if(bt==='wk'){s.appendChild(h('p',{class:'sub',text:'نقاط الأسبوع. بتتصفّر كل اثنين.'}));(AUI.wk||[]).forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.pts,r.me,'',r.avatar))});empty='لسه مفيش نقاط الأسبوع ده.'}
+ else{s.appendChild(h('p',{class:'sub',text:'ترتيبك انت وأصحابك بنقاط الأسبوع.'}));var rows=(AUI.fr||[]).filter(function(f){return f.kind==='friend'}).map(function(f){var ex=[];if(f.streak!==null&&f.streak>0)ex.push('🔥'+AR(f.streak));if(f.fin_today===true)ex.push('خلّص النهارده ✓');return {nick:f.nick,pts:f.weekly,me:false,ex:ex.join(' '),av:f.avatar}});
+  if(rows.length){rows.push({nick:LB.nick||'أنت',pts:wk?wk.pts:0,me:true,ex:'',av:LB.av});rows.sort(function(a,b){return b.pts-a.pts});rows.forEach(function(r,i){t.appendChild(lbRow(i+1,r.nick,r.pts,r.me,r.ex,r.av))})}
   else{s.appendChild(h('p',{class:'sub',text:'لسه معندكش أصحاب. ضيف صحابك من «٣ أصدقائي».'}))}}
  if(t.childNodes.length)s.appendChild(t);else if(bt!=='fr')s.appendChild(h('p',{class:'sub',text:empty}));
  // settings
- var st=sxHead('إعدادات الليدربورد','');var ni2=h('input',{type:'text',maxlength:'20',placeholder:'اسمك المستعار',value:LB.nick||'',id:'lbn'});st.appendChild(ni2);
- st.appendChild(h('button',{class:'btn',type:'button',text:'حدّث الاسم',onclick:function(){lbSet(true,ni2.value)}}));
- var row=h('div',{class:'avrow'});if(LB.av){var im=h('img',{class:'lba big',alt:''});im.src=LB.av;row.appendChild(im)}
- var fi=h('input',{type:'file',accept:'image/*',hidden:true});fi.addEventListener('change',function(){var f=fi.files&&fi.files[0];if(!f)return;avatarResize(f,function(d){if(!d){sxMsg('الصورة دي مش شغالة.');return}LB.av=d;save('dash-lb.v1',LB);lbPush();sxMsg('الصورة اتحفظت.')})});
- row.appendChild(h('button',{class:'btn ghost',type:'button',text:LB.av?'غيّر الصورة':'ضيف صورة (اختياري)',onclick:function(){fi.click()}}));row.appendChild(fi);
- if(LB.av)row.appendChild(h('button',{class:'btn ghost',type:'button',text:'امسح الصورة',onclick:function(){LB.av=null;save('dash-lb.v1',LB);lbPush();socialRender()}}));st.appendChild(row);
+ var st=sxHead('إعدادات الليدربورد','الاسم والصورة هما نفس اللي في «بياناتك». بيتغيروا من هناك.');
+ st.appendChild(h('div',{class:'lbr me'},PH.me?h('img',{class:'lba',alt:'',src:PH.me}):h('span',{class:'lba ini',text:(S.profile.name||'؟').charAt(0)}),h('span',{text:boardName()||LB.nick||''})));
+ var row=h('div',{class:'avrow'});row.appendChild(photoPicker('me',PH.me?'غيّر الصورة':'ضيف صورة (اختياري)'));if(PH.me)row.appendChild(h('button',{class:'btn ghost sm',type:'button',text:'شيل الصورة',onclick:function(){dropPhoto('me')}}));st.appendChild(row);
+ st.appendChild(h('button',{class:'btn ghost',type:'button',text:'حدّث اسمي في الليدربورد',onclick:function(){var n=boardName();if(!n){AUI.lbMsg='اسمك مش مناسب. غيّره من «بياناتك».';render();return}LB.nick=n;save('dash-lb.v1',LB);avSync(function(){lbSet(true,n)})}}));
  st.appendChild(h('button',{class:'btn ghost dng',type:'button',text:'اخفيني من الليدربورد',onclick:function(){lbSet(false)}}));
  if(AUI.lbMsg)st.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.lbMsg}));
- st.appendChild(h('p',{class:'sub',text:'اسمك الحقيقي وصورتك بيظهروا للأدمن بس. الاسم المستعار والنقاط بيظهروا للباقي.'}));
+ st.appendChild(h('p',{class:'sub',text:'اسمك وصورتك (لو ضفتها) ونقاطك بتظهر لباقي المستخدمين. الإيميل مش موجود أصلًا.'}));
  if(AUI.smsg)st.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.smsg}));s.appendChild(st);return s}
 function secFr(){if(!LB.on)return lockNote();var s=h('div',{});
  var a=sxHead('كودي','ابعته لصاحبك علشان يضيفك.');a.appendChild(h('div',{class:'codebox',text:AUI.code||'...'}));
@@ -747,15 +749,15 @@ function secFr(){if(!LB.on)return lockNote();var s=h('div',{});
  if(!inc.length&&!out.length)r.appendChild(h('p',{class:'sub',text:'مفيش طلبات دلوقتي.'}));s.appendChild(r);
  var w=sxHead('أصحابي ('+AR(ff.length)+')','');
  if(!ff.length)w.appendChild(h('p',{class:'sub',text:'لسه معندكش أصحاب. شارك كودك أو اكتب كود صاحبك.'}));
- ff.forEach(function(f){var ex=[];if(f.streak!==null&&f.streak>0)ex.push('🔥'+AR(f.streak));if(f.fin_today===true)ex.push('خلّص النهارده ✓');var d=h('div',{class:'lbr'},h('span',{text:f.nick},ex.length?h('small',{class:'lbx',text:' '+ex.join(' ')}):''),h('button',{class:'btn ghost sm',type:'button',text:'شيل',onclick:function(){if(confirm('تشيل '+f.nick+' من أصحابك؟'))rpc('friend_remove',{p_id:f.id}).then(friendsLoad)}}));w.appendChild(d)});s.appendChild(w);
- var sh=LB.share!==false,p=sxHead('الخصوصية','صحابك بيشوفوا اسمك المستعار ونقاطك. السلسلة وخلصت النهارده بس لو المشاركة شغالة. محدش بيشوف موادك.');
+ ff.forEach(function(f){var ex=[];if(f.streak!==null&&f.streak>0)ex.push('🔥'+AR(f.streak));if(f.fin_today===true)ex.push('خلّص النهارده ✓');var d=h('div',{class:'lbr'},f.avatar&&/^data:image\//.test(f.avatar)?h('img',{class:'lba',alt:'',src:f.avatar}):h('span',{class:'lba ini',text:(f.nick||'؟').charAt(0)}),h('span',{text:f.nick},ex.length?h('small',{class:'lbx',text:' '+ex.join(' ')}):''),h('button',{class:'btn ghost sm',type:'button',text:'شيل',onclick:function(){if(confirm('تشيل '+f.nick+' من أصحابك؟'))rpc('friend_remove',{p_id:f.id}).then(friendsLoad)}}));w.appendChild(d)});s.appendChild(w);
+ var sh=LB.share!==false,p=sxHead('الخصوصية','صحابك بيشوفوا اسمك وصورتك (لو ضفتها) ونقاطك. السلسلة وخلصت النهارده بس لو المشاركة شغالة. محدش بيشوف موادك.');
  p.appendChild(h('button',{class:'btn ghost',type:'button',text:sh?'مشاركة السلسلة: شغّالة (دوس تقفل)':'مشاركة السلسلة: مقفولة (دوس تشغّل)',onclick:function(){LB.share=!sh;save('dash-lb.v1',LB);lbPush();socialRender()}}));s.appendChild(p);return s}
 function secGr(){if(!LB.on)return lockNote();var s=h('div',{});
  var gr=AUI.gr||[],a=sxHead('مجموعاتي ('+AR(gr.length)+')','مجموعة صغيرة بكود، وليها ترتيب أسبوعي.');
  if(!gr.length)a.appendChild(h('p',{class:'sub',text:'مش في أي مجموعة. اعمل واحدة أو ادخل بكود.'}));
  gr.forEach(function(g){a.appendChild(h('div',{class:'lbr'},h('span',{text:g.name+' ('+AR(g.members)+' أعضاء) · كود '+g.code}),h('em',{text:AR(g.weekly)})));
   a.appendChild(h('div',{class:'frow'},h('button',{class:'btn ghost sm',type:'button',text:AUI.gb&&AUI.gb.id===g.id?'اقفل الترتيب':'ترتيب المجموعة',onclick:function(){if(AUI.gb&&AUI.gb.id===g.id){AUI.gb=null;socialRender();return}rpc('group_board',{p_id:g.id}).then(function(x){AUI.gb={id:g.id,rows:x.ok&&Array.isArray(x.j)?x.j:[]};socialRender()})}}),h('button',{class:'btn ghost sm',type:'button',text:'اخرج',onclick:function(){if(confirm('تخرج من '+g.name+'؟'))rpc('group_leave',{p_id:g.id}).then(function(){AUI.gb=null;groupsLoad()})}})));
-  if(AUI.gb&&AUI.gb.id===g.id){var t=h('div',{class:'lbt'});AUI.gb.rows.forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.weekly,r.me))});a.appendChild(t)}});s.appendChild(a);
+  if(AUI.gb&&AUI.gb.id===g.id){var t=h('div',{class:'lbt'});AUI.gb.rows.forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.weekly,r.me,'',r.avatar))});a.appendChild(t)}});s.appendChild(a);
  var b=sxHead('اعمل مجموعة','');var gn=h('input',{type:'text',maxlength:'30',placeholder:'اسم المجموعة'});b.appendChild(gn);
  b.appendChild(h('button',{class:'btn',type:'button',text:'اعمل مجموعة',onclick:function(){var v=(gn.value||'').trim();if(v.length<2){sxMsg('اسم المجموعة قصير.');return}rpc('group_create',{p_name:v}).then(function(x){sxMsg(x.ok?(x.j==='limit'?'وصلت للحد الأقصى (٣ مجموعات).':'المجموعة اتعملت. كودها: '+x.j):'مقدرتش أعمل المجموعة.');groupsLoad()})}}));s.appendChild(b);
  var c=sxHead('ادخل مجموعة','اكتب كود المجموعة.');var jc=h('input',{type:'text',maxlength:'8',placeholder:'كود المجموعة',autocapitalize:'characters'});c.appendChild(jc);
@@ -897,13 +899,13 @@ function photoFile(key,fl){
  function fail(m){PMSG=m;render()}
  if(!fl)return;
  if(fl.type&&fl.type.indexOf('image')!==0){fail('الملف ده مش صورة. اختار صورة JPG أو PNG.');return}
- function done(src,w,hh){try{var n=192,c=document.createElement('canvas');c.width=n;c.height=n;var x=c.getContext('2d'),s=Math.min(w,hh),sx=(w-s)/2,sy=(hh-s)/2;x.drawImage(src,sx,sy,s,s,0,0,n,n);var d=c.toDataURL('image/jpeg',.82);var np=Object.assign({},PH);np[key]=d;try{localStorage.setItem('dash-photos.v1',JSON.stringify(np))}catch(e){fail('مفيش مساحة كفاية في الجهاز لحفظ الصورة. جرب صورة تانية.');return}PH[key]=d;mem['dash-photos.v1']=PH;PMSG='اتحفظت الصورة ✓';render()}catch(e){fail('معرفتش أعالج الصورة دي. جرب صورة تانية.')}}
+ function done(src,w,hh){try{var n=192,c=document.createElement('canvas');c.width=n;c.height=n;var x=c.getContext('2d'),s=Math.min(w,hh),sx=(w-s)/2,sy=(hh-s)/2;x.drawImage(src,sx,sy,s,s,0,0,n,n);var d=c.toDataURL('image/jpeg',.82);var np=Object.assign({},PH);np[key]=d;try{localStorage.setItem('dash-photos.v1',JSON.stringify(np))}catch(e){fail('مفيش مساحة كفاية في الجهاز لحفظ الصورة. جرب صورة تانية.');return}PH[key]=d;mem['dash-photos.v1']=PH;if(key==='me')avSync();PMSG='اتحفظت الصورة ✓';render()}catch(e){fail('معرفتش أعالج الصورة دي. جرب صورة تانية.')}}
  function viaReader(){var rd=new FileReader();rd.onerror=function(){fail('معرفتش أقرا الصورة. جرب صورة تانية.')};rd.onload=function(){var im=new Image();im.onload=function(){done(im,im.naturalWidth||im.width,im.naturalHeight||im.height)};im.onerror=function(){fail('الصورة دي مش مدعومة. جرب JPG أو PNG.')};im.src=rd.result};rd.readAsDataURL(fl)}
  try{var u=URL.createObjectURL(fl),im=new Image();im.onload=function(){var w=im.naturalWidth,hh=im.naturalHeight;URL.revokeObjectURL(u);if(!w){viaReader();return}done(im,w,hh)};im.onerror=function(){URL.revokeObjectURL(u);viaReader()};im.src=u}catch(e){viaReader()}
 }
 function photoPicker(key,label){var l=h('label',{class:'btn sm filebtn'},h('span',{text:label}));var inp=h('input',{type:'file',accept:'image/*',class:'fileinp','aria-label':label});inp.addEventListener('change',function(){var f=inp.files&&inp.files[0];inp.value='';if(f)photoFile(key,f)});l.appendChild(inp);return l}
 function pickPhoto(key){}
-function dropPhoto(key){delete PH[key];save('dash-photos.v1',PH);render()}
+function dropPhoto(key){delete PH[key];save('dash-photos.v1',PH);if(key==='me')avSync();render()}
 function contactLinks(){var w=h('div',{class:'contact'});
  w.appendChild(h('a',{class:'wa',href:'https://wa.me/201221523919',target:'_blank',rel:'noopener noreferrer',text:'تواصل معايا على واتساب'}));
  w.appendChild(h('a',{href:'https://www.instagram.com/steven_moris21?hvrq=NTVscXlvdjhnb25z',target:'_blank',rel:'noopener noreferrer',text:'انستجرام'}));
@@ -959,10 +961,13 @@ function obFinish(){OB=null;try{localStorage.setItem('dash-onboard.v1','1')}catc
 function obNext(){if(!OB)return;if(OB.step==='name'){OB.step=AC?'acct':'teachers'}else if(OB.step==='acct'){OB.step='teachers'}render()}
 function wizCard(n,title,sub){var f=document.createDocumentFragment();var wd=h('div',{class:'wzdots','aria-label':'الخطوة '+AR(n)+' من ٣'});[1,2,3].forEach(function(i){wd.appendChild(h('i',{class:i===n?'on':''}))});f.appendChild(wd);f.appendChild(h('p',{class:'label',text:'Thanawya Plus'}));f.appendChild(h('h1',{text:title}));if(sub)f.appendChild(h('p',{class:'sub',text:sub}));return f}
 function screenWizard(){var st=OB.step,f;
- if(st==='name'){f=wizCard(1,'أهلًا بيك','اكتب اسمك الأول. هنستخدمه في الترحيب والملف بتاعك.');
+ if(st==='name'){f=wizCard(1,'أهلًا بيك','اكتب اسمك، وضيف صورة لو حابب (اختياري). الاسم والصورة بيظهروا في ملفك، ولو عملت حساب هيظهروا في الليدربورد.');
   var inp=h('input',{type:'text',maxlength:'40',placeholder:'اسمك',id:'wzn','aria-label':'اسمك',value:S.profile.name||'',autocomplete:'given-name'});var go=h('button',{class:'btn primary',type:'button',text:'التالي',onclick:function(){var v=inp.value.trim();if(v.length<2){m.textContent='اكتب اسمك (حرفين على الأقل).';return}S.profile.name=v.slice(0,40);save('dash-profile.v1',S.profile);obNext()}});var m=h('p',{class:'late',role:'alert'});
-  inp.addEventListener('keydown',function(e){if(e.key==='Enter')go.click()});f.appendChild(h('label',{class:'field'},h('span',{text:'اسمك'}),inp));f.appendChild(m);f.appendChild(h('div',{class:'cta'},go));ui.focus='wzn';return f}
- if(st==='acct'){f=wizCard(2,'حسابك','اعمل حساب بيوزرنيم وباسورد علشان بياناتك تتحفظ وتلاقيها على أي جهاز وتدخل الليدر بورد. أو كمّل من غير حساب وكل حاجة هتتحفظ على جهازك بس.');
+  inp.addEventListener('input',function(){S.profile.name=inp.value.slice(0,40)});
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')go.click()});
+  var ar=h('div',{class:'wzav'},avBox(PH.me,((S.profile.name||'').trim()||'؟').charAt(0),'big'));var ac=h('div',{class:'sacts'},photoPicker('me',PH.me?'غيّر الصورة':'ضيف صورة (اختياري)'));if(PH.me)ac.appendChild(h('button',{class:'btn sm',type:'button',text:'شيل الصورة',onclick:function(){dropPhoto('me')}}));ar.appendChild(ac);if(PMSG){ar.appendChild(h('p',{class:'late',text:PMSG}));PMSG=''}
+  f.appendChild(ar);f.appendChild(h('label',{class:'field'},h('span',{text:'اسمك'}),inp));f.appendChild(m);f.appendChild(h('div',{class:'cta'},go));ui.focus='wzn';return f}
+ if(st==='acct'){f=wizCard(2,'حسابك','اعمل حساب بيوزرنيم وباسورد علشان بياناتك تتحفظ وتلاقيها على أي جهاز وتدخل الليدربورد. اسمك وصورتك (لو ضفتها) ونقاطك بتظهر لباقي المستخدمين. أو كمّل من غير حساب وكل حاجة هتتحفظ على جهازك بس.');
   if(AU){f.appendChild(h('p',{class:'sub',text:'داخل بـ '+(AU.un||'')}));f.appendChild(h('div',{class:'cta'},h('button',{class:'btn primary',type:'button',text:'التالي',onclick:obNext})))}
   else{f.appendChild(acctGroup());f.appendChild(h('button',{class:'btn ghost',type:'button',text:'كمّل من غير حساب',onclick:function(){SY={uid:null,mode:'off'};save('dash-sync.v1',SY);obNext()}}));f.appendChild(h('p',{class:'sub',text:'من غير حساب مفيش ليدر بورد ولا مزامنة. تقدر تسجّل بعدين من ملفي.'}))}
   return f}
