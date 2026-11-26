@@ -136,7 +136,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ١١:٠٥ م';
+var UPDATED='الخميس ٢٦ نوفمبر ١١:١٥ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -393,7 +393,7 @@ function donutSvg(a,bb){var tot=a+bb,c=2*Math.PI*40,f=tot?a/tot:0;return '<svg v
 function hbar(label,v,extra){return h('div',{class:'hb'},h('div',{class:'hbl'},h('span',{text:label}),h('span',{class:'sub',text:extra||(AR(v)+'٪')})),h('div',{class:'hbt'},h('i',{style:'width:'+Math.max(v,2)+'%'})))}
 function chartBox(title,svg,note){var d=h('div',{class:'chart'});d.appendChild(h('p',{class:'ctl',text:title}));var s=h('div',{class:'csvg'});s.innerHTML=svg;d.appendChild(s);if(note)d.appendChild(h('p',{class:'sub',text:note}));return d}
 function statsCharts(g,st){
- var keys=Object.keys(st.days).sort();if(!keys.length)return;
+ var keys=Object.keys(st.days).sort();if(!keys.length){g.appendChild(h('p',{class:'sub',text:'مفيش رسوم لسه. الرسوم بتظهر بعد ما يخلص أول يوم كامل (الساعة ٢ الفجر): علّم ✓ أو ✗ على مواد جدولك النهارده، وبكرة هتلاقي مستواك واتجاهك هنا.'}));return}
  var pc=function(a,b){return b?Math.round(a*100/b):0};
  var DN={0:'ح',1:'ن',2:'ث',3:'ر',4:'خ',5:'ج',6:'س'};
  g.appendChild(h('h3',{class:'ssub',text:'مستواك في الالتزام'}));
@@ -695,4 +695,4 @@ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.c
 document.addEventListener('click',function(){if(idx<0)return;var i=idx;idx=-1;var all=document.querySelectorAll(SEL),el=all[i];if(!el)return;el.classList.add('pop');
 var isChip=el.parentNode&&el.parentNode.classList.contains('seg');if(isChip){var n=0;document.querySelectorAll('#screen .teacher,#screen .callout,#screen .plan').forEach(function(x){x.style.animationDelay=(n++*30)+'ms';x.classList.add('fadein')})}})})()</script>
 </body>
-</html>
+ </html>
