@@ -99,6 +99,20 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 .sv .links{margin-top:10px;font-size:16px}.sv a{color:#d9bf8a}
 .shint{text-align:center;font-size:11px;color:rgba(255,255,255,.45);margin:0}
 .sv .sbars i{position:relative;overflow:hidden}.sbars b{position:absolute;top:0;bottom:0;inset-inline-start:0;width:0;background:#d9bf8a}
+
+.sv{perspective:1100px;overflow:hidden}
+.svc{will-change:transform,opacity;backface-visibility:hidden}
+@keyframes aOpen{from{opacity:0;transform:scale(.94) translateY(18px)}to{opacity:1;transform:none}}
+@keyframes aN{from{opacity:0;transform:translateX(46px)}to{opacity:1;transform:none}}
+@keyframes aP{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
+@keyframes aTN{from{opacity:.2;transform:rotateY(78deg);transform-origin:0 50%}to{opacity:1;transform:rotateY(0);transform-origin:0 50%}}
+@keyframes aTP{from{opacity:.2;transform:rotateY(-78deg);transform-origin:100% 50%}to{opacity:1;transform:rotateY(0);transform-origin:100% 50%}}
+.a-open{animation:aOpen .28s cubic-bezier(.2,.8,.2,1) both}
+.a-n{animation:aN .26s cubic-bezier(.2,.8,.2,1) both}
+.a-p{animation:aP .26s cubic-bezier(.2,.8,.2,1) both}
+.a-tn{animation:aTN .42s cubic-bezier(.22,.7,.2,1) both}
+.a-tp{animation:aTP .42s cubic-bezier(.22,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){.svc{animation:none!important}}
 </style>
 </head>
 <body>
@@ -106,7 +120,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ٦:٤٢ م';
+var UPDATED='الخميس ٢٦ نوفمبر ٦:٤٧ م';
 (function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}})();
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -193,12 +207,12 @@ var stTimer=null,STORY_MS=15000;function stopTimer(){if(stTimer){clearInterval(s
 function closeStory(){stopTimer();var o=document.getElementById('sv');if(o){o.parentNode.removeChild(o);document.removeEventListener('keydown',storyKey)}if(ui.tab==='home')render()}
 var curNav=null;function storyKey(e){if(e.key==='Escape')closeStory();else if(curNav&&e.key==='ArrowLeft')curNav.next();else if(curNav&&e.key==='ArrowRight')curNav.prev()}
 function sortedItems(t){return t.items.slice().sort(function(a,b){var d=(b.date||'').localeCompare(a.date||'');return d!==0?d:b.id-a.id})}
-function openStory(list,i,j){
+function openStory(list,i,j,dir){
  j=j||0;stopTimer();
  var old=document.getElementById('sv');if(old)old.parentNode.removeChild(old);
  var t=list[i],its=sortedItems(t),l=its[j]||null;if(its.length&&j===0){SS[t.id]=its[0].id;save('dash-story.v1',SS)}
  var n=Math.max(its.length,1),bars=h('div',{class:'sbars'});var fill=h('b');for(var k=0;k<n;k++){var seg=h('i',{class:k<j?'on':''});if(k===j)seg.appendChild(fill);bars.appendChild(seg)}
- var card=h('div',{class:'svc',role:'dialog','aria-modal':'true'});
+ var card=h('div',{class:'svc a-'+(dir||'open'),role:'dialog','aria-modal':'true'});
  var head=h('div',{class:'shead'},ringEl(t),h('div',{},h('strong',{text:t.name}),h('span',{class:'sub',text:t.subject+(its.length>1?' · '+(j+1)+' من '+its.length:'')})),h('button',{class:'x',type:'button','aria-label':'إغلاق',text:'✕',onclick:function(e){e.stopPropagation();closeStory()}}));
  var body=h('div',{class:'sbody'});
  if(l){var m=h('div',{class:'meta'});m.appendChild(h('span',{class:'tag',text:l.tag}));m.appendChild(h('span',{text:l.when}));body.appendChild(m);
@@ -207,10 +221,10 @@ function openStory(list,i,j){
  else{body.appendChild(h('p',{class:'stx',text:t.empty||'مفيش إعلان متأكد منه لحد دلوقتي.'}));if(t.channel)body.appendChild(h('div',{class:'links'},h('a',{href:t.channel[1],target:'_blank',rel:'noopener noreferrer',text:t.channel[0]})))}
  card.appendChild(bars);card.appendChild(head);card.appendChild(body);card.appendChild(h('p',{class:'shint',text:'دوس على الجنب للي بعده، اسحب للمدرس التاني، واستمر ضاغط عشان توقف'}));
  var o=h('div',{class:'sv',id:'sv'},card);
- function nextT(){if(i<list.length-1)openStory(list,i+1,0);else closeStory()}
- function prevT(){if(i>0)openStory(list,i-1,0)}
- function nextI(){if(j<its.length-1)openStory(list,i,j+1);else nextT()}
- function prevI(){if(j>0)openStory(list,i,j-1);else prevT()}
+ function nextT(){if(i<list.length-1)openStory(list,i+1,0,'tn');else closeStory()}
+ function prevT(){if(i>0)openStory(list,i-1,0,'tp')}
+ function nextI(){if(j<its.length-1)openStory(list,i,j+1,'n');else nextT()}
+ function prevI(){if(j>0)openStory(list,i,j-1,'p');else prevT()}
  var sx=0,sy=0,down=false,t0=0,paused=false,el=0;
  o.addEventListener('pointerdown',function(e){down=true;paused=true;t0=Date.now();sx=e.clientX;sy=e.clientY});
  o.addEventListener('pointercancel',function(){down=false;paused=false});
