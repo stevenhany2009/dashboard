@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fcfbfa">
+<title>لوحة تالتة ثانوي</title>
+<style>
+:root{--page:#fcfbfa;--ink:#251f21;--ink2:#585254;--teal:#73a89a;--hair:#eae9ea;--red:#ed313e;--sand:#f4efec}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--page);color:var(--ink);font-family:"Noto Sans Arabic","Noto Naskh Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;font-size:15px;line-height:1.7}
+#app{display:flex;flex-direction:column;height:100dvh;max-width:720px;margin:0 auto}
+#screen{flex:1;overflow-y:auto;padding:24px 22px 28px;-webkit-overflow-scrolling:touch}
+h1{font-size:28px;font-weight:500;letter-spacing:-.02em;margin:0 0 6px;line-height:1.4}
+h2{font-size:21px;font-weight:500;margin:0 0 8px;line-height:1.4}
+.label{font-size:12px;color:var(--ink2);margin:26px 0 0}
+.fact{color:var(--teal);font-weight:600;margin:0 0 8px}
+p{margin:0 0 12px}
+.sub{color:var(--ink2);font-size:13px}
+.credit{color:var(--teal);font-weight:600;font-size:13px;direction:ltr;text-align:start;margin:4px 0 0}
+.clock{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;direction:ltr;margin:10px 0 8px}
+.cell{background:var(--sand);border-radius:12px;padding:14px 4px;display:flex;flex-direction:column;align-items:center}
+.num{font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.lbl{font-size:12px;color:var(--ink2);margin-top:4px}
+.btn{min-height:44px;padding:0 18px;border:1px solid var(--hair);border-radius:4px;background:var(--page);font:inherit;color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn:disabled{opacity:.4}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.seg button{min-height:44px;padding:0 16px;border:1px solid var(--hair);border-radius:4px;background:var(--page);font:inherit;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--teal);border-color:var(--teal);color:#fff}
+.row{display:flex;align-items:center;gap:12px;width:100%;min-height:48px;background:none;border:0;border-bottom:1px solid var(--hair);padding:6px 0;font:inherit;color:var(--ink);text-align:start;cursor:pointer}
+.box{flex:none;width:22px;height:22px;border:1px solid var(--ink2);border-radius:4px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+.row[aria-pressed=true] .box{background:var(--teal);border-color:var(--teal)}
+.done{color:var(--ink2);text-decoration:line-through}
+.bar{height:6px;border-radius:3px;background:var(--hair);overflow:hidden;margin:8px 0}
+.bar span{display:block;height:100%;background:var(--teal);transition:width .25s}
+.teacher{margin:24px 0 8px}
+.thead{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding-bottom:8px;border-bottom:1px solid var(--hair)}
+.thead span{color:var(--ink2);font-size:13px}
+.item{padding:14px 0;border-bottom:1px solid var(--hair)}
+.meta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:12px;color:var(--ink2)}
+.tag{color:var(--teal);font-weight:600}
+.new{background:var(--teal);color:#fff;font-weight:600;font-size:11px;padding:1px 8px;border-radius:10px}
+.title{font-size:15px;font-weight:600;margin:6px 0 2px;line-height:1.6}
+.links{display:flex;flex-wrap:wrap;gap:4px 16px}
+a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink2)}
+.plan{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--hair)}
+.pmain{display:flex;flex-direction:column;min-width:0}
+.pmain strong{overflow-wrap:anywhere}
+.time{font-size:12px;color:var(--ink2)}
+.late{font-size:12px;color:var(--red);font-weight:600}
+.pbtns{display:flex;gap:8px;flex:none}
+.mark{min-width:44px;min-height:44px;border:1px solid var(--hair);border-radius:4px;background:var(--page);font:inherit;font-size:16px;color:var(--ink);cursor:pointer}
+.mark[data-on=true]{background:var(--teal);border-color:var(--teal);color:#fff}
+.mark.no[data-on=true]{background:var(--ink);border-color:var(--ink)}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink2);margin-top:12px}
+.field input{min-height:44px;border:1px solid var(--hair);border-radius:4px;padding:0 12px;font:inherit;font-size:15px;color:var(--ink);background:var(--page)}
+.callout{border-inline-start:3px solid var(--hair);padding:6px 14px;margin:18px 0;background:var(--sand);border-radius:4px}
+.callout strong{display:block}
+.callout.warn{border-inline-start-color:var(--red)}
+nav{flex:none;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--hair);background:var(--page);padding-bottom:env(safe-area-inset-bottom)}
+nav button{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:58px;padding:8px 0;background:none;border:0;font:inherit;font-size:11px;color:var(--ink2);cursor:pointer}
+nav button[aria-current=page]{color:var(--teal);font-weight:600}
+.iw{position:relative;display:inline-flex}
+.dot{position:absolute;top:-2px;inset-inline-end:-4px;width:10px;height:10px;border-radius:50%;background:var(--red);border:2px solid var(--page)}
+.fl{font-size:12px;color:var(--ink2);margin-top:10px}
+.foot{margin-top:40px;padding-top:14px;border-top:1px solid var(--hair);text-align:start}.wa{display:flex;align-items:center;justify-content:center;min-height:48px;background:var(--teal);color:#fff;border:0;border-radius:4px;font-weight:600}.soc{display:flex;gap:20px;margin:14px 0 4px}.rights{margin:2px 0 0}.cta{margin:16px 0 8px}
+</style>
+</head>
+<body>
+<div id="app"><main id="screen"></main><nav id="nav" hidden></nav></div>
+<script>
+(function(){
+'use strict';
+var UPDATED='الخميس ٢٦ نوفمبر ٥:١٥ م';
+var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
+
+var TEACHERS=[
+ {id:'abdelmaaboud',name:'مستر عبدالمعبود',subject:'فيزياء',items:[
+  {id:1,date:'2026-11-24',tag:'امتحان',title:'الشامل الخامس: الجمعة ٢٧ نوفمبر',text:'تالتة ثانوي عام وأزهر. على الفصل الأول كله، والفصل التاني لحد محاضرة الفولتميتر. ١٦ سؤال اختيار وسؤالين مقالي، من ٢٠ درجة، ومدته ساعتين. ساعة البداية مش مكتوبة في الإعلان.',when:'إعلان ٢٤ نوفمبر',links:[['المنشور الرسمي','https://www.youtube.com/post/Ugkx4SQXxJmUcvkMmS47KPkx1hSz8y3OL7C3']]},
+  {id:2,date:'2026-11-24',tag:'محاضرة',title:'المحاضرة ٢٣: فولتميتر التيار المستمر',text:'نزلت على المنصة لتالتة ثانوي عام وأزهر.',when:'إعلان ٢٤ نوفمبر',links:[['المنشور الرسمي','https://www.youtube.com/post/UgkxTvoCP5WFbS_BMd6BSw3LblinsFqOB0Pb']]}]},
+ {id:'abdelgwad',name:'مستر عبدالجواد',subject:'كيمياء (MAG Academy)',items:[
+  {id:3,date:'2026-11-26',tag:'عرض',title:'بلاك فرايداي: خصم ٥٠٪ على مذكرات الباب التالت والرابع والشحن',text:'ومعاها هدايا، لتانية وتالتة ثانوي. العرض يومي ٢٦ و٢٧ نوفمبر بس، والمنشور بيقول إنه شغال دلوقتي.',when:'ظهر ٢٦ نوفمبر، العرض لحد ٢٧ نوفمبر',links:[['المنشور الرسمي','https://www.youtube.com/post/Ugkxt-wtpQP4Q29nLwP9_n_NFZAQKVHJ3qjB']]},
+  {id:4,date:'2026-11-24',tag:'تحديث المنصة',title:'نقط ومعمل كيمياء تفاعلي جايين على المنصة',text:'الإعلانات بتتكلم عن نقط وجوايز لو بتذاكر على المنصة، ومعمل كيمياء تفاعلي. مفيش ميعاد تشغيل ولا قواعد نهائية، ومش مؤكد إنهم اشتغلوا.',when:'إعلانات ٢٣ و٢٤ نوفمبر',links:[['النقط والجوايز','https://www.youtube.com/post/Ugkx4nK9gUug7tAAi_2spfc2e8yJ4xCo6bin'],['المعمل التفاعلي','https://www.youtube.com/post/UgkxUz57E8i9VSRu9gy9OziF42QZA4eHDRLI']]}]},
+ {id:'essam',name:'مستر أحمد عصام',subject:'رياضيات',items:[
+  {id:5,date:'2026-11-23',tag:'كورس',title:'باقي التفاضل والتكامل: الحجز مفتوح على JAW Academy',text:'التسعة حصص: خمسة تفاضل وأربعة تكامل. عربي: البداية الأربعاء ٢ ديسمبر، السعر المعلن ٤٥٠ جنيه. لغات: البداية الخميس ٣ ديسمبر، السعر المعلن ٦٧٥ جنيه. مكتوب في الحجز إنه مفيش استرداد حتى لو الكود متفعّلش.',when:'إعلان ٢٣ نوفمبر',links:[['عربي','https://t.me/ahmedessamdx/1286'],['لغات','https://t.me/ahmedessamdx/1287'],['تفاصيل عربي','https://t.me/ahmedessamdx/1242?embed=1'],['تفاصيل لغات','https://t.me/ahmedessamdx/1241?embed=1']]}]},
+ {id:'mai',name:'ميس مي مجدي',subject:'إنجليزي (More English)',items:[
+  {id:6,date:null,tag:'ورشة',title:'ورشة Units 3 & 4 مجانية على يوتيوب',text:'الإعلان كان موجود قبل ما المتابعة تبدأ. مفيش ميعاد محدد اتأكدنا منه.',when:'إعلان قديم',links:[['الفيديو','https://www.youtube.com/watch?v=yjnLV-0TUDg']]}]},
+ {id:'salah',name:'مستر محمد صلاح',subject:'متابعة القناة',items:[],empty:'مفيش إعلان متأكد منه لتالتة ثانوي لحد دلوقتي.',channel:['قناة مستر محمد صلاح','https://www.youtube.com/@mohamedsalah.bassthalk']},
+ {id:'john',name:'دكتور جون (جهبذ الكيمياء)',subject:'كيمياء',items:[],empty:'لسه مش متابَع. مفيش إعلانات هنا غير لما نضيف مصادره ونتأكد منها.',channel:['قناة يوتيوب: دكتور جون - جهبذ الكيمياء','https://www.youtube.com/@gahbazchemistry']},
+ {id:'kirollos',name:'دكتور كيرلس (الدكتور في الفيزياء)',subject:'فيزياء',items:[],empty:'لسه مش متابَع. مفيش إعلانات هنا غير لما نضيف مصادره ونتأكد منها.',channel:['قناة يوتيوب: الدكتور في الفيزياء - دكتور كيرلس','https://www.youtube.com/@doctor.physics']},
+ {id:'englishawy',name:'مستر انجلشاوي (محمود رضوان)',subject:'إنجليزي',items:[],empty:'لسه مش متابَع. مفيش إعلانات هنا غير لما نضيف مصادره ونتأكد منها.',channel:['قناة يوتيوب: Mahmoud Radwan - إنجلشاوي','https://www.youtube.com/@mahmoudradwan.englishawy']}
+];
+// Hand-updated. Only dated exams from verified official posts. at = start of exam day, Cairo (UTC+2), when no start time is announced.
+var EXAMS=[{teacher:'abdelmaaboud',title:'الشامل الخامس',subject:'فيزياء',at:Date.parse('2026-11-26T22:00:00Z'),note:'يوم الجمعة ٢٧ نوفمبر. ساعة البداية مش معلنة.'}];
+var TASKS=['راجع الفصل الأول كله','راجع الفصل التاني لحد الفولتميتر','حل أسئلة اختيار من الفصلين','اتدرب على سؤالين مقالي','جهّز أدواتك وراجع ملخصك','نام كفاية قبل الامتحان'];
+
+var mem={};
+function load(k,d){try{var v=localStorage.getItem(k);if(v!==null)return JSON.parse(v)}catch(e){if(k in mem)return mem[k]}return k in mem?mem[k]:d}
+function save(k,v){mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+var S={mine:load('dash-teachers.v1',null),profile:load('dash-profile.v1',{name:''}),schedule:load('dash-schedule.v1',{mode:'daily',daily:[],week:{}}),marks:load('dash-marks.v1',{}),seen:load('dash-seen.v1',[]),check:load('dash-checklist.v1',{})};
+var ui={tab:'home',tf:'all',wf:'all',pmode:'today',eday:new Date().getDay(),sub:'',time:'',pick:null};
+if(!Array.isArray(S.mine))S.mine=null;
+
+function h(tag,attrs){var e=document.createElement(tag);attrs=attrs||{};for(var k in attrs){var v=attrs[k];if(k==='class')e.className=v;else if(k==='text')e.textContent=v;else if(k.slice(0,2)==='on')e.addEventListener(k.slice(2),v);else if(v===true)e.setAttribute(k,'');else if(v!==false&&v!=null)e.setAttribute(k,v)}
+ for(var i=2;i<arguments.length;i++){var c=arguments[i];if(c==null||c===false)continue;e.appendChild(typeof c==='string'?document.createTextNode(c):c)}return e}
+function pad(n){return String(n).padStart(2,'0')}
+function dkey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function nid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+function entries(day){var l=S.schedule.mode==='daily'?S.schedule.daily:(S.schedule.week[String(day)]||[]);return l.slice().sort(function(a,b){return (a.time||'99:99').localeCompare(b.time||'99:99')})}
+function mine(){return TEACHERS.filter(function(t){return (S.mine||[]).indexOf(t.id)>=0})}
+function newIds(){var out=[];mine().forEach(function(t){t.items.forEach(function(i){if(S.seen.indexOf(i.id)<0)out.push(i.id)})});return out}
+function header(title,intro,fact){var f=document.createDocumentFragment();f.appendChild(h('h1',{text:title}));if(fact)f.appendChild(h('p',{class:'fact',text:fact}));if(intro)f.appendChild(h('p',{class:'sub',text:intro}));return f}
+function credit(){return h('p',{class:'credit',text:'Created by Steven Hany',dir:'ltr'})}
+function group(label,title){var g=h('section');g.appendChild(h('p',{class:'label',text:label}));g.appendChild(h('h2',{text:title}));return g}
+
+function setTab(t){
+ if(ui.tab==='news'&&t!=='news'){var n=newIds();if(n.length){S.seen=S.seen.concat(n);save('dash-seen.v1',S.seen)}}
+ ui.tab=t;render();document.getElementById('screen').scrollTop=0}
+
+function icon(name){var P={home:'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',news:'M5 4h14v16H5zM8 8h8M8 12h8M8 16h5',cal:'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',user:'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c0-4 4-6 8-6s8 2 8 6',users:'M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5M16 4.5a3.5 3.5 0 010 6.5M18 14.5c2.5.6 4 2.3 4 5.5'};
+ var s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('width','24');s.setAttribute('height','24');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('fill','none');s.setAttribute('stroke','currentColor');s.setAttribute('stroke-width','1.7');s.setAttribute('stroke-linecap','round');s.setAttribute('stroke-linejoin','round');
+ var p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',P[name]);s.appendChild(p);return s}
+
+function renderNav(){
+ var nav=document.getElementById('nav');nav.textContent='';
+ if(S.mine===null){nav.hidden=true;return}nav.hidden=false;
+ var items=[['home','الرئيسية','home'],['news','الإعلانات','news'],['plan','الجدول','cal'],['profile','ملفي','user'],['teachers','المدرسين','users']];
+ var unread=newIds().length>0&&ui.tab!=='news';
+ items.forEach(function(i){var b=h('button',{type:'button','aria-current':ui.tab===i[0]?'page':null,onclick:function(){setTab(i[0])}});
+  var w=h('span',{class:'iw'},icon(i[2]));if(i[0]==='news'&&unread)w.appendChild(h('span',{class:'dot',role:'img','aria-label':'فيه إعلانات جديدة'}));
+  b.appendChild(w);b.appendChild(h('span',{text:i[1]}));nav.appendChild(b)})}
+
+var clockTimer=null,clockEl=null,clockTarget=0;
+function clockTick(){if(!clockEl)return;var left=Math.max(0,clockTarget-Date.now()),s=Math.floor(left/1000);
+ var v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];var nums=clockEl.querySelectorAll('.num');for(var i=0;i<4;i++)nums[i].textContent=pad(v[i])}
+function countdown(target,note){
+ clockTarget=target;var L=['يوم','ساعة','دقيقة','ثانية'];
+ if(target<=Date.now())return h('div',{class:'callout'},h('strong',{text:'يوم الامتحان جه'}),note+' بالتوفيق.');
+ var c=h('div',{class:'clock',role:'timer','aria-label':'العد التنازلي للامتحان'});
+ L.forEach(function(l){c.appendChild(h('div',{class:'cell'},h('span',{class:'num',text:'00'}),h('span',{class:'lbl',text:l})))});
+ clockEl=c;clockTick();
+ var f=document.createDocumentFragment();f.appendChild(c);f.appendChild(h('p',{class:'sub',text:'العد لحد بداية يوم الامتحان بتوقيت القاهرة. '+note}));return f}
+
+function screenHome(){
+ var f=document.createDocumentFragment(),now=Date.now();
+ var ex=EXAMS.filter(function(e){return (S.mine||[]).indexOf(e.teacher)>=0&&e.at>now}).sort(function(a,b){return a.at-b.at})[0];
+ var tch=ex?TEACHERS.filter(function(t){return t.id===ex.teacher})[0]:null;
+ var nm=(S.profile.name||'').trim();
+ f.appendChild(header(nm?'أهلاً يا '+nm:'لوحة تالتة ثانوي','كل حاجة مرتبة في صفحاتها. استخدم الشريط اللي تحت.',ex&&tch?ex.title+' '+ex.subject+': '+tch.name:null));
+ var g=group('الإعلانات','آخر تحديث');g.appendChild(h('p',{text:UPDATED+'. الإعلانات بتتحدث بإيدي، مش لحظي.'}));
+ var n=newIds().length;
+ g.appendChild(n>0?h('button',{class:'btn primary',type:'button',text:n+' إعلانات جديدة',onclick:function(){setTab('news')}}):h('p',{class:'sub',text:'مفيش إعلانات جديدة من آخر مرة شفت فيها.'}));
+ f.appendChild(g);
+ var g2=group('العد التنازلي',ex?'أقرب امتحان':'الامتحانات');
+ if(ex&&tch){g2.appendChild(h('p',{text:ex.title+' '+ex.subject+' مع '+tch.name+'.'}));g2.appendChild(countdown(ex.at,ex.note))}
+ else g2.appendChild(h('p',{text:'مفيش امتحان متأكد منه بتاريخ عند المدرسين اللي اخترتهم لحد دلوقتي.'}));
+ f.appendChild(g2);
+ var g3=group('النهارده','مذاكرتك النهارده');var list=entries(new Date().getDay()),dm=S.marks[dkey(new Date())]||{};
+ g3.appendChild(h('p',{class:'sub',text:list.length?list.filter(function(e){return dm[e.id]===true}).length+' من '+list.length+' خلصتهم النهارده':'مفيش جدول لليوم ده. ضيفه من تبويب «الجدول».'}));
+ g3.appendChild(h('button',{class:'btn',type:'button',text:'افتح الجدول',onclick:function(){setTab('plan')}}));f.appendChild(g3);
+ return f}
+
+function screenNews(){
+ var f=document.createDocumentFragment(),now=new Date(),today=dkey(now),wk=dkey(new Date(now.getTime()-6*86400000));
+ f.appendChild(header('إعلانات مدرسينك','من المدرسين اللي اخترتهم بس. بتتحدث بإيدي، مش لحظي.'));
+ var ms=mine();if(ui.tf!=='all'&&!ms.some(function(t){return t.id===ui.tf}))ui.tf='all';
+ f.appendChild(h('p',{class:'fl',text:'المدرس'}));
+ var s1=h('div',{class:'seg',role:'group','aria-label':'فلتر المدرس'});
+ s1.appendChild(h('button',{type:'button','aria-pressed':ui.tf==='all',text:'الكل',onclick:function(){ui.tf='all';render()}}));
+ ms.forEach(function(t){var short=t.name.replace('مستر ','').replace('ميس ','').replace('دكتور ','').split(' (')[0];s1.appendChild(h('button',{type:'button','aria-pressed':ui.tf===t.id,text:short,onclick:function(){ui.tf=t.id;render()}}))});
+ f.appendChild(s1);
+ f.appendChild(h('p',{class:'fl',text:'الوقت'}));
+ var s2=h('div',{class:'seg',role:'group','aria-label':'فلتر الوقت'});
+ [['all','الكل'],['week','آخر ٧ أيام'],['today','النهارده']].forEach(function(o){s2.appendChild(h('button',{type:'button','aria-pressed':ui.wf===o[0],text:o[1],onclick:function(){ui.wf=o[0];render()}}))});
+ f.appendChild(s2);
+ function inRange(i){return ui.wf==='all'?true:!i.date?false:ui.wf==='today'?i.date===today:(i.date>=wk&&i.date<=today)}
+ var pick=ui.tf==='all'?ms:ms.filter(function(t){return t.id===ui.tf});
+ var rows=pick.map(function(t){return{t:t,items:t.items.filter(inRange)}}).filter(function(r){return ui.wf==='all'||r.items.length>0});
+ var count=rows.reduce(function(n,r){return n+r.items.length},0);
+ f.appendChild(h('p',{class:'sub',text:count+' إعلانات. الفلتر بالتاريخ بيعتمد على يوم ظهور الإعلان، والإعلانات اللي من غير تاريخ بتظهر في «الكل» بس.'}));
+ if(!rows.length)f.appendChild(h('div',{class:'callout'},h('strong',{text:'مفيش إعلانات'}),'مفيش إعلانات متأكد منها في الفترة دي للمدرسين المختارين.'));
+ rows.forEach(function(r){var t=r.t,sec=h('section',{class:'teacher'});sec.appendChild(h('div',{class:'thead'},h('strong',{text:t.name}),h('span',{text:t.subject})));
+  r.items.forEach(function(it){var a=h('article',{class:'item'});var m=h('div',{class:'meta'});if(S.seen.indexOf(it.id)<0)m.appendChild(h('span',{class:'new',text:'جديد'}));m.appendChild(h('span',{class:'tag',text:it.tag}));m.appendChild(h('span',{text:it.when}));a.appendChild(m);a.appendChild(h('h3',{class:'title',text:it.title}));a.appendChild(h('p',{text:it.text}));
+   var l=h('div',{class:'links'});it.links.forEach(function(x){l.appendChild(h('a',{href:x[1],target:'_blank',rel:'noopener noreferrer',text:x[0]}))});a.appendChild(l);sec.appendChild(a)});
+  if(ui.wf==='all'&&t.empty){var a2=h('article',{class:'item'});a2.appendChild(h('p',{text:t.empty}));if(t.channel)a2.appendChild(h('div',{class:'links'},h('a',{href:t.channel[1],target:'_blank',rel:'noopener noreferrer',text:t.channel[0]})));sec.appendChild(a2)}
+  f.appendChild(sec)});
+ f.appendChild(h('p',{class:'sub',text:'آخر تحديث: '+UPDATED+'.'}));return f}
+
+function setMark(id,v){var k=dkey(new Date());S.marks[k]=Object.assign({},S.marks[k]||{});S.marks[k][id]=v;var keep=Object.keys(S.marks).sort().slice(-14),o={};keep.forEach(function(x){o[x]=S.marks[x]});S.marks=o;save('dash-marks.v1',S.marks);render()}
+function todayView(){
+ var f=document.createDocumentFragment(),now=new Date(),list=entries(now.getDay()),day=S.marks[dkey(now)]||{},hhmm=pad(now.getHours())+':'+pad(now.getMinutes());
+ if(!list.length){f.appendChild(h('p',{text:'مفيش جدول لليوم ده لسه. ضيفه من «عدّل جدولي».'}));f.appendChild(h('button',{class:'btn',type:'button',text:'ضيف جدولك',onclick:function(){ui.pmode='edit';render()}}));return f}
+ var done=list.filter(function(e){return day[e.id]===true}).length,open=list.filter(function(e){return day[e.id]===undefined}).length;
+ f.appendChild(h('p',{class:'sub',text:done+' من '+list.length+' خلصتهم النهارده'}));
+ if(now.getHours()>=21&&open>0)f.appendChild(h('div',{class:'callout warn'},h('strong',{text:'قفّل يومك'}),'فاضل '+open+' مواد من غير علامة. علّم على كل مادة: خلصتها ولا لأ.'));
+ list.forEach(function(e){var m=day[e.id],late=m===undefined&&e.time&&hhmm>=e.time;
+  var st=m===true?'خلصتها':m===false?'ما خلصتهاش':late?'فات ميعادها ('+e.time+')':e.time?'ميعادها '+e.time:'من غير ميعاد';
+  f.appendChild(h('div',{class:'plan'},h('div',{class:'pmain'},h('strong',{text:e.subject}),h('span',{class:late?'late':'time',text:st})),
+   h('div',{class:'pbtns'},h('button',{type:'button',class:'mark','data-on':String(m===true),'aria-pressed':String(m===true),'aria-label':'خلصت '+e.subject,text:'✓',onclick:function(){setMark(e.id,true)}}),
+    h('button',{type:'button',class:'mark no','data-on':String(m===false),'aria-pressed':String(m===false),'aria-label':'ما خلصتش '+e.subject,text:'✗',onclick:function(){setMark(e.id,false)}}))))});
+ return f}
+function editView(){
+ var f=document.createDocumentFragment(),sc=S.schedule;
+ var s=h('div',{class:'seg',role:'group','aria-label':'نوع الجدول'});
+ [['daily','يومي'],['weekly','أسبوعي']].forEach(function(o){s.appendChild(h('button',{type:'button','aria-pressed':sc.mode===o[0],text:o[1],onclick:function(){sc.mode=o[0];save('dash-schedule.v1',sc);render()}}))});f.appendChild(s);
+ if(sc.mode==='weekly'){var d=h('div',{class:'seg',role:'group','aria-label':'اليوم'});DAYS.forEach(function(x){d.appendChild(h('button',{type:'button','aria-pressed':ui.eday===x[0],text:x[1],onclick:function(){ui.eday=x[0];render()}}))});f.appendChild(d)}
+ f.appendChild(h('p',{class:'sub',text:sc.mode==='daily'?'الجدول ده بيتكرر كل يوم.':'جدول يوم '+DAYS.filter(function(x){return x[0]===ui.eday})[0][1]+'.'}));
+ var list=sc.mode==='daily'?sc.daily:(sc.week[String(ui.eday)]||[]);
+ function write(l){if(sc.mode==='daily')sc.daily=l;else sc.week[String(ui.eday)]=l;save('dash-schedule.v1',sc);render()}
+ list.slice().sort(function(a,b){return (a.time||'99:99').localeCompare(b.time||'99:99')}).forEach(function(e){
+  f.appendChild(h('div',{class:'plan'},h('div',{class:'pmain'},h('strong',{text:e.subject}),h('span',{class:'time',text:e.time||'من غير ميعاد'})),h('button',{type:'button',class:'mark no',text:'امسح','aria-label':'امسح '+e.subject,onclick:function(){write(list.filter(function(z){return z.id!==e.id}))}})))});
+ var si=h('input',{type:'text',maxlength:'60',value:ui.sub,oninput:function(ev){ui.sub=ev.target.value;add.disabled=ui.sub.trim()===''}});
+ var ti=h('input',{type:'time',dir:'ltr',value:ui.time,oninput:function(ev){ui.time=ev.target.value}});
+ var add=h('button',{class:'btn primary',type:'button',text:'ضيف المادة',onclick:function(){var v=ui.sub.trim();if(!v||list.length>=20)return;ui.sub='';var t=ui.time;ui.time='';write(list.concat([{id:nid(),subject:v.slice(0,60),time:t}]))}});add.disabled=ui.sub.trim()==='';
+ f.appendChild(h('div',{class:'field'},h('span',{text:'المادة'}),si));f.appendChild(h('div',{class:'field'},h('span',{text:'الميعاد (اختياري)'}),ti));f.appendChild(h('div',{class:'cta'},add));
+ return f}
+function examView(){
+ if((S.mine||[]).indexOf('abdelmaaboud')<0)return h('p',{text:'قايمة الشامل متاحة مع مستر عبدالمعبود. اختاره من تبويب «المدرسين».'});
+ var f=document.createDocumentFragment(),n=TASKS.filter(function(_,i){return S.check[i]}).length;
+ f.appendChild(h('div',{class:'bar'},h('span',{style:'width:'+(n/TASKS.length*100)+'%'})));f.appendChild(h('p',{class:'sub',text:n+' من '+TASKS.length+' خلصوا'}));
+ TASKS.forEach(function(t,i){var on=!!S.check[i];f.appendChild(h('button',{type:'button',class:'row','aria-pressed':String(on),onclick:function(){S.check[i]=!on;save('dash-checklist.v1',S.check);render()}},h('span',{class:'box','aria-hidden':'true',text:on?'✓':''}),h('span',{class:on?'done':'',text:t})))});
+ return f}
+function screenPlan(){
+ var f=document.createDocumentFragment();f.appendChild(header('جدول المذاكرة','علّم على كل مادة خلصتها ولا لأ. التذكير بيظهر هنا لما تفتح الصفحة.'));
+ var s=h('div',{class:'seg',role:'group','aria-label':'العرض'});[['today','النهارده'],['edit','عدّل جدولي'],['exam','قبل الشامل']].forEach(function(o){s.appendChild(h('button',{type:'button','aria-pressed':ui.pmode===o[0],text:o[1],onclick:function(){ui.pmode=o[0];render()}}))});f.appendChild(s);
+ f.appendChild(ui.pmode==='today'?todayView():ui.pmode==='edit'?editView():examView());
+ f.appendChild(h('div',{class:'callout'},h('strong',{text:'عن التذكيرات'}),'الصفحة مش بتبعت إشعارات على موبايلك. بتظهر هنا ميعاد المادة، وإنها فات ميعادها، وتنبيه «قفّل يومك» بعد ٩ بالليل.'));return f}
+function screenProfile(){
+ var f=document.createDocumentFragment();f.appendChild(header('ملفي','اسمك بيتحفظ على جهازك بس.'));
+ var g=group('الاسم','اسمك');var inp=h('input',{type:'text',maxlength:'40',value:S.profile.name,oninput:function(e){S.profile.name=e.target.value.slice(0,40);save('dash-profile.v1',S.profile)}});
+ g.appendChild(h('div',{class:'field'},h('span',{text:'اسمك (اختياري)'}),inp));f.appendChild(g);
+ var g2=group('المدرسين','مدرسينك');g2.appendChild(h('p',{text:mine().length+' مدرسين مختارين. غيّرهم من تبويب «المدرسين».'}));f.appendChild(g2);
+ f.appendChild(h('div',{class:'callout'},h('strong',{text:'عن التطبيق'}),'التطبيق بيحفظ اختياراتك وجدولك وعلاماتك على جهازك بس. مفيش إشعارات على الموبايل.'));return f}
+function screenTeachers(){
+ var first=S.mine===null;if(ui.pick===null)ui.pick=(S.mine||[]).slice();
+ var f=document.createDocumentFragment();f.appendChild(header(first?'اختار مدرسينك':'عدّل مدرسينك','اختار المدرسين اللي بتتابعهم، وبعدها الرئيسية هتعرض إعلاناتهم بس. الاختيار بيتحفظ على جهازك.'));
+ var g=group('المدرسين','مين بتتابع؟');
+ TEACHERS.forEach(function(t){var on=ui.pick.indexOf(t.id)>=0;g.appendChild(h('button',{type:'button',class:'row','aria-pressed':String(on),onclick:function(){var i=ui.pick.indexOf(t.id);if(i>=0)ui.pick.splice(i,1);else ui.pick.push(t.id);render()}},h('span',{class:'box','aria-hidden':'true',text:on?'✓':''}),h('span',{},t.name,h('span',{class:'sub',text:' · '+t.subject}))))});
+ var go=h('button',{class:'btn primary',type:'button',text:first?'ادخل اللوحة':'احفظ',onclick:function(){S.mine=ui.pick.slice();save('dash-teachers.v1',S.mine);ui.pick=null;setTab('home')}});go.disabled=ui.pick.length===0;
+ g.appendChild(h('div',{class:'cta'},go));g.appendChild(h('p',{class:'sub',text:ui.pick.length===0?'اختار مدرس واحد على الأقل.':'اخترت '+ui.pick.length+' من '+TEACHERS.length+'.'}));f.appendChild(g);return f}
+
+function footer(){
+ var f=h('footer',{class:'foot'});
+ f.appendChild(h('a',{class:'wa',href:'https://wa.me/201221523919',target:'_blank',rel:'noopener noreferrer',text:'تواصل معايا على واتساب'}));
+ var l=h('div',{class:'soc'});
+ l.appendChild(h('a',{href:'https://www.instagram.com/steven_moris21?hvrq=NTVscXlvdjhnb25z',target:'_blank',rel:'noopener noreferrer',text:'انستجرام'}));
+ l.appendChild(h('a',{href:'https://www.facebook.com/profile.php?id=61555365038971&mibextid=ZbWKwL',target:'_blank',rel:'noopener noreferrer',text:'فيسبوك'}));
+ f.appendChild(l);f.appendChild(credit());
+ f.appendChild(h('p',{class:'sub rights',text:'جميع الحقوق محفوظة © ٢٠٢٦'}));
+ f.appendChild(h('p',{class:'sub rights',dir:'ltr',text:'All rights reserved © 2026'}));
+ return f}
+function render(){
+ clockEl=null;var sc=document.getElementById('screen'),top=sc.scrollTop;sc.textContent='';
+ var tab=S.mine===null?'teachers':ui.tab;
+ var v=tab==='home'?screenHome():tab==='news'?screenNews():tab==='plan'?screenPlan():tab==='profile'?screenProfile():screenTeachers();
+ sc.appendChild(v);sc.appendChild(footer());sc.scrollTop=top;renderNav()}
+if(clockTimer)clearInterval(clockTimer);clockTimer=setInterval(clockTick,1000);
+setInterval(function(){if(ui.tab==='home'||ui.tab==='plan')render()},60000);
+render();
+})();
+</script>
+</body>
+</html>
