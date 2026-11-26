@@ -154,6 +154,8 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 .nwrap.open .npanel{opacity:1;visibility:visible;transform:none;transition:opacity .22s ease,transform .22s ease}
 .npanel .nread{display:block;margin:0 0 4px;padding:6px 0}
 .nrow:first-of-type{border-top:0}
+.sx{margin-top:8px}.sx textarea{width:100%;box-sizing:border-box;padding:10px;border-radius:12px;border:1px solid var(--hair);background:var(--card);color:var(--ink);font:inherit;margin:6px 0}.sx input[type=text]{margin:6px 0}.lba{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:none}.lba.big{width:56px;height:56px}.avrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.lbx{opacity:.7;font-size:12px}.frow{display:flex;gap:8px;margin-bottom:6px}.btn.sm{min-height:36px;padding:0 12px;font-size:13px}.frm summary{cursor:pointer;margin:8px 0}
+.acctg input,.sx input[type=text],.sx input[type=password]{display:block;width:100%;box-sizing:border-box;min-height:46px;padding:0 14px;margin:8px 0;border-radius:14px;border:1px solid var(--hair);background:var(--card);color:var(--ink);font:inherit;font-size:15px}.acctg .seg{margin:10px 0}
 </style>
 </head>
 <body>
@@ -161,7 +163,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ١١:٥٩ م';
+var UPDATED='الجمعة ٢٧ نوفمبر ١٢:٢٨ ص';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -604,7 +606,160 @@ function ptsTask(id,on){try{var day=dkey(sday()),k='task:'+id;if(on)ptsAdd(k,2,d
 function minsAdd(subj,m){var day=dkey(sday());S.pts.m[day]=S.pts.m[day]||{};S.pts.m[day][subj]=(S.pts.m[day][subj]||0)+m;var ks=Object.keys(S.pts.m).sort().slice(-60),o={};ks.forEach(function(x){o[x]=S.pts.m[x]});S.pts.m=o;ptsSave()}
 function minsRange(n){var t=0,d=sday();for(var i=0;i<n;i++){var r=S.pts.m[dkey(dayAdd(d,-i))];if(r)Object.keys(r).forEach(function(k){t+=r[k]})}return t}
 function fmtMin(m){if(m<60)return AR(m)+' د';var hh=Math.floor(m/60),mm=m%60;return AR(hh)+' س'+(mm?' و'+AR(mm)+' د':'')}
-var AC=false,AU=null,SY={},SYT={},LB={on:false,nick:''};function acctGroup(){return document.createDocumentFragment()}function acctBoot(){}function gateShow(){}
+var SB={url:'https://ozkasopdobbibxxnayoc.supabase.co',key:'sb_publishable_Ut9qB9GAdmLyegJgoyfWGQ_UDozE6ZF'};
+var SYNCK=['dash-teachers.v1','dash-profile.v1','dash-schedule.v1','dash-marks.v1','dash-exam.v1','dash-exams.v1','dash-checklist.v1','dash-grades.v1','dash-stats.v1','dash-points.v1','dash-lb.v1'];
+function acctOn(){try{var q=location.search.match(/[?&]acct=([01])/);if(q){if(q[1]==='0')localStorage.setItem('dash-acct-off','1');else localStorage.removeItem('dash-acct-off')}return localStorage.getItem('dash-acct-off')!=='1'}catch(e){return true}}
+var AC=acctOn(),AU=load('dash-auth.v1',null),SY=load('dash-sync.v1',{}),SYT=load('dash-sync-t.v1',{}),LB=load('dash-lb.v1',{on:false,nick:''}),AUI={mode:'in',un:'',msg:'',busy:false,lb:null,lbMsg:'',st:''};
+if(!AU||typeof AU!=='object'||!AU.at)AU=null;if(!SY||typeof SY!=='object')SY={};if(!SYT||typeof SYT!=='object')SYT={};if(!LB||typeof LB!=='object')LB={on:false,nick:''};
+var applying=false,pushT=null,lbT=null;
+function syncTouch(k){if(!AC||applying||SYNCK.indexOf(k)<0)return;SYT[k]=Date.now();try{localStorage.setItem('dash-sync-t.v1',JSON.stringify(SYT))}catch(e){}if(AU&&SY.mode==='on'&&SY.uid===AU.uid)schedPush()}
+function schedPush(){if(pushT)clearTimeout(pushT);pushT=setTimeout(pushNow,3000)}
+function sbErr(r,j){if(r.status===429||(j&&j.error_code==='over_email_send_rate_limit'))return 'استنى شوية وجرب تاني (طلبات كتير).';if(r.status===0)return 'مفيش نت. جرب تاني.';var m=(j&&(j.msg||j.message||j.error_description||j.error))||'';if(/invalid|expired|token/i.test(m))return 'الكود غلط أو خلص وقته.';if(/email/i.test(m))return 'الإيميل مش صحيح.';return 'حصلت مشكلة ('+String(m).slice(0,40)+').'}
+function sbf(path,o,auth){o=o||{};var hd={apikey:SB.key,'Content-Type':'application/json'};if(auth!==false&&AU)hd.Authorization='Bearer '+AU.at;if(o.prefer)hd.Prefer=o.prefer;
+ return fetch(SB.url+path,{method:o.method||'GET',headers:hd,body:o.body?JSON.stringify(o.body):undefined}).then(function(r){return r.text().then(function(t){var j=null;try{j=t?JSON.parse(t):null}catch(e){}return {r:r,j:j,ok:r.ok,status:r.status}})},function(){return {r:{status:0},j:null,ok:false,status:0}})}
+function sbAuthed(path,o){return ensureFresh().then(function(){return sbf(path,o)})}
+function ensureFresh(){if(!AU)return Promise.resolve();if(AU.exp-Date.now()>60000)return Promise.resolve();return sbf('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:AU.rt}},false).then(function(x){if(x.ok&&x.j&&x.j.access_token)setSession(x.j);else if(x.status===400||x.status===401){AU=null;save('dash-auth.v1',null)}})}
+function setSession(j,un){var em=(j.user&&j.user.email)||(AU&&AU.email)||'';AU={at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,uid:(j.user&&j.user.id)||(AU&&AU.uid),email:em,un:un||(AU&&AU.un)||''};save('dash-auth.v1',AU)}
+function unNorm(u){return String(u||'').normalize('NFKC').trim().toLowerCase().replace(/\s+/g,' ')}
+function unOk(u){u=unNorm(u);if(u.length<3||u.length>20)return 'اليوزرنيم من ٣ لـ ٢٠ حرف.';if(/[@\/\\:]/.test(u)||/https?:|www\./.test(u))return 'من غير @ أو لينكات.';return ''}
+function unEmail(u){if(!(window.crypto&&crypto.subtle&&window.TextEncoder))return Promise.reject(new Error('nocrypto'));return crypto.subtle.digest('SHA-256',new TextEncoder().encode('thanawya-plus:'+unNorm(u))).then(function(d){return Array.prototype.map.call(new Uint8Array(d),function(x){return ('0'+x.toString(16)).slice(-2)}).join('').slice(0,40)+'@users.thanawya-plus.app'})}
+function pwErr(x){var c=(x.j&&(x.j.error_code||x.j.code))||'',m=(x.j&&(x.j.msg||x.j.message))||'';if(x.status===429)return 'استنى شوية وجرب تاني (محاولات كتير).';if(x.status===0)return 'مفيش نت. جرب تاني.';if(c==='invalid_credentials'||/invalid login/i.test(m))return 'اليوزرنيم أو الباسورد غلط.';if(c==='user_already_exists'||/already/i.test(m))return 'اليوزرنيم ده مستخدم. اختار غيره أو سجّل دخول.';if(c==='weak_password'||/password/i.test(m))return 'الباسورد ضعيف. ٨ حروف على الأقل.';if(c==='signup_disabled')return 'التسجيل الجديد مقفول دلوقتي.';return 'حصلت مشكلة. جرب تاني.'}
+function acctAuth(mode,u,p,p2){var e=unOk(u);if(e){AUI.msg=e;render();return}if(!p||p.length<8){AUI.msg='الباسورد ٨ حروف على الأقل.';render();return}if(mode==='up'&&p!==p2){AUI.msg='الباسوردين مش زي بعض.';render();return}
+ AUI.busy=true;AUI.msg='';AUI.un=unNorm(u);render();
+ return unEmail(u).then(function(em){var path=mode==='up'?'/auth/v1/signup':'/auth/v1/token?grant_type=password',body=mode==='up'?{email:em,password:p,data:{username:unNorm(u)}}:{email:em,password:p};
+  return sbf(path,{method:'POST',body:body},false).then(function(x){AUI.busy=false;if(x.ok&&x.j&&x.j.access_token){setSession(x.j,unNorm(u));AUI.msg='';AUI.mode='in';firstSync()}else if(x.ok&&mode==='up'){AUI.msg='التسجيل مش شغال دلوقتي من السيرفر. جرب بعدين.';render()}else{AUI.msg=pwErr(x);render()}})},function(){AUI.busy=false;AUI.msg='المتصفح ده مش بيدعم التسجيل. جرب متصفح تاني.';render()})}
+function localData(){var d={};SYNCK.forEach(function(k){var v=null;try{v=localStorage.getItem(k)}catch(e){}if(v!==null){try{d[k]=JSON.parse(v)}catch(e){}}});d._t=SYT;return d}
+function localEmpty(){var sc=S.schedule||{},n=(sc.daily||[]).length;Object.keys(sc.week||{}).forEach(function(k){n+=sc.week[k].length});return n===0&&!(S.exams||[]).length&&!(S.grades||[]).length&&!Object.keys((S.stats&&S.stats.days)||{}).length&&ptsTotal()===0}
+function pullRemote(){return sbAuthed('/rest/v1/user_data?select=data,updated_at&user_id=eq.'+AU.uid).then(function(x){if(!x.ok)return {err:true,x:x};return {row:(x.j&&x.j[0])||null}})}
+function pushNow(){if(!AU||SY.mode!=='on'||SY.uid!==AU.uid)return Promise.resolve();AUI.st='';var d=localData();return sbAuthed('/rest/v1/user_data?on_conflict=user_id',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:AU.uid,data:d,updated_at:new Date().toISOString()}}).then(function(x){AUI.st=x.ok?'اتزامن '+new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}):'المزامنة فشلت، هنجرب تاني.';if(!x.ok)schedPush();if(ui.tab==='profile'&&!document.getElementById('sub'))render()})}
+function applyRemote(data,mode){applying=true;try{SYNCK.forEach(function(k){if(!(k in data))return;var rt=(data._t&&data._t[k])||0,lt=SYT[k]||0;if(mode==='replace'||rt>lt){localStorage.setItem(k,JSON.stringify(data[k]));SYT[k]=rt||Date.now()}});localStorage.setItem('dash-sync-t.v1',JSON.stringify(SYT))}catch(e){}applying=false;location.reload()}
+function firstSync(){return pullRemote().then(function(r){if(r.err){AUI.msg='مقدرتش أوصل لحسابك. جرب تاني.';render();return}
+ var rem=r.row&&r.row.data&&Object.keys(r.row.data).length>1?r.row.data:null,le=localEmpty();
+ if(SY.uid===AU.uid&&SY.mode==='on'){if(rem)applyRemote(rem,'merge');else pushNow().then(function(){render()});return}
+ if(!rem&&le){SY={uid:AU.uid,mode:'on'};save('dash-sync.v1',SY);pushNow().then(function(){render()});return}
+ if(rem&&le){SY={uid:AU.uid,mode:'on'};save('dash-sync.v1',SY);applyRemote(rem,'replace');return}
+ askSync(rem)})}
+function askSync(rem){var old=document.getElementById('syncq');if(old)old.remove();
+ function close(){var e=document.getElementById('syncq');if(e)e.remove()}
+ function choose(m){close();if(m==='skip'){SY={uid:AU.uid,mode:'off'};save('dash-sync.v1',SY);render();return}
+  SY={uid:AU.uid,mode:'on'};save('dash-sync.v1',SY);
+  if(m==='up'){pushNow().then(function(){render()})}else if(m==='down'){applyRemote(rem,'replace')}else{applyRemote(rem,'merge')}}
+ var box=h('div',{class:'amod',id:'syncq',role:'dialog','aria-modal':'true'});var card=h('div',{class:'acard'});
+ card.appendChild(h('h2',{text:'ندمج بياناتك؟'}));
+ if(rem){card.appendChild(h('p',{class:'sub',text:'فيه بيانات على حسابك وبيانات على الجهاز ده. اختار الأول، ومفيش حاجة هتتغير غير بعد اختيارك.'}));
+  card.appendChild(h('button',{class:'btn',type:'button',text:'استخدم بيانات الحساب (بيانات الجهاز هتتشال)',onclick:function(){choose('down')}}));
+  card.appendChild(h('button',{class:'btn',type:'button',text:'ادمج الاتنين (الأحدث في كل قسم يكسب)',onclick:function(){choose('merge')}}))}
+ else{card.appendChild(h('p',{class:'sub',text:'الحساب جديد وفاضي. تحب نرفع بيانات الجهاز ده (جدولك، علاماتك، امتحاناتك، نقاطك) للحساب؟'}));
+  card.appendChild(h('button',{class:'btn',type:'button',text:'أيوه، ارفع بيانات الجهاز',onclick:function(){choose('up')}}))}
+ card.appendChild(h('button',{class:'btn ghost',type:'button',text:'لأ، سيب المزامنة مقفولة',onclick:function(){choose('skip')}}));box.appendChild(card);document.body.appendChild(box)}
+function acctSignOut(){if(!confirm('تسجيل الخروج هيمسح بيانات المذاكرة من الجهاز ده (هتفضل على حسابك). تكمل؟'))return;var tok=AU&&AU.at;var go=function(){wipeLocal()};if(tok){fetch(SB.url+'/auth/v1/logout',{method:'POST',headers:{apikey:SB.key,Authorization:'Bearer '+tok}}).then(go,go)}else go()}
+function wipeLocal(){try{var ks=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('dash-')===0&&k!=='dash-theme.v1'&&k!=='dash-acct-on')ks.push(k)}ks.forEach(function(k){localStorage.removeItem(k)});sessionStorage.clear()}catch(e){}location.replace(location.pathname)}
+function acctDelete(){if(!confirm('ده هيمسح حسابك وكل بياناتك من السيرفر نهائيًا، ومينفعش يترجع. تكمل؟'))return;sbAuthed('/rest/v1/rpc/delete_my_account',{method:'POST',body:{}}).then(function(x){if(x.ok)wipeLocal();else{AUI.msg='مقدرتش أمسح الحساب. جرب تاني.';render()}})}
+var BADW=['fuck','shit','sex','porn','كس','طيز','شرموط','متناك','عرص','خول','زب','نيك'];
+function nickOk(n){n=(n||'').trim();if(n.length<2||n.length>20)return 'الاسم من ٢ لـ ٢٠ حرف.';if(n.indexOf('@')>=0||/https?:|www\./i.test(n))return 'من غير @ أو لينكات.';var low=n.toLowerCase().replace(/[\s._\-]/g,'');for(var i=0;i<BADW.length;i++)if(low.indexOf(BADW[i])>=0)return 'اختار اسم تاني.';return ''}
+function lbPush(){if(!AU||!LB.on||!LB.nick)return;if(lbT)clearTimeout(lbT);lbT=setTimeout(function(){sbAuthed('/rest/v1/rpc/sync_board',{method:'POST',body:lbArgs()}).then(function(x){if(!x.ok)AUI.lbMsg='مقدرتش أحدّث الليدر بورد.'})},4000)}
+function lbLoad(){if(!AU)return;sbAuthed('/rest/v1/rpc/get_leaderboard',{method:'POST',body:{}}).then(function(x){AUI.lb=x.ok&&Array.isArray(x.j)?x.j:[];if(!x.ok)AUI.lbMsg='الليدر بورد مش متاح دلوقتي.';if(ui.tab==='profile')render()})}
+function lbSet(on,nick){if(on){var e=nickOk(nick);if(e){AUI.lbMsg=e;render();return}LB={on:true,nick:nick.trim()};save('dash-lb.v1',LB);sbAuthed('/rest/v1/rpc/sync_board',{method:'POST',body:lbArgs()}).then(function(x){AUI.lbMsg=x.ok?'':'مقدرتش أضيفك. جرب تاني.';if(!x.ok){LB.on=false;save('dash-lb.v1',LB)}lbLoad();render()})}
+ else{LB.on=false;save('dash-lb.v1',LB);sbAuthed('/rest/v1/rpc/remove_leaderboard',{method:'POST',body:{}}).then(function(){AUI.lb=null;AUI.lbMsg='';lbLoad();render()})}}
+function acctGroup(){var g=pgroup('الحساب','حسابك والليدر بورد','user');g.classList.add('acctg');
+ if(!AU){var up=AUI.mode==='up';
+  g.appendChild(h('p',{class:'sub',text:'اعمل حساب بيوزرنيم وباسورد علشان بياناتك (الجدول، الإحصائيات، الامتحانات، النقاط) تلاقيها على أي جهاز. من غير إيميل. التطبيق شغال من غير حساب كمان.'}));
+  var sg=h('div',{class:'seg'});[['in','دخول'],['up','حساب جديد']].forEach(function(o){sg.appendChild(h('button',{type:'button','aria-pressed':String((o[0]==='up')===up),text:o[1],onclick:function(){AUI.mode=o[0];AUI.msg='';render()}}))});g.appendChild(sg);
+  var iu=h('input',{type:'text',autocomplete:'username',placeholder:'اليوزرنيم',value:AUI.un||'',maxlength:'20',autocapitalize:'none',spellcheck:'false'}),ip=h('input',{type:'password',autocomplete:up?'new-password':'current-password',placeholder:'الباسورد (٨ حروف على الأقل)'}),ip2=h('input',{type:'password',autocomplete:'new-password',placeholder:'اكتب الباسورد تاني'});
+  g.appendChild(iu);g.appendChild(ip);if(up)g.appendChild(ip2);
+  g.appendChild(h('button',{class:'btn',type:'button',disabled:AUI.busy,text:AUI.busy?'استنى...':up?'اعمل الحساب':'ادخل',onclick:function(){acctAuth(up?'up':'in',iu.value,ip.value,ip2.value)}}));
+  if(AUI.msg)g.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.msg}));
+  g.appendChild(h('p',{class:'sub',text:'مهم: مفيش استرجاع للباسورد بالإيميل. اختار باسورد تفتكره، لو نسيته مش هنقدر نرجّع الحساب.'}));
+  g.appendChild(h('p',{class:'sub',text:'بنحفظ اليوزرنيم وبيانات مذاكرتك بس. محدش بيشوف بياناتك غيرك.'}));return g}
+ g.appendChild(h('p',{class:'sub',text:'داخل بـ '+(AU.un||'')}));
+ var on=SY.mode==='on'&&SY.uid===AU.uid;
+ g.appendChild(h('p',{class:'sub',text:on?('المزامنة شغالة. '+(AUI.st||'')):'المزامنة مقفولة على الجهاز ده.'}));
+ if(!on)g.appendChild(h('button',{class:'btn',type:'button',text:'شغّل المزامنة',onclick:function(){firstSync()}}));
+ else g.appendChild(h('button',{class:'btn',type:'button',text:'زامن دلوقتي',onclick:function(){pullRemote().then(function(r){if(r.row&&r.row.data)applyRemote(r.row.data,'merge');else pushNow().then(render)})}}));
+ // leaderboard
+ var lbh=h('h3',{class:'ssub',text:'الليدر بورد'});g.appendChild(lbh);
+ g.appendChild(h('p',{class:'sub',text:'ترتيب بالنقاط للتسلية، مش مضمون ضد الغش. الناس بتشوف الاسم المستعار والنقاط بس. اسمك وصورتك بيظهروا للأدمن بس.'}));
+ var sug=(AU.un||'').slice(0,20);
+ var ni=h('input',{type:'text',maxlength:'20',placeholder:'اسمك المستعار في الليدر بورد',value:LB.nick||'',id:'lbn'});g.appendChild(ni);
+ if(!LB.on&&sug&&nickOk(sug)==='')g.appendChild(h('button',{class:'btn ghost sm',type:'button',text:'استخدم «'+sug+'» كاسم؟ (اليوزرنيم بتاعك)',onclick:function(){ni.value=sug}}));
+ g.appendChild(h('button',{class:'btn',type:'button',text:LB.on?'حدّث الاسم':'ضيفني في الليدر بورد',onclick:function(){lbSet(true,ni.value)}}));
+ if(LB.on)g.appendChild(h('button',{class:'btn ghost',type:'button',text:'اخفيني من الليدر بورد',onclick:function(){lbSet(false)}}));
+ if(AUI.lbMsg)g.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.lbMsg}));
+ if(AUI.lb===null)lbLoadOnce();if(!AUI.sl){AUI.sl=true;socialLoad()}
+ if(AUI.lb&&AUI.lb.length){var t=h('div',{class:'lbt'});AUI.lb.forEach(function(r){t.appendChild(h('div',{class:'lbr'+(r.me?' me':'')},h('b',{text:AR(r.pos)}),h('span',{text:r.nick+(r.me?' (أنت)':'')}),h('em',{text:AR(r.pts)})))});g.appendChild(t)}
+ else if(AUI.lb)g.appendChild(h('p',{class:'sub',text:'لسه مفيش حد في الليدر بورد.'}));
+ if(AUI.msg)g.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.msg}));
+ if(LB.on)g.appendChild(socialSection());if(AUI.adm)g.appendChild(adminSection());
+ g.appendChild(h('button',{class:'btn ghost',type:'button',text:'تسجيل الخروج',onclick:acctSignOut}));
+ g.appendChild(h('button',{class:'btn ghost dng',type:'button',text:'امسح حسابي وبياناتي',onclick:acctDelete}));return g}
+function rpc(n,b){return sbAuthed('/rest/v1/rpc/'+n,{method:'POST',body:b||{}})}
+function lbArgs(){var l=(S.pts&&S.pts.l)||{},td=dkey(sday()),st=0,d=sday();if(!l['full:'+dkey(d)])d=dayAdd(d,-1);while(l['full:'+dkey(d)]&&st<400){st++;d=dayAdd(d,-1)}
+ return {p_nick:LB.nick,p_points:ptsTotal(),p_name:((S.profile.name||'').replace(/@/g,'').trim().slice(0,40))||null,p_avatar:LB.av||null,p_streak:st,p_fin:!!l['full:'+td],p_share:LB.share!==false}}
+function socialRender(){if(ui.tab==='profile')render()}
+function socialLoad(){if(!AU)return;admLoad();rpc('is_admin').then(function(x){AUI.adm=x.ok&&x.j===true;if(AUI.adm)rpc('admin_board').then(function(y){AUI.ab=y.ok&&Array.isArray(y.j)?y.j:[];socialRender()});socialRender()});
+ if(!LB.on)return;rpc('my_code').then(function(x){if(x.ok&&typeof x.j==='string')AUI.code=x.j;socialRender()});friendsLoad();
+ rpc('get_weekly').then(function(x){AUI.wk=x.ok&&Array.isArray(x.j)?x.j:[];socialRender()});groupsLoad()}
+function admLoad(){if(!AU)return;sbAuthed('/rest/v1/admin_messages?select=id,body,created_at&order=created_at.desc&limit=5').then(function(x){if(x.ok&&Array.isArray(x.j)){ADMN=x.j.map(function(m){return {id:m.id,text:m.body,at:m.created_at}});AUI.am=x.j;if(ui.tab==='home'||ui.tab==='profile')render()}})}
+function friendsLoad(){rpc('friend_list').then(function(x){AUI.fr=x.ok&&Array.isArray(x.j)?x.j:[];socialRender()})}
+function groupsLoad(){rpc('group_list').then(function(x){AUI.gr=x.ok&&Array.isArray(x.j)?x.j:[];socialRender()})}
+function sbMsgOf(s){return {not_found:'الكود ده مش موجود.',self:'ده كودك انت.',exists:'موجود بالفعل.',limit:'وصلت للحد الأقصى.',full:'المجموعة اتملت.',sent:'الطلب اتبعت.',joined:'دخلت المجموعة.'}[s]||'تمام.'}
+function avatarResize(file,cb){var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){var c=document.createElement('canvas'),s=Math.min(im.width,im.height),n=96;c.width=n;c.height=n;c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,n,n);cb(c.toDataURL('image/jpeg',0.7))};im.onerror=function(){cb(null)};im.src=fr.result};fr.onerror=function(){cb(null)};fr.readAsDataURL(file)}
+function lbRow(pos,nick,pts,me,extra,av){var r=h('div',{class:'lbr'+(me?' me':'')},h('b',{text:AR(pos)}));if(av&&/^data:image\//.test(av)){var im=h('img',{class:'lba',alt:''});im.src=av;r.appendChild(im)}
+ var sp=h('span',{text:nick+(me?' (أنت)':'')});if(extra)sp.appendChild(h('small',{class:'lbx',text:' '+extra}));r.appendChild(sp);r.appendChild(h('em',{text:AR(pts)}));return r}
+function socialSection(){var s=h('div',{class:'sx'});
+ function msg(t){AUI.smsg=t;socialRender()}
+ // profile photo
+ s.appendChild(h('h3',{class:'ssub',text:'صورتك (اختياري)'}));
+ var row=h('div',{class:'avrow'});if(LB.av){var im=h('img',{class:'lba big',alt:''});im.src=LB.av;row.appendChild(im)}
+ var fi=h('input',{type:'file',accept:'image/*',hidden:true});fi.addEventListener('change',function(){var f=fi.files&&fi.files[0];if(!f)return;avatarResize(f,function(d){if(!d){msg('الصورة دي مش شغالة.');return}LB.av=d;save('dash-lb.v1',LB);lbPush();msg('الصورة اتحفظت.')})});
+ row.appendChild(h('button',{class:'btn ghost',type:'button',text:LB.av?'غيّر الصورة':'ضيف صورة',onclick:function(){fi.click()}}));row.appendChild(fi);
+ if(LB.av)row.appendChild(h('button',{class:'btn ghost',type:'button',text:'امسح الصورة',onclick:function(){LB.av=null;save('dash-lb.v1',LB);lbPush();socialRender()}}));s.appendChild(row);
+ s.appendChild(h('p',{class:'sub',text:'اسمك وصورتك بيظهروا للأدمن بس. الاسم المستعار والنقاط بيظهروا للباقي.'}));
+ // weekly board
+ s.appendChild(h('h3',{class:'ssub',text:'الليدر بورد الأسبوعي (بيتصفّر كل اثنين)'}));
+ if(AUI.wk&&AUI.wk.length){var t=h('div',{class:'lbt'});AUI.wk.forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.pts,r.me))});s.appendChild(t)}else s.appendChild(h('p',{class:'sub',text:'لسه مفيش نقاط الأسبوع ده.'}));
+ // friends
+ s.appendChild(h('h3',{class:'ssub',text:'أصحابي'}));
+ if(AUI.code)s.appendChild(h('p',{class:'sub',text:'كودك: '+AUI.code+' (ابعته لصحابك)'}));
+ var ci=h('input',{type:'text',maxlength:'8',placeholder:'اكتب كود صاحبك',id:'frc',autocapitalize:'characters'});s.appendChild(ci);
+ s.appendChild(h('button',{class:'btn',type:'button',text:'ابعت طلب صداقة',onclick:function(){var v=(ci.value||'').trim();if(!v){msg('اكتب الكود الأول.');return}rpc('friend_request',{p_code:v}).then(function(x){msg(x.ok?sbMsgOf(x.j):'مقدرتش أبعت الطلب.');friendsLoad()})}}));
+ var fr=AUI.fr||[];
+ fr.filter(function(f){return f.kind==='incoming'}).forEach(function(f){s.appendChild(h('div',{class:'lbr'},h('span',{text:f.nick+' عايز يضيفك'}),h('button',{class:'btn sm',type:'button',text:'قبول',onclick:function(){rpc('friend_respond',{p_id:f.id,p_accept:true}).then(friendsLoad)}}),h('button',{class:'btn ghost sm',type:'button',text:'رفض',onclick:function(){rpc('friend_respond',{p_id:f.id,p_accept:false}).then(friendsLoad)}})))});
+ var ff=fr.filter(function(f){return f.kind==='friend'}).sort(function(a,b){return b.weekly-a.weekly});
+ if(ff.length){s.appendChild(h('p',{class:'sub',text:'ترتيب صحابك الأسبوع ده:'}));var ft=h('div',{class:'lbt'});ff.forEach(function(f,i){var ex=[];if(f.streak!==null&&f.streak>0)ex.push('🔥'+AR(f.streak));if(f.fin_today===true)ex.push('خلّص النهارده ✓');ft.appendChild(lbRow(i+1,f.nick,f.weekly,false,ex.join(' ')))});s.appendChild(ft);
+  s.appendChild(h('div',{class:'sub',text:'(الرقم هو نقاط الأسبوع)'}));
+  ff.forEach(function(f){});}
+ else s.appendChild(h('p',{class:'sub',text:'لسه معندكش أصحاب. شارك كودك أو اكتب كود صاحبك.'}));
+ fr.filter(function(f){return f.kind==='outgoing'}).forEach(function(f){s.appendChild(h('div',{class:'lbr'},h('span',{text:'طلبك لـ '+f.nick+' مستني الرد'}),h('button',{class:'btn ghost sm',type:'button',text:'إلغاء',onclick:function(){rpc('friend_remove',{p_id:f.id}).then(friendsLoad)}})))});
+ if(ff.length)s.appendChild(h('details',{class:'frm'},h('summary',{text:'إدارة الأصحاب'}),ff.reduce(function(w,f){w.appendChild(h('div',{class:'lbr'},h('span',{text:f.nick}),h('button',{class:'btn ghost sm',type:'button',text:'شيل',onclick:function(){if(confirm('تشيل '+f.nick+' من أصحابك؟'))rpc('friend_remove',{p_id:f.id}).then(friendsLoad)}})));return w},h('div',{}))));
+ var sh=LB.share!==false;
+ s.appendChild(h('button',{class:'btn ghost',type:'button',text:sh?'صحابي بيشوفوا السلسلة وخلصت النهارده: شغّال (دوس تقفل)':'مشاركة السلسلة مقفولة (دوس تشغّل)',onclick:function(){LB.share=!sh;save('dash-lb.v1',LB);lbPush();socialRender()}}));
+ s.appendChild(h('p',{class:'sub',text:'صحابك بيشوفوا الاسم المستعار والنقاط. السلسلة وخلصت النهارده بس لو المشاركة شغالة. مفيش حد بيشوف موادك.'}));
+ // groups
+ s.appendChild(h('h3',{class:'ssub',text:'مجموعات صغيرة'}));
+ var gr=AUI.gr||[];gr.forEach(function(g){var c=h('div',{class:'lbr'},h('span',{text:g.name+' ('+AR(g.members)+' أعضاء) كود: '+g.code}),h('em',{text:AR(g.weekly)}));s.appendChild(c);
+  var bt=h('button',{class:'btn ghost sm',type:'button',text:AUI.gb&&AUI.gb.id===g.id?'اقفل الترتيب':'ترتيب المجموعة',onclick:function(){if(AUI.gb&&AUI.gb.id===g.id){AUI.gb=null;socialRender();return}rpc('group_board',{p_id:g.id}).then(function(x){AUI.gb={id:g.id,rows:x.ok&&Array.isArray(x.j)?x.j:[]};socialRender()})}});
+  var lv=h('button',{class:'btn ghost sm',type:'button',text:'اخرج',onclick:function(){if(confirm('تخرج من '+g.name+'؟'))rpc('group_leave',{p_id:g.id}).then(function(){AUI.gb=null;groupsLoad()})}});s.appendChild(h('div',{class:'frow'},bt,lv));
+  if(AUI.gb&&AUI.gb.id===g.id){var t=h('div',{class:'lbt'});AUI.gb.rows.forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.weekly,r.me))});s.appendChild(t)}});
+ var gn=h('input',{type:'text',maxlength:'30',placeholder:'اسم المجموعة'});s.appendChild(gn);
+ s.appendChild(h('button',{class:'btn',type:'button',text:'اعمل مجموعة',onclick:function(){var v=(gn.value||'').trim();if(v.length<2){msg('اسم المجموعة قصير.');return}rpc('group_create',{p_name:v}).then(function(x){msg(x.ok?(x.j==='limit'?'وصلت للحد الأقصى (٣ مجموعات).':'المجموعة اتعملت. كودها: '+x.j):'مقدرتش أعمل المجموعة.');groupsLoad()})}}));
+ var jc=h('input',{type:'text',maxlength:'8',placeholder:'كود مجموعة',autocapitalize:'characters'});s.appendChild(jc);
+ s.appendChild(h('button',{class:'btn ghost',type:'button',text:'ادخل مجموعة',onclick:function(){var v=(jc.value||'').trim();if(!v){msg('اكتب الكود.');return}rpc('group_join',{p_code:v}).then(function(x){msg(x.ok?sbMsgOf(x.j):'مقدرتش أدخل.');groupsLoad()})}}));
+ if(AUI.smsg)s.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.smsg}));
+ return s}
+function adminSection(){var s=h('div',{class:'sx adm'});s.appendChild(h('h3',{class:'ssub',text:'لوحة الأدمن'}));
+ var ta=h('textarea',{maxlength:'500',rows:'3',placeholder:'اكتب رسالة لكل المستخدمين (بتظهر في الإشعارات)'});s.appendChild(ta);
+ s.appendChild(h('button',{class:'btn',type:'button',text:'ابعت للكل',onclick:function(){var v=(ta.value||'').trim();if(!v)return;sbAuthed('/rest/v1/admin_messages',{method:'POST',prefer:'return=minimal',body:{body:v}}).then(function(x){AUI.smsg=x.ok?'الرسالة اتبعتت.':'مقدرتش أبعت الرسالة.';if(x.ok)ta.value='';admLoad();socialRender()})}}));
+ (AUI.am||[]).forEach(function(m){s.appendChild(h('div',{class:'lbr'},h('span',{text:m.body}),h('button',{class:'btn ghost sm',type:'button',text:'امسح',onclick:function(){sbAuthed('/rest/v1/admin_messages?id=eq.'+m.id,{method:'DELETE'}).then(admLoad)}})))});
+ s.appendChild(h('h3',{class:'ssub',text:'كل المستخدمين'}));
+ var ab=AUI.ab||[];s.appendChild(h('p',{class:'sub',text:'العدد الكلي: '+AR(ab.length?ab[0].total:0)}));
+ var t=h('div',{class:'lbt'});ab.forEach(function(r){t.appendChild(lbRow(r.pos,r.nick,r.pts,false,r.full_name?('· '+r.full_name):'',r.avatar))});s.appendChild(t);return s}
+var lbAsk=false;function lbLoadOnce(){if(lbAsk)return;lbAsk=true;lbLoad()}
+function gateShow(){if(!AC||AU||OB||sessionStorage.getItem('dash-gate'))return;if(ui.tab==='teachers'&&S.mine===null)return;var box=h('div',{class:'amod',id:'gate',role:'dialog','aria-modal':'true'}),card=h('div',{class:'acard'});
+ card.appendChild(h('h2',{text:'أهلًا في Thanawya Plus'}));card.appendChild(h('p',{class:'sub',text:'اعمل حساب بيوزرنيم وباسورد (من غير إيميل) علشان جدولك ونقاطك وامتحاناتك تتحفظ وتلاقيها على أي جهاز، وتدخل الليدر بورد. تقدر تكمل من غير حساب.'}));
+ card.appendChild(h('button',{class:'btn',type:'button',text:'سجّل الدخول',onclick:function(){sessionStorage.setItem('dash-gate','1');box.remove();ui.tab='profile';render()}}));
+ card.appendChild(h('button',{class:'btn ghost',type:'button',text:'كمّل من غير حساب',onclick:function(){sessionStorage.setItem('dash-gate','1');box.remove()}}));box.appendChild(card);document.body.appendChild(box)}
+function acctBoot(){if(!AC)return;if(AU)ensureFresh().then(function(){admLoad();if(AU&&SY.mode==='on'&&SY.uid===AU.uid)pullRemote().then(function(r){if(r.row&&r.row.data){var d=r.row.data,ch=false;SYNCK.forEach(function(k){if(k in d&&((d._t&&d._t[k])||0)>(SYT[k]||0))ch=true});if(ch)applyRemote(d,'merge')}})});else setTimeout(gateShow,600)}
 
 function ptsCard(){var tot=ptsTotal(),lv=Math.floor(tot/200),nm=LVN[Math.min(lv,LVN.length-1)],wk=dkey(dayAdd(sday(),-6)),td=dkey(sday());
  var c=h('div',{class:'ptsc'},h('span',{class:'sub',text:'نقاطك'}),h('div',{class:'big',text:AR(tot)}),
@@ -743,7 +898,7 @@ function avBox(src,txt,cls){return src?h('span',{class:'pav '+(cls||'')},h('img'
 function pfold(g,key,def){var kids=[].slice.call(g.childNodes),hd=kids[0],open=ui.fold[key]===undefined?!!def:!!ui.fold[key],body=h('div',{class:'pfb'});kids.slice(1).forEach(function(k){body.appendChild(k)});body.hidden=!open;g.appendChild(body);hd.classList.add('pfh');hd.setAttribute('role','button');hd.setAttribute('tabindex','0');hd.setAttribute('aria-expanded',String(open));hd.appendChild(chev(open));function tg(){ui.fold[key]=!open;render()}hd.addEventListener('click',tg);hd.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tg()}})}
 function pgroup(a,b,ic){var g=h('section',{class:'pcard'});g.appendChild(h('div',{class:'phd'},h('span',{class:'pic'},icon(ic||'user')),h('div',{},h('p',{class:'plb',text:a}),h('h2',{text:b}))));return g}
 function screenProfile(){
- var f=document.createDocumentFragment();f.appendChild(h('h1',{text:'ملفي'}));f.appendChild(h('p',{class:'sub',text:'كل إعدادات التطبيق هنا. كله بيتحفظ على جهازك بس، ومفيش حاجة بتترفع على أي سيرفر.'}));
+ var f=document.createDocumentFragment();f.appendChild(h('h1',{text:'ملفي'}));f.appendChild(h('p',{class:'sub',text:'كل إعدادات التطبيق هنا. كله بيتحفظ على جهازك. لو عملت حساب بس، اليوزرنيم والنقاط وبيانات المذاكرة بتتحفظ على السيرفر.'}));
  var nm=(S.profile.name||'').trim();
  var hero=h('div',{class:'phero'});
  var htp=h('div',{class:'phtop'},avBox(PH.me,(nm||'؟').charAt(0),'big'),h('div',{class:'phn'},h('strong',{text:nm||'من غير اسم'}),h('span',{class:'sub',text:'طالب تالتة ثانوي'})));
@@ -773,7 +928,7 @@ function screenProfile(){
  var sg=h('div',{class:'seg'});[['light','☀ فاتح'],['dark','☾ داكن']].forEach(function(o,oi){var key=oi?'dark':'light';sg.appendChild(h('button',{type:'button','aria-pressed':String(cur===key),text:o[1],onclick:function(){if(window.dashTheme)window.dashTheme.set(key);render()}}))});g3.appendChild(sg);f.appendChild(g3);
  var g4=pgroup('التواصل','تواصل معانا','chat');g4.appendChild(contactLinks());f.appendChild(g4);
  try{var pc=[].slice.call(f.childNodes).filter(function(n){return n.classList&&n.classList.contains('pcard')});pc.forEach(function(n,i){pfold(n,'pf'+i,i===0)})}catch(e){}
- f.appendChild(h('div',{class:'callout'},h('strong',{text:'عن التطبيق'}),'التطبيق بيحفظ اختياراتك وجدولك وعلاماتك وصورك على جهازك بس. مفيش إشعارات على الموبايل.'));return f}
+ f.appendChild(h('div',{class:'callout'},h('strong',{text:'عن التطبيق'}),'التطبيق بيحفظ اختياراتك وجدولك وعلاماتك وصورك على جهازك. لو عملت حساب، بياناتك بتتحفظ على حسابك. مفيش إشعارات على الموبايل.'));return f}
 function screenTeachers(){
  var first=S.mine===null;if(ui.pick===null)ui.pick=(S.mine||[]).slice();
  var f=document.createDocumentFragment();if(!first)f.appendChild(h('button',{class:'btn back',type:'button',text:'رجوع لملفي',onclick:function(){ui.pick=null;setTab('profile')}}));f.appendChild(header(first?'اختار مدرسينك':'عدّل مدرسينك','اختار المدرسين اللي بتتابعهم، وبعدها الرئيسية هتعرض إعلاناتهم بس. الاختيار بيتحفظ على جهازك.'));
@@ -793,9 +948,9 @@ function screenWizard(){var st=OB.step,f;
  if(st==='name'){f=wizCard(1,'أهلًا بيك','اكتب اسمك الأول. هنستخدمه في الترحيب والملف بتاعك.');
   var inp=h('input',{type:'text',maxlength:'40',placeholder:'اسمك',id:'wzn','aria-label':'اسمك',value:S.profile.name||'',autocomplete:'given-name'});var go=h('button',{class:'btn primary',type:'button',text:'التالي',onclick:function(){var v=inp.value.trim();if(v.length<2){m.textContent='اكتب اسمك (حرفين على الأقل).';return}S.profile.name=v.slice(0,40);save('dash-profile.v1',S.profile);obNext()}});var m=h('p',{class:'late',role:'alert'});
   inp.addEventListener('keydown',function(e){if(e.key==='Enter')go.click()});f.appendChild(h('label',{class:'field'},h('span',{text:'اسمك'}),inp));f.appendChild(m);f.appendChild(h('div',{class:'cta'},go));ui.focus='wzn';return f}
- if(st==='acct'){f=wizCard(2,'حسابك','سجّل بإيميلك علشان بياناتك تتحفظ وتلاقيها على أي جهاز وتدخل الليدر بورد. أو كمّل من غير إيميل وكل حاجة هتتحفظ على جهازك بس.');
-  if(AU){f.appendChild(h('p',{class:'sub',text:'داخل بـ '+AU.email}));f.appendChild(h('div',{class:'cta'},h('button',{class:'btn primary',type:'button',text:'التالي',onclick:obNext})))}
-  else{f.appendChild(acctGroup());f.appendChild(h('button',{class:'btn ghost',type:'button',text:'كمّل من غير إيميل',onclick:function(){SY={uid:null,mode:'off'};save('dash-sync.v1',SY);obNext()}}));f.appendChild(h('p',{class:'sub',text:'من غير إيميل مفيش ليدر بورد ولا مزامنة. تقدر تسجّل بعدين من ملفي.'}))}
+ if(st==='acct'){f=wizCard(2,'حسابك','اعمل حساب بيوزرنيم وباسورد علشان بياناتك تتحفظ وتلاقيها على أي جهاز وتدخل الليدر بورد. أو كمّل من غير حساب وكل حاجة هتتحفظ على جهازك بس.');
+  if(AU){f.appendChild(h('p',{class:'sub',text:'داخل بـ '+(AU.un||'')}));f.appendChild(h('div',{class:'cta'},h('button',{class:'btn primary',type:'button',text:'التالي',onclick:obNext})))}
+  else{f.appendChild(acctGroup());f.appendChild(h('button',{class:'btn ghost',type:'button',text:'كمّل من غير حساب',onclick:function(){SY={uid:null,mode:'off'};save('dash-sync.v1',SY);obNext()}}));f.appendChild(h('p',{class:'sub',text:'من غير حساب مفيش ليدر بورد ولا مزامنة. تقدر تسجّل بعدين من ملفي.'}))}
   return f}
  f=wizCard(4,'امتحانك الجاي','ضيف أقرب امتحان علشان العداد يظهر في الرئيسية. تقدر تتخطى وتضيفه بعدين.');
  var xs=h('input',{type:'text',maxlength:'40',placeholder:'المادة (مثلًا: فيزياء)','aria-label':'المادة'}),xd=h('input',{type:'date','aria-label':'التاريخ'}),xm=h('p',{class:'late',role:'alert'});
