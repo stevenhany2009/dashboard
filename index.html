@@ -136,7 +136,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ١٠:٤٥ م';
+var UPDATED='الخميس ٢٦ نوفمبر ١٠:٥٠ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -609,17 +609,17 @@ function examView(){
  f.appendChild(h('div',{class:'cta'},add,ui.xedit?h('button',{class:'btn',type:'button',text:'إلغاء',onclick:function(){ui.xedit=null;ui.xtext='';render()}}):null));
  if(X.tasks.length&&n===X.tasks.length)f.appendChild(h('p',{class:'sub',text:'كل المهام خلصت. بالتوفيق في الشامل!'}));
  return f}
-var LT=[[6,'englishawy','محاضرة جديدة، الساعة ٩',1],[2,'englishawy','محاضرة جديدة، الساعة ٩',1],[6,'john','محاضرة جديدة',0],[2,'mai','محاضرة جديدة',0],[6,'abdelgwad','محاضرة جديدة',0],[6,'abdelmaaboud','محاضرة جديدة',0],[2,'abdelmaaboud','محاضرة جديدة',0],[0,'essam','محاضرة جديدة',0],[3,'essam','محاضرة جديدة',0]];
+var LT=[[6,'englishawy','محاضرة جديدة',0],[2,'englishawy','محاضرة جديدة',0],[6,'john','محاضرة جديدة',0],[2,'mai','محاضرة جديدة',0],[6,'abdelgwad','محاضرة جديدة',0],[6,'abdelmaaboud','محاضرة جديدة',0],[2,'abdelmaaboud','محاضرة جديدة',0],[0,'essam','محاضرة جديدة',0],[3,'essam','محاضرة جديدة',0]];
 function ltimes(){var g=group('نزول المحاضرات','مواعيد المحاضرات الجديدة'),L=mine(),ids=L.map(function(t){return t.id}),nm={};L.forEach(function(t){nm[t.id]=t.name});
  if(!L.length)g.appendChild(h('p',{class:'sub',text:'اختار مدرسينك الأول من تبويب المدرسين.'}));
  var tdn=sday().getDay(),used={};
  DAYS.forEach(function(d){var rows=LT.filter(function(r){return r[0]===d[0]&&ids.indexOf(r[1])>=0});
   var c=h('div',{class:'lt'+(d[0]===tdn?' today':'')},h('strong',{text:d[1]+(d[0]===tdn?' (النهارده)':'')}));
   if(!rows.length)c.appendChild(h('div',{class:'sub',text:'مفيش'}));
-  rows.forEach(function(r){used[r[1]]=1;c.appendChild(h('div',{class:'ltl'},r[3]?h('span',{class:'ltg off',text:'رسمي'}):null,h('span',{class:'tx'},h('b',{text:nm[r[1]]+': '}),r[2],r[3]?h('a',{href:'https://www.mrenglishawy.com/ar/help',target:'_blank',rel:'noopener',text:' المصدر'}):null)))});g.appendChild(c)});
+  rows.forEach(function(r){used[r[1]]=1;c.appendChild(h('div',{class:'ltl'},h('span',{class:'tx'},h('b',{text:nm[r[1]]+': '}),r[2])))});g.appendChild(c)});
  var none=L.filter(function(t){return !used[t.id]}).map(function(t){return t.name});
  if(none.length){var c3=h('div',{class:'lt'},h('strong',{text:'مفيش جدول معلن'}));c3.appendChild(h('div',{class:'ltl'},h('span',{class:'tx'},none.join('، ')+': محتاج تدخل المنصة')));g.appendChild(c3)}
- g.appendChild(h('p',{class:'ltn',text:'المواعيد من صفحات المنصات المعلنة'}));
+ g.appendChild(h('p',{class:'ltn',text:'مواعيد نزول المحاضرات الجديدة'}));
  return g}
 function screenPlan(){
  var f=document.createDocumentFragment();f.appendChild(header('جدول المذاكرة','علّم على كل مادة خلصتها ولا لأ. التذكير بيظهر هنا لما تفتح الصفحة.'));
