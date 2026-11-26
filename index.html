@@ -136,12 +136,13 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ٨:٠٥ م';
+var UPDATED='الخميس ٢٦ نوفمبر ٨:١٠ م';
 (function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}})();
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
 var TEACHERS=[
  {id:'abdelmaaboud',name:'مستر عبدالمعبود',subject:'فيزياء',items:[
+  {id:11,date:'2026-11-26',tag:'باقة',title:'باقة الشهر الرابع وباقة التلات شهور التانية نزلوا على المنصة',text:'لتالتة ثانوي ٢٠٢٧ عام وأزهر. الإعلان مفيهوش سعر ولا مواعيد. الصورة مكتوب عليها www.AbdElMaaboud.com والخط الساخن 17741.',when:'إعلان ٢٦ نوفمبر ٧:٣٨ م',links:[['المنشور','https://www.youtube.com/post/Ugkx9AdDyr2vQzaDRkLoroeRCV128jFFAiN_']]},
   {id:1,date:'2026-11-24',tag:'امتحان',title:'الشامل الخامس: الجمعة ٢٧ نوفمبر',text:'تالتة ثانوي عام وأزهر. على الفصل الأول كله، والفصل التاني لحد محاضرة الفولتميتر. ١٦ سؤال اختيار وسؤالين مقالي، من ٢٠ درجة، ومدته ساعتين. ساعة البداية مش مكتوبة في الإعلان.',when:'إعلان ٢٤ نوفمبر',links:[['المنشور الرسمي','https://www.youtube.com/post/Ugkx4SQXxJmUcvkMmS47KPkx1hSz8y3OL7C3']]},
   {id:2,date:'2026-11-24',tag:'محاضرة',title:'المحاضرة ٢٣: فولتميتر التيار المستمر',text:'نزلت على المنصة لتالتة ثانوي عام وأزهر.',when:'إعلان ٢٤ نوفمبر',links:[['المنشور الرسمي','https://www.youtube.com/post/UgkxTvoCP5WFbS_BMd6BSw3LblinsFqOB0Pb']]}]},
  {id:'abdelgwad',name:'مستر عبدالجواد',subject:'كيمياء (MAG Academy)',items:[
