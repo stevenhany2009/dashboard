@@ -80,7 +80,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ٦:١٢ م';
+var UPDATED='الخميس ٢٦ نوفمبر ٦:١٦ م';
 (function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}})();
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -99,7 +99,7 @@ var TEACHERS=[
  {id:'john',name:'دكتور جون (جهبذ الكيمياء)',subject:'كيمياء',items:[
   {id:7,date:'2026-11-26',tag:'عرض',title:'بلاك فرايداي: خصم لحد ٦٠٪ على كورسات منصته',text:'ده من عنوان الفيديو بس. ماقريناش التفاصيل ولا شروط العرض ولا مدته، فراجعها من الفيديو نفسه.',when:'فيديو ٢٦ نوفمبر',links:[['الفيديو','https://www.youtube.com/shorts/65tMZXSa_OI']]},
   {id:8,date:'2026-11-24',tag:'فيديو',title:'بداية الشهر الرابع: قفل الباب التالت، خريطة المحاضرات وتجديد الاشتراك',text:'ده من عنوان الفيديو ووصفه المختصر. ماقريناش التفاصيل.',when:'فيديو ٢٤ نوفمبر',links:[['الفيديو','https://www.youtube.com/watch?v=mWIzgR57g0o']]}],channel:['قناة يوتيوب: دكتور جون - جهبذ الكيمياء','https://www.youtube.com/@gahbazchemistry']},
- {id:'gohary',name:'مستر الجوهري',subject:'متابعة القناة',items:[],empty:'لسه مش متابَع. مفيش إعلانات هنا غير لما نضيف مصادره ونتأكد منها.'},
+ {id:'gohary',name:'د. أحمد الجوهري',subject:'أحياء وجيولوجيا',items:[],empty:'مفيش إعلان متأكد منه لتالتة ثانوي لحد دلوقتي.',channel:['قناة يوتيوب: د. أحمد الجوهري','https://www.youtube.com/@Gohary']},
  {id:'kirollos',name:'دكتور كيرلس (الدكتور في الفيزياء)',subject:'فيزياء',items:[],empty:'لسه مش متابَع. مفيش إعلانات هنا غير لما نضيف مصادره ونتأكد منها.',channel:['قناة يوتيوب: الدكتور في الفيزياء - دكتور كيرلس','https://www.youtube.com/@doctor.physics']},
  {id:'englishawy',name:'مستر انجلشاوي (محمود رضوان)',subject:'إنجليزي',items:[
   {id:9,date:'2026-11-23',tag:'مراجعة',title:'مراجعة Unit 2',text:'حسب العنوان، المراجعة لتانية ثانوي مش تالتة. ماقريناش التفاصيل.',when:'٢٣ نوفمبر',links:[['القناة','https://www.youtube.com/@mahmoudradwan.englishawy']]},
