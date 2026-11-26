@@ -129,7 +129,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ٧:٠١ م';
+var UPDATED='الخميس ٢٦ نوفمبر ٧:٠٥ م';
 (function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}})();
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -165,7 +165,7 @@ var S={mine:load('dash-teachers.v1',null),profile:load('dash-profile.v1',{name:'
 var ui={tab:'home',tf:'all',wf:'all',pmode:'today',eday:new Date().getDay(),sub:'',time:'',pick:null};
 if(!Array.isArray(S.mine))S.mine=null;
 
-function h(tag,attrs){var e=document.createElement(tag);attrs=attrs||{};for(var k in attrs){var v=attrs[k];if(k==='class')e.className=v;else if(k==='text')e.textContent=v;else if(k.slice(0,2)==='on')e.addEventListener(k.slice(2),v);else if(v===true)e.setAttribute(k,'');else if(v!==false&&v!=null)e.setAttribute(k,v)}
+function h(tag,attrs){var e=document.createElement(tag);attrs=attrs||{};for(var k in attrs){var v=attrs[k];if(k==='class')e.className=v;else if(k==='text')e.textContent=v;else if(k.slice(0,2)==='on')e.addEventListener(k.slice(2),v);else if(typeof v==='boolean'&&k.slice(0,5)==='aria-')e.setAttribute(k,String(v));else if(v===true)e.setAttribute(k,'');else if(v!==false&&v!=null)e.setAttribute(k,v)}
  for(var i=2;i<arguments.length;i++){var c=arguments[i];if(c==null||c===false)continue;e.appendChild(typeof c==='string'?document.createTextNode(c):c)}return e}
 function pad(n){return String(n).padStart(2,'0')}
 function dkey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
