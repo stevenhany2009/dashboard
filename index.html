@@ -129,7 +129,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ٦:٥٩ م';
+var UPDATED='الخميس ٢٦ نوفمبر ٧:٠١ م';
 (function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}})();
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -261,7 +261,6 @@ function screenHome(){
  var g=group('الإعلانات','آخر تحديث');g.appendChild(h('p',{text:UPDATED}));
  var n=newIds().length;
  g.appendChild(n>0?h('button',{class:'btn primary',type:'button',text:n+' إعلانات جديدة',onclick:function(){setTab('news')}}):h('p',{class:'sub',text:'مفيش إعلانات جديدة من آخر مرة شفت فيها.'}));
- f.appendChild(g);
  var g2=group('العد التنازلي',ex?'أقرب امتحان':'الامتحانات');
  if(ex&&tch){g2.appendChild(h('p',{text:ex.title+' '+ex.subject+' مع '+tch.name+'.'}));g2.appendChild(countdown(ex.at,ex.note))}
  else g2.appendChild(h('p',{text:'مفيش امتحان متأكد منه بتاريخ عند المدرسين اللي اخترتهم لحد دلوقتي.'}));
@@ -269,6 +268,7 @@ function screenHome(){
  var g3=group('النهارده','مذاكرتك النهارده');var list=entries(new Date().getDay()),dm=S.marks[dkey(new Date())]||{};
  g3.appendChild(h('p',{class:'sub',text:list.length?list.filter(function(e){return dm[e.id]===true}).length+' من '+list.length+' خلصتهم النهارده':'مفيش جدول لليوم ده. ضيفه من تبويب «الجدول».'}));
  g3.appendChild(h('button',{class:'btn',type:'button',text:'افتح الجدول',onclick:function(){setTab('plan')}}));f.appendChild(g3);
+ f.appendChild(g);
  return f}
 
 function screenNews(){
