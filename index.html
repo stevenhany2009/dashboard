@@ -223,14 +223,14 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 .chmid b{font-size:15.5px}.chmid small{font-size:13px}
 .chrow.un{border-color:#c9a96a;box-shadow:0 4px 14px rgba(201,169,106,.25)}
 .chbadge{background:linear-gradient(145deg,#e0c68a,#c29a52)!important;color:#14233a!important;font-weight:700;min-width:22px;text-align:center;border-radius:999px!important;padding:2px 7px!important}
-</style>
+.accbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 12px;padding:10px 12px;border-radius:18px;background:var(--card);border:1px solid var(--hair);box-shadow:var(--sh)}.accwho{display:flex;flex-direction:column;line-height:1.25;min-width:0}.accwho small{font-size:11px;color:var(--ink2)}.accwho b{font-size:15px;overflow:hidden;text-overflow:ellipsis}.accout{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #c9a96a;background:rgba(201,169,106,.14);color:var(--ink);font:inherit;font-size:13px;font-weight:700;cursor:pointer}.accout:active{transform:scale(.95)}</style>
 </head>
 <body>
 <div id="app"><main id="screen"></main><nav id="nav" hidden></nav></div>
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ١:٥٥ ص';
+var UPDATED='الجمعة ٢٧ نوفمبر ١:٥٧ ص';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -723,7 +723,7 @@ function askSync(rem){var old=document.getElementById('syncq');if(old)old.remove
  else{card.appendChild(h('p',{class:'sub',text:'الحساب جديد وفاضي. تحب نرفع بيانات الجهاز ده (جدولك، علاماتك، امتحاناتك، نقاطك) للحساب؟'}));
   card.appendChild(h('button',{class:'btn',type:'button',text:'أيوه، ارفع بيانات الجهاز',onclick:function(){choose('up')}}))}
  card.appendChild(h('button',{class:'btn ghost',type:'button',text:'لأ، سيب المزامنة مقفولة',onclick:function(){choose('skip')}}));box.appendChild(card);document.body.appendChild(box)}
-function acctSignOut(){if(!confirm('تسجيل الخروج هيمسح بيانات المذاكرة من الجهاز ده (هتفضل على حسابك). تكمل؟'))return;var tok=AU&&AU.at;var go=function(){wipeLocal()};if(tok){fetch(SB.url+'/auth/v1/logout',{method:'POST',headers:{apikey:SB.key,Authorization:'Bearer '+tok}}).then(go,go)}else go()}
+function acctSignOut(){if(!confirm('هتخرج من الحساب ده وتقدر تدخل بحساب تاني. بيانات المذاكرة هتتمسح من الجهاز ده وهتفضل على حسابك. تكمل؟'))return;var tok=AU&&AU.at;var go=function(){wipeLocal()};if(tok){fetch(SB.url+'/auth/v1/logout',{method:'POST',headers:{apikey:SB.key,Authorization:'Bearer '+tok}}).then(go,go)}else go()}
 function wipeLocal(){try{var ks=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('dash-')===0&&k!=='dash-theme.v1'&&k!=='dash-acct-on')ks.push(k)}ks.forEach(function(k){localStorage.removeItem(k)});sessionStorage.clear()}catch(e){}location.replace(location.pathname)}
 function acctDelete(){if(!confirm('ده هيمسح حسابك وكل بياناتك من السيرفر نهائيًا، ومينفعش يترجع. تكمل؟'))return;Promise.all((AUI.fr||[]).filter(function(f){return f.kind==='friend'}).map(function(f){return chPurge(f.id)})).then(function(){return sbAuthed('/rest/v1/rpc/delete_my_account',{method:'POST',body:{}})}).then(function(x){if(x.ok)wipeLocal();else{AUI.msg='مقدرتش أمسح الحساب. جرب تاني.';render()}})}
 var BADW=['fuck','shit','sex','porn','كس','طيز','شرموط','متناك','عرص','خول','زب','نيك'];
@@ -889,7 +889,7 @@ function secMe(){var s=sxHead('حسابي','');
  var on=SY.mode==='on'&&SY.uid===AU.uid;
  s.appendChild(h('p',{class:'sub',text:on?('بياناتك بتتزامن تلقائي. '+(AUI.st||'')):'المزامنة مقفولة على الجهاز ده.'}));
  if(!on)s.appendChild(h('button',{class:'btn',type:'button',text:'شغّل المزامنة',onclick:function(){firstSync()}}));
- s.appendChild(h('button',{class:'btn ghost',type:'button',text:'تسجيل الخروج',onclick:acctSignOut}));
+ s.appendChild(h('button',{class:'btn ghost',type:'button',text:'تسجيل الخروج / حساب تاني',onclick:acctSignOut}));
  var dt=h('details',{class:'frm'},h('summary',{text:'خيارات متقدمة'}),h('p',{class:'sub',text:'مفيش استرجاع للباسورد بالإيميل. افتكر باسوردك.'}),h('button',{class:'btn ghost dng',type:'button',text:'امسح حسابي وبياناتي',onclick:acctDelete}));s.appendChild(dt);return s}
 function lockNote(){var s=sxHead('الليدربورد مقفول','شغّله الأول علشان تستخدم القسم ده.');s.appendChild(h('button',{class:'btn',type:'button',text:'روح للليدربورد',onclick:function(){AUI.sec='lb';render()}}));return s}
 function secLb(){var s=h('div',{});
@@ -1090,7 +1090,7 @@ function avBox(src,txt,cls){return src?h('span',{class:'pav '+(cls||'')},h('img'
 function pfold(g,key,def){var kids=[].slice.call(g.childNodes),hd=kids[0],open=ui.fold[key]===undefined?!!def:!!ui.fold[key],body=h('div',{class:'pfb'});kids.slice(1).forEach(function(k){body.appendChild(k)});body.hidden=!open;g.appendChild(body);hd.classList.add('pfh');hd.setAttribute('role','button');hd.setAttribute('tabindex','0');hd.setAttribute('aria-expanded',String(open));hd.appendChild(chev(open));function tg(){ui.fold[key]=!open;render()}hd.addEventListener('click',tg);hd.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tg()}})}
 function pgroup(a,b,ic){var g=h('section',{class:'pcard'});g.appendChild(h('div',{class:'phd'},h('span',{class:'pic'},icon(ic||'user')),h('div',{},h('p',{class:'plb',text:a}),h('h2',{text:b}))));return g}
 function screenProfile(){
- var f=document.createDocumentFragment();f.appendChild(h('h1',{text:'ملفي'}));f.appendChild(h('p',{class:'sub',text:'إعداداتك وحسابك.'}));
+ var f=document.createDocumentFragment();f.appendChild(h('h1',{text:'ملفي'}));f.appendChild(h('p',{class:'sub',text:'إعداداتك وحسابك.'}));if(typeof AU!=='undefined'&&AU&&AU.un){f.appendChild(h('div',{class:'accbar'},h('span',{class:'accwho'},h('small',{text:'داخل بحساب'}),h('b',{text:AU.un})),h('button',{class:'accout',type:'button',text:'تسجيل الخروج / حساب تاني',onclick:acctSignOut})))};
  var nm=(S.profile.name||'').trim();
  var hero=h('div',{class:'phero'});
  var htp=h('div',{class:'phtop'},avBox(PH.me,(nm||'؟').charAt(0),'big'),h('div',{class:'phn'},h('strong',{text:nm||'من غير اسم'}),h('span',{class:'sub',text:'طالب تالتة ثانوي'})));
