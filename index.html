@@ -136,7 +136,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ١٠:٣٠ م';
+var UPDATED='الخميس ٢٦ نوفمبر ١٠:٣٥ م';
 setTimeout(function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}},3500);
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -267,7 +267,7 @@ function rvCmd(fr,fn){try{fr.contentWindow.postMessage(JSON.stringify({event:'co
 function rvPlay(s){var fr=s&&s.querySelector('iframe');if(!fr||s._paused)return;s._tries=(s._tries||0);
  function go(){var q=s.querySelector('iframe');if(!q||s._paused)return;rvCmd(q,'unMute');rvCmd(q,'setVolume');rvCmd(q,'playVideo')}
  go();setTimeout(go,600);setTimeout(go,1500);
- setTimeout(function(){var q=s.querySelector('iframe'),o=document.getElementById('rvh');if(!q||s._paused||!o||!o.classList.contains('on')||ui.tab!=='reels')return;if(s._state!==1){rvCmd(q,'mute');rvCmd(q,'playVideo');var b=o.querySelector('.rvum');if(b){b.hidden=false}ui.unm=false}else{ui.unm=true;var b2=o.querySelector('.rvum');if(b2)b2.hidden=true}},3200)}
+ setTimeout(function(){var q=s.querySelector('iframe'),o=document.getElementById('rvh');if(!q||s._paused||!o||!o.classList.contains('on')||ui.tab!=='reels')return;if(typeof s._state==='number'&&s._state!==1&&s._state!==3){ui.snd=false;if(o._go&&!o._go.parentNode)o.appendChild(o._go)}else if(s._state===1){ui.snd=true}},3200)}
 window.addEventListener('message',function(e){if(!/youtube/.test(e.origin||''))return;var d;try{d=JSON.parse(e.data)}catch(x){return}if(!d)return;var st=null;if(d.event==='onStateChange')st=d.info;else if(d.event==='infoDelivery'&&d.info&&typeof d.info.playerState==='number')st=d.info.playerState;if(st===null)return;var o=document.getElementById('rvh');if(!o)return;o.querySelectorAll('.rvs').forEach(function(s){var fr=s.querySelector('iframe');if(fr&&fr.contentWindow===e.source)s._state=st})});
 function rvMk(rr,auto){var d=reelId(rr.url);return h('iframe',{onload:function(e){var w=e.target.contentWindow;[0,500,1500].forEach(function(ms){setTimeout(function(){try{w.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*')}catch(x){}},ms)})},src:'https://www.youtube-nocookie.com/embed/'+d+'?playsinline=1&autoplay='+(auto?1:0)+'&controls=0&rel=0&modestbranding=1&loop=1&playlist='+d+'&enablejsapi=1&hl=ar&origin=https%3A%2F%2Fstevenhany2009.github.io',title:rr.title,allow:'autoplay; encrypted-media; picture-in-picture; fullscreen',allowfullscreen:true,referrerpolicy:'strict-origin-when-cross-origin',frameborder:'0'})}
 function rvActive(){var o=document.getElementById('rvh');return o&&o.querySelectorAll('.rvs')[rvOpen.i]}
@@ -286,10 +286,9 @@ function rvBuild(auto){
   s.appendChild(h('div',{class:'rvtap',onclick:function(){var fr=s.querySelector('iframe');if(!fr)return;s._paused=!s._paused;rvCmd(fr,s._paused?'pauseVideo':'playVideo');s.classList.toggle('rvpz',!!s._paused)}}));
   s.appendChild(h('div',{class:'rvpi',text:'▶'}));feed.appendChild(s)});
  var foot=h('div',{class:'rvfoot'},h('a',{class:'rvl',target:'_blank',rel:'noopener noreferrer',text:'افتح على يوتيوب',href:'#'}),h('span',{class:'rvcr'},'Created by Steven Hany \u00b7 ',h('bdi',{text:'جميع الحقوق محفوظة © ٢٠٢٦'})));
- var um=h('button',{class:'rvum',type:'button',text:'🔇 اضغط للصوت',onclick:function(){ui.unm=true;um.hidden=true;var s=rvActive(),fr=s&&s.querySelector('iframe');if(fr){rvCmd(fr,'unMute');rvCmd(fr,'setVolume');rvCmd(fr,'playVideo')}}});um.hidden=true;
  var go=h('button',{class:'rvgo',type:'button','aria-label':'اضغط للتشغيل'},h('span',{class:'rvgi',text:'▶'}),h('strong',{text:'اضغط للتشغيل'}),h('span',{text:'بالصوت'}));
- go.onclick=function(){ui.snd=true;if(go.parentNode)go.parentNode.removeChild(go);um.hidden=true;var s=rvActive();if(!s)return;var old=s.querySelector('iframe');if(old)s.removeChild(old);var fr=rvMk(rvOpen.list[rvOpen.i],true);s._paused=false;s._state=null;s.classList.remove('rvpz');s.insertBefore(fr,s.firstChild);rvPlay(s)};
- box.appendChild(bar);box.appendChild(feed);box.appendChild(um);box.appendChild(foot);if(!ui.snd)box.appendChild(go);document.body.appendChild(box);
+ go.onclick=function(){ui.snd=true;if(go.parentNode)go.parentNode.removeChild(go);var s=rvActive();if(!s)return;var old=s.querySelector('iframe');if(old)s.removeChild(old);var fr=rvMk(rvOpen.list[rvOpen.i],true);s._paused=false;s._state=null;s.classList.remove('rvpz');s.insertBefore(fr,s.firstChild);rvPlay(s)};
+ box.appendChild(bar);box.appendChild(feed);box._go=go;box.appendChild(foot);if(!ui.snd)box.appendChild(go);document.body.appendChild(box);
  if(!rvKeyOn){rvKeyOn=true;document.addEventListener('keydown',rvKey)}
  var tm=null;feed.addEventListener('scroll',function(){clearTimeout(tm);tm=setTimeout(function(){if(!rvOpen)return;var n=Math.round(feed.scrollTop/feed.clientHeight);if(n!==rvOpen.i&&n>=0&&n<rvOpen.list.length){rvOpen.i=n;ui.ri=n;rvDraw(true)}},90)},{passive:true});
  rvDraw(!!auto);return box}
