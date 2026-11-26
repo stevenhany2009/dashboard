@@ -136,7 +136,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ٩:٤٥ م';
+var UPDATED='الخميس ٢٦ نوفمبر ٩:٥٠ م';
 setTimeout(function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}},3500);
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -208,7 +208,7 @@ function clockTick(){if(!clockEl)return;var left=Math.max(0,clockTarget-Date.now
  var v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];var nums=clockEl.querySelectorAll('.num');for(var i=0;i<4;i++)nums[i].textContent=pad(v[i])}
 function countdown(target,note){
  clockTarget=target;var L=['يوم','ساعة','دقيقة','ثانية'];
- if(target<=Date.now())return h('div',{class:'callout'},h('strong',{text:'يوم الامتحان جه'}),note+' بالتوفيق.');
+ if(target<=Date.now())return h('div',{class:'callout'},h('strong',{text:'الامتحان النهارده'}),'ربنا يوفقك. ');
  var c=h('div',{class:'clock',role:'timer','aria-label':'العد التنازلي للامتحان'});
  L.forEach(function(l){c.appendChild(h('div',{class:'cell'},h('span',{class:'num',text:'00'}),h('span',{class:'lbl',text:l})))});
  clockEl=c;clockTick();
@@ -311,7 +311,7 @@ function lecturesSection(){
  return g}
 function screenHome(){
  var f=document.createDocumentFragment(),now=Date.now();
- var ex=EXAMS.filter(function(e){return (S.mine||[]).indexOf(e.teacher)>=0&&e.at>now}).sort(function(a,b){return a.at-b.at})[0];
+ var ex=EXAMS.filter(function(e){return (S.mine||[]).indexOf(e.teacher)>=0&&e.at+86400000>now}).sort(function(a,b){return a.at-b.at})[0];
  var tch=ex?TEACHERS.filter(function(t){return t.id===ex.teacher})[0]:null;
  var nm=(S.profile.name||'').trim();
  var htop=h('div',{class:'htop'}),htx=h('div',{class:'htx'});if(PH.me)htop.appendChild(h('img',{class:'meav',src:PH.me,alt:''}));htx.appendChild(h('p',{class:'brand',dir:'ltr',text:'Thanawya Plus'}));htx.appendChild(header(nm?'أهلاً يا '+nm:'أهلاً بيك',null,null));htop.appendChild(htx);f.appendChild(htop);
