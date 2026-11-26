@@ -145,6 +145,15 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 .tpk button.go{background:var(--deep);color:#fff;border-color:#d9bf8a;font-weight:700}
 .tpk input{width:84px;min-height:36px;padding:0 8px;border-radius:999px;border:1px solid var(--hair);background:var(--card);color:var(--ink);font:inherit;font-size:13px;text-align:center}
 .tpk{padding:8px 10px;margin-top:2px;border-radius:14px}
+
+.nwrap{position:relative;margin:4px 0 12px;z-index:40}
+.nbar{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--hair);background:var(--card);color:var(--ink);font:inherit;font-size:14px;cursor:pointer;box-shadow:var(--sh)}
+.nbar .nlb{flex:1;text-align:start}.nchev{transition:transform .25s}.nwrap.open .nchev{transform:rotate(180deg)}
+.nbar .nbadge{margin:0}
+.npanel{position:absolute;top:calc(100% + 8px);inset-inline:0;max-height:70vh;overflow:auto;padding:12px 14px;border-radius:20px;border:1px solid #d9bf8a;background:var(--page);box-shadow:0 18px 40px rgba(0,0,0,.35);opacity:0;visibility:hidden;transform:translateY(-8px) scale(.98);transform-origin:top center;transition:opacity .22s ease,transform .22s ease,visibility 0s linear .22s}
+.nwrap.open .npanel{opacity:1;visibility:visible;transform:none;transition:opacity .22s ease,transform .22s ease}
+.npanel .nread{display:block;margin:0 0 4px;padding:6px 0}
+.nrow:first-of-type{border-top:0}
 </style>
 </head>
 <body>
@@ -484,18 +493,25 @@ function notifs(){var out=[],td=dkey(sday()),tdn=sday().getDay(),ids=mine().map(
  try{var l=S.pts.l,c2=dkey(dayAdd(sday(),-1));Object.keys(l).forEach(function(k){var e=l[k];if(!e||e.d<c2)return;if(k.indexOf('full:')===0)out.push({k:k,d:e.d,o:3,tag:'نقاط',tx:'خلّصت يومك كله. +'+AR(e.p)+' نقطة'});else if(k.indexOf('streak:')===0)out.push({k:k,d:e.d,o:3,tag:'استمرار',tx:'سلسلة '+AR(k.split(':')[1])+' أيام ورا بعض. +'+AR(e.p)+' نقطة'})})}catch(e){}
  out.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:a.o-b.o});return out.slice(0,6)}
 function screenNotifBox(){var L=notifs(),ns=load('dash-notif.v1',[]);if(!Array.isArray(ns))ns=[];var un=L.filter(function(x){return ns.indexOf(x.k)<0});
- var g=h('section',{class:'nbox','aria-label':'الإشعارات'});var hd=h('div',{class:'nhd'},h('strong',{text:'الإشعارات'}));if(un.length)hd.appendChild(h('span',{class:'nbadge',text:AR(un.length)}));
- if(un.length)hd.appendChild(h('button',{type:'button',class:'nread',text:'علّم الكل مقروء',onclick:function(){var a=ns.concat(L.map(function(x){return x.k})).slice(-80);save('dash-notif.v1',a);render()}}));g.appendChild(hd);
+ var wrap=h('div',{class:'nwrap'+(ui.nopen?' open':'')});
+ var bar=h('button',{type:'button',class:'nbar','aria-expanded':String(!!ui.nopen),'aria-label':'الإشعارات'},h('span',{class:'nic',text:'🔔'}),h('span',{class:'nlb',text:un.length?'عندك إشعارات جديدة':'الإشعارات'}));
+ if(un.length)bar.appendChild(h('span',{class:'nbadge',text:AR(un.length)}));bar.appendChild(h('span',{class:'nchev',text:'⌄'}));
+ var g=h('section',{class:'npanel','aria-label':'قائمة الإشعارات'});
+ if(un.length)g.appendChild(h('button',{type:'button',class:'nread',text:'علّم الكل مقروء',onclick:function(e){e.stopPropagation();var a=ns.concat(L.map(function(x){return x.k})).slice(-80);save('dash-notif.v1',a);render()}}));
  if(!L.length)g.appendChild(h('p',{class:'sub',text:'مفيش إشعارات جديدة دلوقتي.'}));
  L.forEach(function(x){var u=ns.indexOf(x.k)<0;g.appendChild(h('div',{class:'nrow'+(u?' un':'')},h('span',{class:'ntag',text:x.tag}),h('span',{class:'ntx',text:x.tx})))});
- g.appendChild(h('p',{class:'nfoot',text:'إشعارات جوه التطبيق بس، من غير تنبيهات على الموبايل.'}));return g}
+ g.appendChild(h('p',{class:'nfoot',text:'إشعارات جوه التطبيق بس، من غير تنبيهات على الموبايل.'}));
+ bar.addEventListener('click',function(e){e.stopPropagation();ui.nopen=!ui.nopen;wrap.classList.toggle('open',ui.nopen);bar.setAttribute('aria-expanded',String(!!ui.nopen))});
+ wrap.appendChild(bar);wrap.appendChild(g);
+ if(!window.__nout){window.__nout=1;document.addEventListener('click',function(e){if(ui.nopen&&!(e.target.closest&&e.target.closest('.nwrap'))){ui.nopen=false;var w=document.querySelector('.nwrap');if(w){w.classList.remove('open');var b=w.querySelector('.nbar');if(b)b.setAttribute('aria-expanded','false')}}})}
+ return wrap}
 function screenHome(){
  var f=document.createDocumentFragment(),now=Date.now();
  var exl=nextExams(),ex=exl[0];
  var nm=(S.profile.name||'').trim();
+ try{f.appendChild(screenNotifBox())}catch(e){}
  var htop=h('div',{class:'htop'}),htx=h('div',{class:'htx'});if(PH.me)htop.appendChild(h('img',{class:'meav',src:PH.me,alt:''}));htx.appendChild(h('p',{class:'brand',dir:'ltr',text:'Thanawya Plus'}));htx.appendChild(header(nm?'أهلاً يا '+nm:'أهلاً بيك',null,null));htop.appendChild(htx);f.appendChild(htop);
  var sr=storiesRow();if(sr)f.appendChild(sr);
- try{f.appendChild(screenNotifBox())}catch(e){}
  try{var tp=ptsTotal();f.appendChild(h('p',{class:'pstrip sub',text:'نقاطك: '+AR(tp)+' · المستوى '+AR(Math.floor(tp/200)+1)+' ('+LVN[Math.min(Math.floor(tp/200),LVN.length-1)]+')'}))}catch(e){}
  var g=group('الإعلانات','آخر تحديث');g.appendChild(h('p',{text:UPDATED}));
  var n=newIds().length;
