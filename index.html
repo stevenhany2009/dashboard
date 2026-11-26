@@ -98,6 +98,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 .sv .stx{font-size:17px;line-height:1.8;color:#e6e0d2}
 .sv .links{margin-top:10px;font-size:16px}.sv a{color:#d9bf8a}
 .shint{text-align:center;font-size:11px;color:rgba(255,255,255,.45);margin:0}
+.sv .sbars i{position:relative;overflow:hidden}.sbars b{position:absolute;top:0;bottom:0;inset-inline-start:0;width:0;background:#d9bf8a}
 </style>
 </head>
 <body>
@@ -105,7 +106,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ٦:٣٥ م';
+var UPDATED='الخميس ٢٦ نوفمبر ٦:٤٢ م';
 (function(){try{if(sessionStorage.getItem('sr'))return;sessionStorage.setItem('sr','1');fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED)location.replace(location.pathname+'?v='+Date.now())}).catch(function(){})}catch(e){}})();
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
 
@@ -188,14 +189,15 @@ function shortName(t){return t.name.replace('مستر ','').replace('ميس ',''
 function latest(t){if(!t.items.length)return null;return t.items.slice().sort(function(a,b){var d=(b.date||'').localeCompare(a.date||'');return d!==0?d:b.id-a.id})[0]}
 function storyUnseen(t){var l=latest(t);return !!l&&SS[t.id]!==l.id}
 function ringEl(t,cls){var on=storyUnseen(t);return h('span',{class:'ring'+(on?'':' seen')+(cls?' '+cls:'')},(AV[t.id]?h('span',{class:'av'},h('img',{src:AV[t.id],alt:'',draggable:'false'})):h('span',{class:'av',text:shortName(t).charAt(0)})))}
-function closeStory(){var o=document.getElementById('sv');if(o){o.parentNode.removeChild(o);document.removeEventListener('keydown',storyKey)}if(ui.tab==='home')render()}
+var stTimer=null,STORY_MS=15000;function stopTimer(){if(stTimer){clearInterval(stTimer);stTimer=null}}
+function closeStory(){stopTimer();var o=document.getElementById('sv');if(o){o.parentNode.removeChild(o);document.removeEventListener('keydown',storyKey)}if(ui.tab==='home')render()}
 var curNav=null;function storyKey(e){if(e.key==='Escape')closeStory();else if(curNav&&e.key==='ArrowLeft')curNav.next();else if(curNav&&e.key==='ArrowRight')curNav.prev()}
 function sortedItems(t){return t.items.slice().sort(function(a,b){var d=(b.date||'').localeCompare(a.date||'');return d!==0?d:b.id-a.id})}
 function openStory(list,i,j){
- j=j||0;
+ j=j||0;stopTimer();
  var old=document.getElementById('sv');if(old)old.parentNode.removeChild(old);
  var t=list[i],its=sortedItems(t),l=its[j]||null;if(its.length&&j===0){SS[t.id]=its[0].id;save('dash-story.v1',SS)}
- var n=Math.max(its.length,1),bars=h('div',{class:'sbars'});for(var k=0;k<n;k++)bars.appendChild(h('i',{class:k<=j?'on':''}));
+ var n=Math.max(its.length,1),bars=h('div',{class:'sbars'});var fill=h('b');for(var k=0;k<n;k++){var seg=h('i',{class:k<j?'on':''});if(k===j)seg.appendChild(fill);bars.appendChild(seg)}
  var card=h('div',{class:'svc',role:'dialog','aria-modal':'true'});
  var head=h('div',{class:'shead'},ringEl(t),h('div',{},h('strong',{text:t.name}),h('span',{class:'sub',text:t.subject+(its.length>1?' · '+(j+1)+' من '+its.length:'')})),h('button',{class:'x',type:'button','aria-label':'إغلاق',text:'✕',onclick:function(e){e.stopPropagation();closeStory()}}));
  var body=h('div',{class:'sbody'});
@@ -203,20 +205,21 @@ function openStory(list,i,j){
   body.appendChild(h('p',{class:'title',text:l.title}));body.appendChild(h('p',{class:'stx',text:l.text}));
   var lk=h('div',{class:'links'});l.links.forEach(function(x){lk.appendChild(h('a',{href:x[1],target:'_blank',rel:'noopener noreferrer',text:x[0]}))});body.appendChild(lk)}
  else{body.appendChild(h('p',{class:'stx',text:t.empty||'مفيش إعلان متأكد منه لحد دلوقتي.'}));if(t.channel)body.appendChild(h('div',{class:'links'},h('a',{href:t.channel[1],target:'_blank',rel:'noopener noreferrer',text:t.channel[0]})))}
- card.appendChild(bars);card.appendChild(head);card.appendChild(body);card.appendChild(h('p',{class:'shint',text:'دوس على الجنب للإعلان اللي بعده، واسحب للمدرس التاني'}));
+ card.appendChild(bars);card.appendChild(head);card.appendChild(body);card.appendChild(h('p',{class:'shint',text:'دوس على الجنب للي بعده، اسحب للمدرس التاني، واستمر ضاغط عشان توقف'}));
  var o=h('div',{class:'sv',id:'sv'},card);
  function nextT(){if(i<list.length-1)openStory(list,i+1,0);else closeStory()}
  function prevT(){if(i>0)openStory(list,i-1,0)}
  function nextI(){if(j<its.length-1)openStory(list,i,j+1);else nextT()}
  function prevI(){if(j>0)openStory(list,i,j-1);else prevT()}
- var sx=0,sy=0,down=false;
- o.addEventListener('pointerdown',function(e){down=true;sx=e.clientX;sy=e.clientY});
- o.addEventListener('pointercancel',function(){down=false});
- o.addEventListener('pointerup',function(e){if(!down)return;down=false;var dx=e.clientX-sx,dy=e.clientY-sy;
+ var sx=0,sy=0,down=false,t0=0,paused=false,el=0;
+ o.addEventListener('pointerdown',function(e){down=true;paused=true;t0=Date.now();sx=e.clientX;sy=e.clientY});
+ o.addEventListener('pointercancel',function(){down=false;paused=false});
+ o.addEventListener('pointerup',function(e){if(!down)return;down=false;var dx=e.clientX-sx,dy=e.clientY-sy;paused=false;
   if(e.target.closest&&e.target.closest('a,.x'))return;
   if(dy>90&&Math.abs(dy)>Math.abs(dx)){closeStory();return}
   if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){if(dx<0)nextT();else prevT();return}
-  if(Math.abs(dx)<12&&Math.abs(dy)<12){var r=o.getBoundingClientRect();if(e.clientX-r.left<r.width/2)nextI();else prevI()}});
+  if(Math.abs(dx)<12&&Math.abs(dy)<12&&Date.now()-t0<350){var r=o.getBoundingClientRect();if(e.clientX-r.left<r.width/2)nextI();else prevI()}});
+ var last=Date.now();stTimer=setInterval(function(){var now=Date.now();if(!paused&&!document.hidden)el+=now-last;last=now;fill.style.width=Math.min(100,el/STORY_MS*100)+'%';if(el>=STORY_MS){stopTimer();nextI()}},50);
  curNav={next:nextT,prev:prevT};document.body.appendChild(o);document.removeEventListener('keydown',storyKey);document.addEventListener('keydown',storyKey)}
 function storiesRow(){
  var ms=mine();if(!ms.length)return null;
