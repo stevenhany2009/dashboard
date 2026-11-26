@@ -136,7 +136,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الخميس ٢٦ نوفمبر ١١:٣٥ م';
+var UPDATED='الخميس ٢٦ نوفمبر ١١:٤٠ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -622,7 +622,7 @@ function ltimes(){var g=group('مواعيد محاضرات المدرسين','ح
  order.forEach(function(d){var rows=LT.filter(function(r){return r[0]===d[0]&&ids.indexOf(r[1])>=0});
   var c=h('div',{class:'lt'+(d[0]===tdn?' today':'')},h('strong',{text:d[1]+(d[0]===tdn?' (النهارده)':'')}));
   if(!rows.length){if(d[0]==='x')return;c.appendChild(h('div',{class:'sub',text:'مفيش'}))}
-  rows.forEach(function(r){c.appendChild(h('div',{class:'ltl'},r[2]==='o'?h('span',{class:'ltg off',text:'رسمي'}):r[2]==='i'?h('span',{class:'ltg inf',text:'استنتاج من يوتيوب'}):null,h('span',{class:'tx'},h('b',{text:nm[r[1]]+': '}),r[3])))});g.appendChild(c)});
+  rows.forEach(function(r){c.appendChild(h('div',{class:'ltl'},r[2]==='o'?h('span',{class:'ltg off',text:'رسمي'}):null,h('span',{class:'tx'},h('b',{text:nm[r[1]]+': '}),r[3])))});g.appendChild(c)});
  g.appendChild(h('p',{class:'ltn',text:'المواعيد دي مستنتجة من يوتيوب، ومواعيد المنصات الرسمية محتاجة تدخل عليها'}));
  return g}
 function screenPlan(){
