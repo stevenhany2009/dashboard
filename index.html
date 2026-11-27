@@ -359,7 +359,7 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ٦:١٥ م';
+var UPDATED='الجمعة ٢٧ نوفمبر ٦:٢٧ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -1143,7 +1143,9 @@ var LR=[];
  load(true);chT=setInterval(function(){if(!document.hidden)load()},4000)}
 
 function chatsClose(){var e=document.getElementById('chats');if(e){e.removeAttribute('id');e.classList.add('out');setTimeout(function(){e.remove()},200)}window.__chl=null;if(window.__cht){clearInterval(window.__cht);window.__cht=null}chUnread()}
-var CHG_SUBJ=[['math','رياضيات','تفاضل وتكامل وجبر'],['physics','فيزياء','كهرباء ومغناطيسية وفيزياء حديثة'],['chem','كيمياء','اتزان وعضوية وكهروكيمياء'],['arabic','عربي','نحو ولغة'],['english','إنجليزي','قواعد']];
+var CHG_SUBJ=[['math','رياضيات','تفاضل وتكامل وجبر'],['physics','فيزياء','كهرباء ومغناطيسية وفيزياء حديثة'],['chem','كيمياء','اتزان وعضوية وكهروكيمياء'],['arabic','عربي','نحو ولغة'],['english','إنجليزي','قواعد'],['mixed','مواد مختلطة','من كل المواد']];
+function chgSecsOf(gid){var l=AUI.chg||[];for(var i=0;i<l.length;i++)if(l[i].id===gid)return l[i].secs||20;return 20}
+function chgCfg(g){return AR(g.n)+' أسئلة - '+AR(g.secs||20)+' ث'}
 var CHG_NOTE='أسئلة مراجعة سريعة على أساسيات منهج الثانوية العامة، من تأليف التطبيق وعددها محدود. مش بديل للكتاب المدرسي.';
 function chgSubj(k){for(var i=0;i<CHG_SUBJ.length;i++)if(CHG_SUBJ[i][0]===k)return CHG_SUBJ[i][1];return k}
 function chgSec(ms){return AR((Math.round(ms/100)/10).toFixed(1).replace('.','٫'))}
@@ -1151,15 +1153,21 @@ function chgLoad(cb){if(!AU||!LB.on)return;rpc('ch_list').then(function(x){if(x.
 function chgErrText(x){var t=JSON.stringify((x&&x.j)||'');if(t.indexOf('open game')>=0)return 'فيه تحدي شغّال بينكم لسه. خلّصوه الأول.';if(t.indexOf('too many')>=0)return 'وصلت الحد اليومي: ١٠ تحديات في اليوم.';if(t.indexOf('expired')>=0)return 'التحدي ده انتهى.';return 'حصلت مشكلة. جرّب تاني.'}
 function chgSheet(f){var ov=h('div',{class:'zcgov',role:'dialog','aria-modal':'true'}),sh=h('div',{class:'zcgsh'}),msg=h('p',{class:'zcgmsg',role:'status'});
  function close(){ov.remove()}ov.addEventListener('click',function(e){if(e.target===ov)close()});
- sh.appendChild(h('div',{class:'chgrab'}));sh.appendChild(h('h3',{text:'تحدّى '+f.nick}));sh.appendChild(h('p',{class:'zcgs',text:'اختار المادة. ١٠ أسئلة، ٢٠ ثانية لكل سؤال. الأكتر إجابات صح يكسب، ولو اتساويتوا الأسرع هو اللي يكسب.'}));
+ sh.appendChild(h('div',{class:'chgrab'}));sh.appendChild(h('h3',{text:'تحدّى '+f.nick}));sh.appendChild(h('p',{class:'zcgs',text:'اختار عدد الأسئلة والوقت والمادة. الأكتر إجابات صح يكسب، ولو اتساويتوا الأسرع هو اللي يكسب.'}));
+ var N=10,SEC=20,pn=h('p',{class:'zcgs sm zcgsm'});
+ function seg(lbl,vals,get,set,fmt){sh.appendChild(h('p',{class:'zcgs sm zcgsm',text:lbl}));var sg=h('div',{class:'zcgseg',role:'group','aria-label':lbl});vals.forEach(function(v){var b=h('button',{type:'button','aria-pressed':String(get()===v),class:get()===v?'on':'',text:fmt(v)});b.addEventListener('click',function(){set(v);[].forEach.call(sg.children,function(c,i){var on=vals[i]===v;c.className=on?'on':'';c.setAttribute('aria-pressed',String(on))});note()});sg.appendChild(b)});sh.appendChild(sg)}
+ function note(){pn.textContent=N<10?'التحدي ده تدريب: الـ٥ أسئلة مفيهمش نقاط.':'التحدي ده بيدّي نقاط (الفوز +٣، التعادل +١).'+(N>10?' ١٥ و٢٠ سؤال للمواد المختلطة بس.':'')}
+ seg('عدد الأسئلة',[5,10,15,20],function(){return N},function(v){N=v},function(v){return AR(v)});
+ seg('الوقت لكل سؤال (ثانية)',[10,20,30,45],function(){return SEC},function(v){SEC=v},function(v){return AR(v)});
+ sh.appendChild(pn);note();sh.appendChild(h('p',{class:'zcgs sm zcgsm',text:'المادة'}));
  var busy=false;CHG_SUBJ.forEach(function(s){var b=h('button',{type:'button',class:'zcgsub'},h('span',{class:'zcgi'},ico('trophy',20)),h('span',{class:'zcgt'},h('b',{text:s[1]}),h('small',{text:s[2]})),ico('chv',16));
-  b.addEventListener('click',function(){if(busy)return;busy=true;msg.textContent='بنبعت التحدي...';msg.className='zcgmsg';rpc('ch_create',{p_fid:f.id,p_subject:s[0]}).then(function(x){busy=false;if(x.ok){close();chgLoad(function(){nRefresh()});chgToast('اتبعت التحدي لـ '+f.nick+'. هيظهر عنده في «التحديات».')}else{msg.textContent=chgErrText(x);msg.className='zcgmsg err'}})});sh.appendChild(b)});
+  b.addEventListener('click',function(){if(busy)return;if(N>10&&s[0]!=='mixed'){msg.textContent='١٥ و٢٠ سؤال متاحين للمواد المختلطة بس. اختار «مواد مختلطة» أو قلّل العدد.';msg.className='zcgmsg err';return}busy=true;msg.textContent='بنبعت التحدي...';msg.className='zcgmsg';rpc('ch_create',{p_fid:f.id,p_subject:s[0],p_n:N,p_sec:SEC}).then(function(x){busy=false;if(x.ok){close();chgLoad(function(){nRefresh()});chgToast('اتبعت التحدي لـ '+f.nick+'. هيظهر عنده في «التحديات».')}else{msg.textContent=chgErrText(x);msg.className='zcgmsg err'}})});sh.appendChild(b)});
  sh.appendChild(msg);sh.appendChild(h('p',{class:'zcgs sm',text:CHG_NOTE}));sh.appendChild(h('button',{type:'button',class:'zcgbtn gh',text:'إلغاء',onclick:close}));ov.appendChild(sh);document.body.appendChild(ov)}
 function chgToast(t){var o=document.querySelector('.zcgtoast');if(o)o.remove();var e=h('div',{class:'zcgtoast',role:'status',text:t});document.body.appendChild(e);setTimeout(function(){e.remove()},3800)}
 function chgOpen(){var old=document.getElementById('zcg');if(old)old.remove();var box=h('div',{class:'chat zcg',id:'zcg',role:'dialog','aria-modal':'true'}),body=h('div',{class:'zcgb'}),timer=null,dead=false,first=true;
  function close(){dead=true;clearInterval(timer);box.remove();nRefresh()}
  box.appendChild(h('div',{class:'chtop'},h('button',{class:'x',type:'button','aria-label':'رجوع',text:'→',onclick:close}),h('strong',{text:'التحديات'})));box.appendChild(body);document.body.appendChild(box);
- function card(g,kids){return h('div',{class:'zcgc'},h('div',{class:'zcgct'},h('span',{class:'lba ini',text:(g.nick||'؟').charAt(0)}),h('span',{class:'zcgt'},h('b',{text:g.nick||'صاحبك'}),h('small',{text:chgSubj(g.subject)+' - '+AR(g.n)+' أسئلة'}))),kids)}
+ function card(g,kids){return h('div',{class:'zcgc'},h('div',{class:'zcgct'},h('span',{class:'lba ini',text:(g.nick||'؟').charAt(0)}),h('span',{class:'zcgt'},h('b',{text:g.nick||'صاحبك'}),h('small',{text:chgSubj(g.subject)+' - '+chgCfg(g)}))),kids)}
  function btn(t,cls,fn){return h('button',{type:'button',class:'zcgbtn'+(cls?' '+cls:''),text:t,onclick:fn})}
  function act(g,acc){rpc('ch_respond',{p_gid:g.id,p_accept:acc}).then(function(x){if(!x.ok)chgToast(chgErrText(x));refreshF();if(x.ok&&acc)chgPlay(g.id,refreshF)})}
  function sec(t,arr){if(!arr.length)return;var s=h('div',{class:'zcgsec'},h('h4',{text:t}));arr.forEach(function(c){s.appendChild(c)});body.appendChild(s)}
@@ -1167,7 +1175,7 @@ function chgOpen(){var old=document.getElementById('zcg');if(old)old.remove();va
   L.forEach(function(g){var my=g.status==='done'?(g.iam==='a'?g.res.ca:g.res.cb):0;
    if(g.status==='pending'&&!g.mine)inc.push(card(g,h('div',{class:'zcgrow2'},h('p',{class:'zcgs',text:'بيتحداك. مفيش وقت بيعدّ لحد ما تبدأ.'}),h('div',{class:'zcgbtns'},btn('قبول وابدأ','',function(){act(g,true)}),btn('رفض','gh',function(){act(g,false)})))))
    else if(g.status==='pending')out.push(card(g,h('div',{class:'zcgrow2'},h('p',{class:'zcgs',text:'مستني '+(g.nick||'صاحبك')+' يقبل. بينتهي بعد ٢٤ ساعة.'}),h('div',{class:'zcgbtns'},btn('إلغاء التحدي','gh',function(){act(g,false)})))))
-   else if(g.status==='active'){var fin=g.me_done>=g.n;act2.push(card(g,h('div',{class:'zcgrow2'},h('p',{class:'zcgs',text:fin?('خلّصت. مستني '+(g.nick||'صاحبك')+' ('+AR(g.opp_done)+' من '+AR(g.n)+').'):(g.me_done?('كملت '+AR(g.me_done)+' من '+AR(g.n)+'. الوقت بيعدّ ٢٠ ثانية لكل سؤال.'):'جاهز؟ الوقت بيبدأ لما تدوس ابدأ.')}),fin?'':h('div',{class:'zcgbtns'},btn(g.me_done?'كمّل':'ابدأ','',function(){chgPlay(g.id,refreshF)})))))}
+   else if(g.status==='active'){var fin=g.me_done>=g.n;act2.push(card(g,h('div',{class:'zcgrow2'},h('p',{class:'zcgs',text:fin?('خلّصت. مستني '+(g.nick||'صاحبك')+' ('+AR(g.opp_done)+' من '+AR(g.n)+').'):(g.me_done?('كملت '+AR(g.me_done)+' من '+AR(g.n)+'. الوقت بيعدّ '+AR(g.secs||20)+' ثانية لكل سؤال.'):'جاهز؟ الوقت بيبدأ لما تدوس ابدأ.')}),fin?'':h('div',{class:'zcgbtns'},btn(g.me_done?'كمّل':'ابدأ','',function(){chgPlay(g.id,refreshF)})))))}
    else if(g.status==='done'){var iam=g.iam,w=g.res.w,tag=w===null?'تعادل':(w===iam?'كسبت':'خسرت'),cls=w===null?'dr':(w===iam?'wn':'ls');var c=card(g,h('div',{class:'zcgrow2'},h('div',{class:'zcgres '+cls},h('b',{text:tag}),h('span',{text:AR(my)+' - '+AR(g.iam==='a'?g.res.cb:g.res.ca)})),h('div',{class:'zcgbtns'},btn('شوف النتيجة','gh',function(){chgPlay(g.id,refreshF,true)}))));dn.push(c)}
    else oth.push(card(g,h('p',{class:'zcgs',text:g.status==='declined'?'اترفض.':'انتهى من غير ما يتقبل.'})))});
   if(!L.length)body.appendChild(h('div',{class:'zcgempty'},h('span',{class:'zcgbig'},ico('trophy',40)),h('b',{text:'لسه مفيش تحديات'}),h('p',{class:'zcgs',text:'افتح ملف أي صاحب من الشات ودوس «تحدّى» عشان تبدأ. ممكن تتحدى أي صاحب مقبول عندك.'})));
@@ -1181,7 +1189,7 @@ function chgPlay(gid,onExit,resOnly){var ov=h('div',{class:'chat zcg zcgp',id:'z
  ov.appendChild(h('div',{class:'chtop'},h('button',{class:'x',type:'button','aria-label':'رجوع',text:'→',onclick:function(){if(playing&&!confirm('لو خرجت، الوقت بتاع السؤال الحالي هيفضل يعدّ. تخرج؟'))return;close()}}),ttl));ov.appendChild(body);document.body.appendChild(ov);var playing=false;
  function msgScr(t,s,b){playing=false;body.textContent='';body.appendChild(h('div',{class:'zcgempty'},h('b',{text:t}),s?h('p',{class:'zcgs',text:s}):'',b||''))}
  function errScr(retry){msgScr('حصلت مشكلة','اتأكد من النت وجرّب تاني.',h('button',{type:'button',class:'zcgbtn',text:'جرّب تاني',onclick:retry}))}
- function intro(){playing=false;body.textContent='';body.appendChild(h('div',{class:'zcgempty'},h('span',{class:'zcgbig'},ico('trophy',44)),h('b',{text:'جاهز؟'}),h('p',{class:'zcgs',text:'٢٠ ثانية لكل سؤال، والوقت بيتحسب عند السيرفر. الأسئلة هي نفسها عند صاحبك. الإجابات الصح والنتيجة بتظهر لما انتو الاتنين تخلصوا. لو السؤال خلص وقته بيتحسب غلط.'}),h('button',{type:'button',class:'zcgbtn',text:'ابدأ',onclick:next})))}
+ function intro(){playing=false;body.textContent='';body.appendChild(h('div',{class:'zcgempty'},h('span',{class:'zcgbig'},ico('trophy',44)),h('b',{text:'جاهز؟'}),h('p',{class:'zcgs',text:AR(chgSecsOf(gid))+' ثانية لكل سؤال، والوقت بيتحسب عند السيرفر. الأسئلة هي نفسها عند صاحبك. الإجابات الصح والنتيجة بتظهر لما انتو الاتنين تخلصوا. لو السؤال خلص وقته بيتحسب غلط.'}),h('button',{type:'button',class:'zcgbtn',text:'ابدأ',onclick:next})))}
  function next(){if(dead)return;rpc('ch_next',{p_gid:gid}).then(function(x){if(dead)return;if(!x.ok||!x.j)return errScr(next);var j=x.j;if(j.state==='q')return showQ(j);if(j.state==='done')return result();if(j.state==='wait')return waitScr();msgScr('التحدي مش شغّال','التحدي ده اتلغى أو انتهى.')})}
  function waitScr(){playing=false;body.textContent='';body.appendChild(h('div',{class:'zcgempty'},h('span',{class:'zcgspin'}),h('b',{text:'خلّصت أسئلتك'}),h('p',{class:'zcgs',text:'مستني صاحبك يخلّص عشان تظهر النتيجة. تقدر تخرج وترجع بعدين. لو معملش في نص ساعة من القبول، الأسئلة اللي ماجاوبش عليها بتتحسب غلط.'})));clearTimeout(pt);pt=setTimeout(function(){if(!dead)next()},3000)}
  function showQ(j){playing=true;body.textContent='';var L=['أ','ب','ج','د'],locked=false,deadline=Date.now()+j.left*1000;
@@ -1191,14 +1199,14 @@ function chgPlay(gid,onExit,resOnly){var ov=h('div',{class:'chat zcg zcgp',id:'z
   var q=h('div',{class:'zcgq',dir:'rtl',text:j.q});body.appendChild(q);var ol=h('div',{class:'zcgols'});
   function send(ch,btn2){if(locked)return;locked=true;clearInterval(tm);if(btn2)btn2.classList.add('sel');[].forEach.call(ol.children,function(b){b.disabled=true});rpc('ch_answer',{p_gid:gid,p_idx:j.idx,p_choice:ch}).then(function(){if(dead)return;setTimeout(next,350)})}
   j.opts.forEach(function(o,i){var b=h('button',{type:'button',class:'zcgo'},h('span',{class:'zcgl',text:L[i]}),h('span',{class:'zcgot',dir:'rtl',text:o}));b.addEventListener('click',function(){send(i,b)});ol.appendChild(b)});body.appendChild(ol);
-  fill.style.width=(j.left/20*100)+'%';fill.style.transition='width '+j.left+'s linear';setTimeout(function(){fill.style.width='0%'},30);
+  fill.style.width=(j.left/(j.secs||20)*100)+'%';fill.style.transition='width '+j.left+'s linear';setTimeout(function(){fill.style.width='0%'},30);
   tm=setInterval(function(){var left=Math.max(0,Math.ceil((deadline-Date.now())/1000));sec.textContent=AR(left);if(left<=5)tb.classList.add('warn');if(Date.now()>=deadline)send(-1,null)},250)}
  function result(){playing=false;body.textContent='';body.appendChild(h('p',{class:'zcgs',text:'بنجيب النتيجة...'}));rpc('ch_result',{p_gid:gid}).then(function(x){if(dead)return;if(!x.ok||!x.j)return errScr(result);var j=x.j,r=j.res,iam=j.iam,mc=iam==='a'?r.ca:r.cb,oc=iam==='a'?r.cb:r.ca,mt=iam==='a'?r.ta:r.tb,ot=iam==='a'?r.tb:r.ta,mp=iam==='a'?r.pa:r.pb,w=r.w,cls=w===null?'dr':(w===iam?'wn':'ls'),tag=w===null?'تعادل':(w===iam?'كسبت التحدي':'خسرت المرة دي'),nk=j.nick||'صاحبك';
    body.textContent='';ttl.textContent='نتيجة التحدي';
    var bn=h('div',{class:'zcgban '+cls},h('span',{class:'zcgbig'},ico(w===null?'chat':'trophy',40)),h('b',{text:tag}),h('div',{class:'zcgscore'},h('span',{},h('small',{text:'أنت'}),h('i',{text:AR(mc)})),h('em',{text:'-'}),h('span',{},h('small',{text:nk}),h('i',{text:AR(oc)}))),h('p',{class:'zcgs',text:chgSubj(j.subject)+(mc===oc&&w!==null?' - اتساويتوا في الإجابات والأسرع كسب':'')+(w===null?' - اتساويتوا في الإجابات والوقت':'')}));body.appendChild(bn);
    body.appendChild(h('div',{class:'zcgstat'},h('div',{},h('small',{text:'وقتك'}),h('b',{text:chgSec(mt)+' ث'})),h('div',{},h('small',{text:'وقت '+nk}),h('b',{text:chgSec(ot)+' ث'})),h('div',{},h('small',{text:'نقاط التحدي'}),h('b',{text:'+'+AR(mp)}))));
    if(mp===0&&w!==null&&!(w!==iam&&w!==null))body.appendChild(h('p',{class:'zcgs sm',text:'مفيش نقاط المرة دي: يا وصلت الحد اليومي (١٥ نقطة) يا لعبتوا ٣ تحديات النهارده مع بعض، يا التعادل كان ٠ إجابات صح.'}));
-   body.appendChild(h('p',{class:'zcgs sm',text:'نقاط التحدي بتتحسب في الليدربورد (الكل). الوقت المحسوب من السيرفر، والسؤال اللي ما اتجاوبش بيتحسب ٢٠ ثانية.'}));
+   body.appendChild(h('p',{class:'zcgs sm',text:'نقاط التحدي بتتحسب في الليدربورد (الكل). الوقت المحسوب من السيرفر، والسؤال اللي ما اتجاوبش بيتحسب '+AR(chgSecsOf(gid))+' ثانية.'}));
    var ls=h('div',{class:'zcgsec'},h('h4',{text:'الأسئلة'}));(j.rows||[]).forEach(function(q,i){var wrong=!q.mok;ls.appendChild(h('div',{class:'zcgrv'},h('div',{class:'zcgrq',dir:'rtl',text:AR(i+1)+'. '+q.q}),h('div',{class:'zcgra',dir:'rtl'},ico('chk2',16),h('span',{text:q.right})),h('div',{class:'zcgrm'},h('span',{class:q.mok?'ok':'bad',text:'إنت: '+(q.mok?'صح':(q.mine?('غلط ('+q.mine+')'):'ما جاوبتش'))}),h('span',{class:q.tok?'ok':'bad',text:nk+': '+(q.tok?'صح':(q.theirs?'غلط':'ما جاوبش'))}))))});body.appendChild(ls);
    body.appendChild(h('button',{type:'button',class:'zcgbtn',text:'رجوع للتحديات',onclick:close}));rpc('ch_week_map').then(function(y){if(y.ok&&y.j&&typeof y.j==='object')AUI.cw=y.j})})}
  if(resOnly)result();else intro()}
