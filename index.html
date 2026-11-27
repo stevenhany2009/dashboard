@@ -310,14 +310,14 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 .chrow.un .chmid small{color:var(--ink);font-weight:700}.chrow.un{background:linear-gradient(90deg,rgba(201,169,106,.10),transparent)!important}
 .chs{padding:0!important;gap:0!important}
 #chats .chtop strong{font-size:20px;flex:1;margin-inline-start:6px}
-.cpst{padding:14px}.cpst h4{margin:0 0 10px}</style>
+.cpst{padding:14px}.cpst h4{margin:0 0 10px}.chsend::before{content:none!important;display:none!important;-webkit-mask:none!important;mask:none!important}.chsend svg,.chsend .ico{display:block}.chsend{flex:0 0 auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;overflow:hidden}.chsend *{pointer-events:none}.chmic{touch-action:manipulation;flex:0 0 auto}</style>
 </head>
 <body>
 <div id="app"><main id="screen"></main><nav id="nav" hidden></nav></div>
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ٥:٢١ م';
+var UPDATED='الجمعة ٢٧ نوفمبر ٥:٣٦ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -1006,7 +1006,7 @@ var LR=[];
  for(var q=0;q<28;q++){var bb=h('i',{});rbars.push(bb);rvz.appendChild(bb)}
  rec.appendChild(rcan);rec.appendChild(rdot);rec.appendChild(rtime);rec.appendChild(rvz);rec.appendChild(rsend);
  function vsync(){var has=!!((ta.value||'').trim()||pimg||pvid);send.style.display=has?'':'none';mic.style.display=has?'none':''}
- ta.addEventListener('input',vsync);try{new MutationObserver(vsync).observe(chip,{childList:true})}catch(e){}
+ ta.addEventListener('input',vsync);['keyup','change','compositionend','paste','cut'].forEach(function(ev2){ta.addEventListener(ev2,function(){setTimeout(vsync,0)})});[send,mic].forEach(function(bt){bt.addEventListener('mousedown',function(e){e.preventDefault()})});try{new MutationObserver(vsync).observe(chip,{childList:true})}catch(e){}
  function recUI(on){rec.style.display=on?'flex':'none';[cam,ta,send,mic].forEach(function(x){x.style.display=on?'none':''});if(!on)vsync()}
  function recStop(cancel){rcancel=!!cancel;clearInterval(rtm);if(MR&&MR.state!=='inactive'){try{MR.stop()}catch(e){}}else recUI(false)}
  window.__recStop=function(){rcancel=true;if(MR&&MR.state!=='inactive'){try{MR.stop()}catch(e){}}clearInterval(rtm);window.__recStop=null};
@@ -1095,7 +1095,7 @@ var LR=[];
   if(stick||near)list.scrollTop=list.scrollHeight;else if(!same)list.scrollTop=st}
  function load(stick){rq('chat_list',{p_fid:f.id}).then(function(x){if(x.ok&&Array.isArray(x.j)){paint(x.j,stick);rxLoad();rq('chat_mark',{p_fid:f.id})}else if(!x.ok&&x.status!==0){chatClose();if(G)groupsLoad();else{AUI.un={};friendsLoad()}}})}
  function fin(x,path){send.disabled=false;if(x.ok){err.textContent='';ta.value='';err.textContent='';if(pu)URL.revokeObjectURL(pu);pimg=null;pu=null;if(pvid){try{URL.revokeObjectURL(pvid.url)}catch(e){}pvid=null}pchip();setRep(null);load(true);vsync()}else{if(path)chFileDel(path);err.textContent=(x.j&&JSON.stringify(x.j).indexOf('rate')>=0)?'بتبعت بسرعة. استنى شوية.':'الرسالة مبعتتش. جرب تاني.'}}
- function doSend(){var b=(ta.value||'').trim();if(!b&&!pimg&&!pvid)return;send.disabled=true;if(pvid){vidSend(b);return}if(pimg){err.textContent='بنرفع الصورة...';var path=(G?'g':'')+f.id+'/'+AU.uid+'/'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)+'.jpg';ensureFresh().then(function(){return fetch(SB.url+'/storage/v1/object/chat/'+path,{method:'POST',headers:stAuthHd('image/jpeg'),body:pimg})}).then(function(r){if(!r.ok){send.disabled=false;err.textContent='رفع الصورة فشل. جرب تاني.';return}rq('chat_send',{p_fid:f.id,p_body:b,p_image:path,p_reply:rep?rep.id:null}).then(function(x){fin(x,path)})},function(){send.disabled=false;err.textContent='رفع الصورة فشل. جرب تاني.'})}else rq('chat_send',{p_fid:f.id,p_body:b,p_reply:rep?rep.id:null}).then(function(x){fin(x,null)})}
+ function doSend(){var b=(ta.value||'').trim();if(!b&&!pimg&&!pvid)return;send.disabled=true;if(pvid){vidSend(b);return}if(pimg){err.textContent='بنرفع الصورة...';var path=(G?'g':'')+f.id+'/'+AU.uid+'/'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)+'.jpg';ensureFresh().then(function(){return fetch(SB.url+'/storage/v1/object/chat/'+path,{method:'POST',headers:stAuthHd('image/jpeg'),body:pimg})}).then(function(r){if(!r.ok){send.disabled=false;err.textContent='رفع الصورة فشل. جرب تاني.';return}rq('chat_send',{p_fid:f.id,p_body:b,p_image:path,p_reply:rep?rep.id:null}).then(function(x){fin(x,path)})},function(){send.disabled=false;err.textContent='رفع الصورة فشل. جرب تاني.'})}else rq('chat_send',{p_fid:f.id,p_body:b,p_reply:rep?rep.id:null}).then(function(x){fin(x,null)},function(){send.disabled=false;err.textContent='الرسالة مبعتتش. جرب تاني.'})}
  function grow(){ta.style.height='auto';ta.style.height=Math.min(110,ta.scrollHeight)+'px'}ta.addEventListener('input',grow);send.addEventListener('click',function(){doSend();setTimeout(grow,0)});ta.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend()}});
  box.appendChild(top);box.appendChild(sbar);box.appendChild(list);box.appendChild(jb);box.appendChild(err);box.appendChild(qbar);box.appendChild(chip);box.appendChild(perm);box.appendChild(h('div',{class:'chin'},cam,ta,send,mic,rec,fi,fcam,fv,fvc));document.body.appendChild(box);vsync();
  load(true);chT=setInterval(function(){if(!document.hidden)load()},4000)}
