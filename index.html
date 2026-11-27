@@ -352,14 +352,14 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 .zcgrow .lba{background:linear-gradient(145deg,#e4cd96,#c29a52);color:#14233a}
 .zcgseg{display:flex;gap:6px;padding:4px;border-radius:16px;background:var(--hair);margin:6px 0 2px}.zcgseg button{flex:1;min-height:40px;border:0;border-radius:12px;background:transparent;color:var(--ink2);font:inherit;font-weight:700;cursor:pointer}.zcgseg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(10,20,40,.12)}.zcgsm{margin:2px 4px 10px}
 .zcgpc{padding:12px;display:flex;flex-direction:column;gap:10px}.zcgpc .zcgbtn{width:100%}
-</style>
+.zncard{margin:12px 0;padding:14px;border-radius:14px;border:1px solid rgba(201,162,39,.35);background:rgba(255,255,255,.04)}.znrow{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;gap:10px}.zncard .btn{display:block;width:100%;margin:10px 0;position:static}.zncb{width:22px;height:22px;accent-color:#c9a227}</style>
 </head>
 <body>
 <div id="app"><main id="screen"></main><nav id="nav" hidden></nav></div>
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ٦:٤٨ م';
+var UPDATED='الجمعة ٢٧ نوفمبر ٧:٢٩ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -847,7 +847,8 @@ function schedPush(){if(pushT)clearTimeout(pushT);pushT=setTimeout(pushNow,3000)
 function sbErr(r,j){if(r.status===429||(j&&j.error_code==='over_email_send_rate_limit'))return 'استنى شوية وجرب تاني (طلبات كتير).';if(r.status===0)return 'مفيش نت. جرب تاني.';var m=(j&&(j.msg||j.message||j.error_description||j.error))||'';if(/invalid|expired|token/i.test(m))return 'الكود غلط أو خلص وقته.';if(/email/i.test(m))return 'الإيميل مش صحيح.';return 'حصلت مشكلة ('+String(m).slice(0,40)+').'}
 function sbf(path,o,auth){o=o||{};var hd={apikey:SB.key,'Content-Type':'application/json'};if(auth!==false&&AU)hd.Authorization='Bearer '+AU.at;if(o.prefer)hd.Prefer=o.prefer;
  return fetch(SB.url+path,{method:o.method||'GET',headers:hd,body:o.body?JSON.stringify(o.body):undefined}).then(function(r){return r.text().then(function(t){var j=null;try{j=t?JSON.parse(t):null}catch(e){}return {r:r,j:j,ok:r.ok,status:r.status}})},function(){return {r:{status:0},j:null,ok:false,status:0}})}
-function sbAuthed(path,o){return ensureFresh().then(function(){return sbf(path,o)})}
+var ZNS=0;function znSync(){var N=window.ThanawyaNative;if(!N||!AU||ZNS)return;ZNS=1;ensureFresh().then(function(){return sbf('/rest/v1/rpc/np_key',{method:'POST',body:{}})}).then(function(x){if(x&&x.ok&&typeof x.j==='string'&&x.j)N.setAccount(x.j);else ZNS=0}).catch(function(){ZNS=0})}
+function sbAuthed(path,o){znSync();return ensureFresh().then(function(){return sbf(path,o)})}
 function ensureFresh(){if(!AU)return Promise.resolve();if(AU.exp-Date.now()>60000)return Promise.resolve();return sbf('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:AU.rt}},false).then(function(x){if(x.ok&&x.j&&x.j.access_token)setSession(x.j);else if(x.status===400||x.status===401){AU=null;save('dash-auth.v1',null)}})}
 function setSession(j,un){var em=(j.user&&j.user.email)||(AU&&AU.email)||'';AU={at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,uid:(j.user&&j.user.id)||(AU&&AU.uid),email:em,un:un||(AU&&AU.un)||''};save('dash-auth.v1',AU)}
 function unNorm(u){return String(u||'').normalize('NFKC').trim().toLowerCase().replace(/\s+/g,' ')}
@@ -882,8 +883,15 @@ function askSync(rem){var old=document.getElementById('syncq');if(old)old.remove
  else{card.appendChild(h('p',{class:'sub',text:'الحساب جديد وفاضي. تحب نرفع بيانات الجهاز ده (جدولك، علاماتك، امتحاناتك، نقاطك) للحساب؟'}));
   card.appendChild(h('button',{class:'btn',type:'button',text:'أيوه، ارفع بيانات الجهاز',onclick:function(){choose('up')}}))}
  card.appendChild(h('button',{class:'btn ghost',type:'button',text:'لأ، سيب المزامنة مقفولة',onclick:function(){choose('skip')}}));box.appendChild(card);document.body.appendChild(box)}
+function znCard(){var N=window.ThanawyaNative;var c=h('div',{class:'zncard'},h('strong',{text:'الإشعارات'}));
+if(!N){c.appendChild(h('p',{class:'sub fine',text:'الإشعارات بتشتغل في تطبيق الأندرويد بس. نزّل التطبيق من صفحة التطبيق.'}));return c}
+var st={};try{st=JSON.parse(N.getState())}catch(e){}
+if(st.perm===false){c.appendChild(h('button',{class:'btn',type:'button',text:'فعّل الإشعارات',onclick:function(){try{N.askPerm()}catch(e){}setTimeout(function(){setTab('profile')},1500)}}))}
+if(!AU)c.appendChild(h('p',{class:'sub fine',text:'سجّل دخول بحساب علشان توصلك إشعارات الأصدقاء والشات.'}));
+[['ann','الإعلانات الجديدة'],['fc','طلبات الصداقة والتحديات'],['chat','رسايل الشات']].forEach(function(r){var cb=h('input',{type:'checkbox',class:'zncb'});cb.checked=st[r[0]]!==false;cb.onchange=function(){try{N.setPref(r[0],cb.checked)}catch(e){}};c.appendChild(h('label',{class:'znrow'},h('span',{text:r[1]}),cb))});
+c.appendChild(h('p',{class:'sub fine',text:'رسايل الشات بتوصل كـ «رسالة جديدة» من غير نص.'}));return c}
 function acctSignOut(){if(!confirm('هتخرج من الحساب ده وتقدر تدخل بحساب تاني. بيانات المذاكرة هتتمسح من الجهاز ده وهتفضل على حسابك. تكمل؟'))return;var tok=AU&&AU.at;var go=function(){wipeLocal()};if(tok){fetch(SB.url+'/auth/v1/logout',{method:'POST',headers:{apikey:SB.key,Authorization:'Bearer '+tok}}).then(go,go)}else go()}
-function wipeLocal(){try{var ks=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('dash-')===0&&k!=='dash-theme.v1'&&k!=='dash-acct-on')ks.push(k)}ks.forEach(function(k){localStorage.removeItem(k)});sessionStorage.clear()}catch(e){}location.replace(location.pathname)}
+function wipeLocal(){try{if(window.ThanawyaNative)window.ThanawyaNative.clearAccount()}catch(e){}try{var ks=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('dash-')===0&&k!=='dash-theme.v1'&&k!=='dash-acct-on')ks.push(k)}ks.forEach(function(k){localStorage.removeItem(k)});sessionStorage.clear()}catch(e){}location.replace(location.pathname)}
 function acctDelete(){if(!confirm('ده هيمسح حسابك وكل بياناتك من السيرفر نهائيًا، ومينفعش يترجع. تكمل؟'))return;Promise.all((AUI.fr||[]).filter(function(f){return f.kind==='friend'}).map(function(f){return chPurge(f.id)})).then(function(){return sbAuthed('/rest/v1/rpc/delete_my_account',{method:'POST',body:{}})}).then(function(x){if(x.ok)wipeLocal();else{AUI.msg='مقدرتش أمسح الحساب. جرب تاني.';render()}})}
 var BADW=['fuck','shit','sex','porn','كس','طيز','شرموط','متناك','عرص','خول','زب','نيك'];
 function nickOk(n){n=(n||'').trim();if(n.length<2||n.length>20)return 'الاسم من ٢ لـ ٢٠ حرف.';if(n.indexOf('@')>=0||/https?:|www\./i.test(n))return 'من غير @ أو لينكات.';var low=n.toLowerCase().replace(/[\s._\-]/g,'');for(var i=0;i<BADW.length;i++)if(low.indexOf(BADW[i])>=0)return 'اختار اسم تاني.';return ''}
@@ -1562,7 +1570,7 @@ f.appendChild(hero);try{f.appendChild(ptsCard())}catch(e){}try{if(AC)f.appendChi
  var sg=h('div',{class:'seg'});[['light','☀ فاتح'],['dark','☾ داكن']].forEach(function(o,oi){var key=oi?'dark':'light';sg.appendChild(h('button',{type:'button','aria-pressed':String(cur===key),text:o[1],onclick:function(){if(window.dashTheme)window.dashTheme.set(key);render()}}))});g3.appendChild(sg);f.appendChild(g3);
  var g4=pgroup('التواصل','تواصل معانا','chat');g4.appendChild(contactLinks());f.appendChild(g4);
  try{var pc=[].slice.call(f.childNodes).filter(function(n){return n.classList&&n.classList.contains('pcard')});pc.forEach(function(n,i){pfold(n,'pf'+i,i===0)})}catch(e){}
- f.appendChild(h('div',{class:'callout'},h('strong',{text:'عن التطبيق'}),'التطبيق بيحفظ اختياراتك وجدولك وعلاماتك وصورك على جهازك. لو عملت حساب، بياناتك بتتحفظ على حسابك. مفيش إشعارات على الموبايل.'));if(typeof AU!=='undefined'&&AU&&AU.un)f.appendChild(h('div',{class:'logoutwrap'},h('button',{class:'logoutbtn',type:'button',text:'تسجيل الخروج',onclick:acctSignOut}),h('p',{class:'sub fine',text:'داخل بحساب '+AU.un+'. بعد الخروج تقدر تدخل بحساب تاني.'})));if(typeof AU!=='undefined'&&AU&&AU.un)f.appendChild(h('div',{class:'delwrap'},h('button',{class:'btn ghost dng',type:'button',text:'امسح حسابي وبياناتي',onclick:acctDelete}),h('p',{class:'sub fine',text:'بيمسح حسابك وكل بياناتك من السيرفر نهائيًا، وهيطلب منك تأكيد قبل ما يمسح.'})));return f}
+ try{f.appendChild(znCard())}catch(e){}f.appendChild(h('div',{class:'callout'},h('strong',{text:'عن التطبيق'}),'التطبيق بيحفظ اختياراتك وجدولك وعلاماتك وصورك على جهازك. لو عملت حساب، بياناتك بتتحفظ على حسابك. الإشعارات بتشتغل في تطبيق الأندرويد.'));if(typeof AU!=='undefined'&&AU&&AU.un)f.appendChild(h('div',{class:'logoutwrap'},h('button',{class:'logoutbtn',type:'button',text:'تسجيل الخروج',onclick:acctSignOut}),h('p',{class:'sub fine',text:'داخل بحساب '+AU.un+'. بعد الخروج تقدر تدخل بحساب تاني.'})));if(typeof AU!=='undefined'&&AU&&AU.un)f.appendChild(h('div',{class:'delwrap'},h('button',{class:'btn ghost dng',type:'button',text:'امسح حسابي وبياناتي',onclick:acctDelete}),h('p',{class:'sub fine',text:'بيمسح حسابك وكل بياناتك من السيرفر نهائيًا، وهيطلب منك تأكيد قبل ما يمسح.'})));return f}
 function screenTeachers(){
  var first=S.mine===null||!!(OB&&OB.step==='teachers');if(ui.pick===null)ui.pick=(S.mine||[]).slice();
  var f=document.createDocumentFragment();if(OB&&OB.step==='teachers')f.appendChild(wizCard(3,'مدرسينك','اختار المدرسين اللي بتتابعهم. الرئيسية هتعرض إعلاناتهم بس.'));else{if(!first)f.appendChild(h('button',{class:'btn back',type:'button',text:'رجوع لملفي',onclick:function(){ui.pick=null;setTab('profile')}}));if(1)f.appendChild(header(first?'اختار مدرسينك':'عدّل مدرسينك','اختار المدرسين اللي بتتابعهم، وبعدها الرئيسية هتعرض إعلاناتهم بس. الاختيار بيتحفظ على جهازك.'))}
