@@ -240,7 +240,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ١:٢٩ م';
+var UPDATED='الجمعة ٢٧ نوفمبر ١:٣١ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -257,7 +257,7 @@ var TEACHERS=[
   {id:5,date:'2026-11-23',tag:'كورس',title:'باقي التفاضل والتكامل: الحجز مفتوح على JAW Academy',text:'التسعة حصص: خمسة تفاضل وأربعة تكامل. عربي: البداية الأربعاء ٢ ديسمبر، السعر المعلن ٤٥٠ جنيه. لغات: البداية الخميس ٣ ديسمبر، السعر المعلن ٦٧٥ جنيه. مكتوب في الحجز إنه مفيش استرداد حتى لو الكود متفعّلش.',when:'إعلان ٢٣ نوفمبر',links:[['عربي','https://t.me/ahmedessamdx/1286'],['لغات','https://t.me/ahmedessamdx/1287'],['تفاصيل عربي','https://t.me/ahmedessamdx/1242?embed=1'],['تفاصيل لغات','https://t.me/ahmedessamdx/1241?embed=1']]}]},
  {id:'mai',name:'ميس مي مجدي',subject:'إنجليزي (More English)',items:[
   {id:6,date:null,tag:'ورشة',title:'ورشة Units 3 & 4 مجانية على يوتيوب',text:'الإعلان كان موجود قبل ما المتابعة تبدأ. مفيش ميعاد محدد اتأكدنا منه.',when:'إعلان قديم',links:[['الفيديو','https://www.youtube.com/watch?v=yjnLV-0TUDg']]}]},
- {id:'salah',name:'مستر محمد صلاح',subject:'متابعة القناة',items:[{id:12,date:'2026-11-26',tag:'مراجعة',title:'مراجعة الشهر التاني (حوالي ٤ ساعات)، موسومة بكالوريا ٢٠٢٧',text:'ده من عنوان الفيديو ووصفه. ماقريناش التفاصيل.',when:'فيديو ٢٦ نوفمبر ٣:٢٣ م',links:[['الفيديو','https://www.youtube.com/watch?v=_lxUvqHJvzU']]}],empty:'مفيش إعلان متأكد منه لتالتة ثانوي لحد دلوقتي.',channel:['قناة مستر محمد صلاح','https://www.youtube.com/@mohamedsalah.bassthalk']},
+ {id:'salah',name:'مستر محمد صلاح',subject:'متابعة القناة',items:[],empty:'مفيش إعلان متأكد منه لتالتة ثانوي لحد دلوقتي.',channel:['قناة مستر محمد صلاح','https://www.youtube.com/@mohamedsalah.bassthalk']},
  {id:'john',name:'دكتور جون (جهبذ الكيمياء)',subject:'كيمياء',items:[
   {id:7,date:'2026-11-26',tag:'عرض',title:'بلاك فرايداي: خصم لحد ٦٠٪ على كورسات منصته',text:'ده من عنوان الفيديو بس. ماقريناش التفاصيل ولا شروط العرض ولا مدته، فراجعها من الفيديو نفسه.',when:'فيديو ٢٦ نوفمبر',links:[['الفيديو','https://www.youtube.com/shorts/65tMZXSa_OI']]},
   {id:8,date:'2026-11-24',tag:'فيديو',title:'بداية الشهر الرابع: قفل الباب التالت، خريطة المحاضرات وتجديد الاشتراك',text:'ده من عنوان الفيديو ووصفه المختصر. ماقريناش التفاصيل.',when:'فيديو ٢٤ نوفمبر',links:[['الفيديو','https://www.youtube.com/watch?v=mWIzgR57g0o']]}],channel:['قناة يوتيوب: دكتور جون - جهبذ الكيمياء','https://www.youtube.com/@gahbazchemistry']},
