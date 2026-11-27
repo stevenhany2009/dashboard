@@ -359,7 +359,7 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ٧:٢٩ م';
+var UPDATED='الجمعة ٢٧ نوفمبر ٧:٤٧ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -886,7 +886,7 @@ function askSync(rem){var old=document.getElementById('syncq');if(old)old.remove
 function znCard(){var N=window.ThanawyaNative;var c=h('div',{class:'zncard'},h('strong',{text:'الإشعارات'}));
 if(!N){c.appendChild(h('p',{class:'sub fine',text:'الإشعارات بتشتغل في تطبيق الأندرويد بس. نزّل التطبيق من صفحة التطبيق.'}));return c}
 var st={};try{st=JSON.parse(N.getState())}catch(e){}
-if(st.perm===false){c.appendChild(h('button',{class:'btn',type:'button',text:'فعّل الإشعارات',onclick:function(){try{N.askPerm()}catch(e){}setTimeout(function(){setTab('profile')},1500)}}))}
+if(1){c.appendChild(h('button',{class:'btn',type:'button',text:st.perm===false?'فعّل الإشعارات':'إعدادات إشعارات الجهاز',onclick:function(){try{N.askPerm()}catch(e){}setTimeout(function(){setTab('profile')},1500)}}))}
 if(!AU)c.appendChild(h('p',{class:'sub fine',text:'سجّل دخول بحساب علشان توصلك إشعارات الأصدقاء والشات.'}));
 [['ann','الإعلانات الجديدة'],['fc','طلبات الصداقة والتحديات'],['chat','رسايل الشات']].forEach(function(r){var cb=h('input',{type:'checkbox',class:'zncb'});cb.checked=st[r[0]]!==false;cb.onchange=function(){try{N.setPref(r[0],cb.checked)}catch(e){}};c.appendChild(h('label',{class:'znrow'},h('span',{text:r[1]}),cb))});
 c.appendChild(h('p',{class:'sub fine',text:'رسايل الشات بتوصل كـ «رسالة جديدة» من غير نص.'}));return c}
