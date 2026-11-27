@@ -310,14 +310,14 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 .chrow.un .chmid small{color:var(--ink);font-weight:700}.chrow.un{background:linear-gradient(90deg,rgba(201,169,106,.10),transparent)!important}
 .chs{padding:0!important;gap:0!important}
 #chats .chtop strong{font-size:20px;flex:1;margin-inline-start:6px}
-</style>
+.cpst{padding:14px}.cpst h4{margin:0 0 10px}</style>
 </head>
 <body>
 <div id="app"><main id="screen"></main><nav id="nav" hidden></nav></div>
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ٥:١٦ م';
+var UPDATED='الجمعة ٢٧ نوفمبر ٥:٢١ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -844,7 +844,9 @@ function wipeLocal(){try{var ks=[];for(var i=0;i<localStorage.length;i++){var k=
 function acctDelete(){if(!confirm('ده هيمسح حسابك وكل بياناتك من السيرفر نهائيًا، ومينفعش يترجع. تكمل؟'))return;Promise.all((AUI.fr||[]).filter(function(f){return f.kind==='friend'}).map(function(f){return chPurge(f.id)})).then(function(){return sbAuthed('/rest/v1/rpc/delete_my_account',{method:'POST',body:{}})}).then(function(x){if(x.ok)wipeLocal();else{AUI.msg='مقدرتش أمسح الحساب. جرب تاني.';render()}})}
 var BADW=['fuck','shit','sex','porn','كس','طيز','شرموط','متناك','عرص','خول','زب','نيك'];
 function nickOk(n){n=(n||'').trim();if(n.length<2||n.length>20)return 'الاسم من ٢ لـ ٢٠ حرف.';if(n.indexOf('@')>=0||/https?:|www\./i.test(n))return 'من غير @ أو لينكات.';var low=n.toLowerCase().replace(/[\s._\-]/g,'');for(var i=0;i<BADW.length;i++)if(low.indexOf(BADW[i])>=0)return 'اختار اسم تاني.';return ''}
-function lbPush(){if(!AU||!LB.on||!LB.nick)return;if(lbT)clearTimeout(lbT);lbT=setTimeout(function(){sbAuthed('/rest/v1/rpc/sync_board',{method:'POST',body:lbArgs()}).then(function(x){if(!x.ok)AUI.lbMsg='مقدرتش أحدّث الليدر بورد.'})},4000)}
+function myStats(){try{var d0=dkey(dayAdd(sday(),-6)),l=S.pts.l,tk=0,days={};Object.keys(l).forEach(function(k){var e=l[k];if(!e||(e.d||'')<d0)return;if(k.indexOf('task:')===0)tk++;days[e.d]=1});for(var i=0;i<7;i++){var dk=dkey(dayAdd(sday(),-i)),r=S.pts.m[dk];if(r&&Object.keys(r).some(function(x){return r[x]>0}))days[dk]=1}return {fm:minsRange(7),tk:tk,da:Object.keys(days).length,p7:ptsSince(d0)}}catch(e){return {fm:0,tk:0,da:0,p7:0}}}
+function statsPush(){if(!AU||!LB.on)return;sbAuthed('/rest/v1/rpc/set_my_stats',{method:'POST',body:{p_share:LB.stats===true,p_stats:LB.stats===true?myStats():{}}})}
+function lbPush(){if(!AU||!LB.on||!LB.nick)return;if(lbT)clearTimeout(lbT);lbT=setTimeout(function(){sbAuthed('/rest/v1/rpc/sync_board',{method:'POST',body:lbArgs()}).then(function(x){if(!x.ok)AUI.lbMsg='مقدرتش أحدّث الليدر بورد.';statsPush()})},4000)}
 function lbLoad(){if(!AU)return;sbAuthed('/rest/v1/rpc/get_my_week',{method:'POST',body:{}}).then(function(x){AUI.lb=[];bigPush();if(x.ok&&typeof x.j==='number')AUI.myw=x.j;if(ui.tab==='profile')render()})}
 function lbSet(on,nick){if(on){var e=nickOk(nick);if(e){AUI.lbMsg=e;render();return}LB={on:true,nick:nick.trim()};save('dash-lb.v1',LB);sbAuthed('/rest/v1/rpc/sync_board',{method:'POST',body:lbArgs()}).then(function(x){AUI.lbMsg=x.ok?'':'مقدرتش أضيفك. جرب تاني.';if(!x.ok){LB.on=false;save('dash-lb.v1',LB)}lbLoad();render()})}
  else{LB.on=false;save('dash-lb.v1',LB);sbAuthed('/rest/v1/rpc/remove_leaderboard',{method:'POST',body:{}}).then(function(){AUI.lb=null;AUI.lbMsg='';lbLoad();render()})}}
@@ -1048,7 +1050,7 @@ var LR=[];
   var av=(!G&&f.avatar&&/^data:image\//.test(f.avatar))?h('img',{class:'lba cpbig',alt:'','data-nick':f.nick,src:f.avatar}):h('span',{class:'lba ini cpbig'+(G?' cpg':'')},G?ico('users',54):(f.nick||'؟').charAt(0));
   sc.appendChild(h('div',{class:'cphero'},av,h('h2',{text:f.nick}),h('p',{class:'sub',text:G?('جروب - '+AR(f.members||0)+' أعضاء'):'صاحبك'})));
   if(!G){var st=h('div',{class:'cpstats'});function sc2(v,l){return h('div',{class:'cps'},h('b',{text:v}),h('small',{text:l}))}
-   st.appendChild(sc2(AR(f.pts||0),'النقاط'));st.appendChild(sc2(AR(f.weekly||0),'الأسبوع ده'));if(f.streak!==null&&f.streak!==undefined)st.appendChild(sc2(AR(f.streak||0),'أيام متتالية'));sc.appendChild(st)}
+   st.appendChild(sc2(AR(f.pts||0),'النقاط'));st.appendChild(sc2(AR(f.weekly||0),'الأسبوع ده'));if(f.streak!==null&&f.streak!==undefined)st.appendChild(sc2(AR(f.streak||0),'أيام متتالية'));sc.appendChild(st);var sx=h('div',{class:'cpcard cpst'});sc.appendChild(sx);rpc('friend_stats',{p_fid:f.id}).then(function(x){var j=x.ok?x.j:null;if(!j||typeof j!=='object'){sx.appendChild(h('h4',{text:'إحصائيات المذاكرة'}));sx.appendChild(h('p',{class:'sub',text:'صاحبك مش مفعّل مشاركة إحصائيات المذاكرة.'}));return}sx.appendChild(h('h4',{text:'إحصائيات المذاكرة - آخر ٧ أيام'}));var g=h('div',{class:'cpstats'});[[AR(Math.round((+j.fm||0)/60*10)/10),'ساعات تركيز'],[AR(+j.tk||0),'مهام مخلّصة'],[AR(+j.da||0)+'/'+AR(7),'أيام ذاكر فيها'],[AR(+j.p7||0),'نقاط ٧ أيام']].forEach(function(a){g.appendChild(sc2(a[0],a[1]))});sx.appendChild(g)})}
   function tg(name,ic,lab,key,kind){var on=chHas(kind,PK),sw=h('span',{class:'cpsw'+(on?' on':'')},h('i',{}));var r=h('button',{type:'button',class:'cprow',onclick:function(){var n=chTog(kind,PK);sw.classList.toggle('on',n);syncHdr()}},h('span',{class:'cpi'},ico(ic,20)),h('b',{text:lab}),sw);return r}
   var tgs=h('div',{class:'cpcard'});tgs.appendChild(tg('m','bellOff','كتم الإشعارات','m','mute'));tgs.appendChild(tg('p','pin','تثبيت المحادثة فوق','p','pin'));
   tgs.appendChild(h('button',{type:'button',class:'cprow',onclick:function(){profClose();togSearch()}},h('span',{class:'cpi'},ico('search',20)),h('b',{text:'دوّر في الرسايل'})));sc.appendChild(tgs);
@@ -1158,6 +1160,8 @@ function secFr(){if(!LB.on)return lockNote();var s=h('div',{});
  ff.forEach(function(f){dt.appendChild(h('div',{class:'lbr'},h('span',{text:f.nick}),h('button',{class:'btn ghost sm',type:'button',text:'شيل',onclick:function(){if(confirm('تشيل '+f.nick+' من أصحابك؟'))chPurge(f.id).then(function(){return rpc('friend_remove',{p_id:f.id})}).then(friendsLoad)}})))});
  dt.appendChild(h('p',{class:'sub',text:'صحابك بيشوفوا اسمك وصورتك (لو ضفتها) ونقاطك. السلسلة وخلصت النهارده بس لو المشاركة شغالة. محدش بيشوف موادك.'}));
  dt.appendChild(h('button',{class:'btn ghost',type:'button',text:sh?'مشاركة السلسلة: شغّالة (دوس تقفل)':'مشاركة السلسلة: مقفولة (دوس تشغّل)',onclick:function(){LB.share=!sh;save('dash-lb.v1',LB);lbPush();socialRender()}}));
+ var ss=LB.stats===true;dt.appendChild(h('p',{class:'sub',text:'إحصائيات المذاكرة (اختيارية): لو شغّلتها، صحابك بس هيشوفوا في بروفايلك دقايق التركيز، المهام المخلّصة، الأيام اللي ذاكرت فيها ونقاط آخر ٧ أيام. مفيش مواد ولا درجات ولا تفاصيل تانية. مقفولة من الأساس وتقدر تقفلها في أي وقت.'}));
+ dt.appendChild(h('button',{class:'btn ghost',type:'button',text:ss?'مشاركة إحصائيات المذاكرة: شغّالة (دوس تقفل)':'مشاركة إحصائيات المذاكرة: مقفولة (دوس تشغّل)',onclick:function(){LB.stats=!ss;save('dash-lb.v1',LB);statsPush();socialRender()}}));
  w.appendChild(dt);s.appendChild(w);return s}
 function secGr(){if(!LB.on)return lockNote();var s=h('div',{});
  var gr=AUI.gr||[],a=sxHead('مجموعاتي ('+AR(gr.length)+')',gr.length?'دوس على المجموعة علشان تشوف ترتيبها.':'مش في أي مجموعة. اعمل واحدة أو ادخل بكود من تحت.');
