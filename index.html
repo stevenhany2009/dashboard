@@ -240,7 +240,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ٢:٤٩ ص';
+var UPDATED='الجمعة ٢٧ نوفمبر ٢:٥٦ ص';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -624,7 +624,6 @@ function screenHome(){
   exl.slice(1,4).forEach(function(e){var dd=Math.max(1,Math.ceil((e.at-Date.now())/86400000));g2.appendChild(h('div',{class:'xrow'},h('div',{},h('strong',{text:e.text}),h('span',{class:'sub',text:cairoLabel(e.at,e.timed)})),h('span',{class:'xchip',text:'بعد '+AR(dd)+' يوم'})))})}
  else g2.appendChild(h('p',{text:'مفيش امتحان متأكد منه بتاريخ عند المدرسين اللي اخترتهم لحد دلوقتي.'}));
  f.appendChild(g2);
- try{f.appendChild(focCard())}catch(e){}
  var g3=group('الجدول اليومي','مذاكرتك النهارده');
  try{
 var dl=entries(sday().getDay()),dm=S.marks[dkey(sday())]||{},nw=new Date(),hm=pad(nw.getHours())+':'+pad(nw.getMinutes());
@@ -633,6 +632,7 @@ var dl=entries(sday().getDay()),dm=S.marks[dkey(sday())]||{},nw=new Date(),hm=pa
  g3.appendChild(h('button',{class:'btn',type:'button',text:'عدّل جدولك',onclick:function(){ui.pmode='edit';setTab('plan')}}));
  }catch(err){g3.appendChild(h('p',{class:'ferr',text:'مقدرتش أعرض الجدول هنا. حدّث الصفحة. (خطأ: '+String(err&&err.message||err).slice(0,60)+')'}));g3.appendChild(h('button',{class:'btn',type:'button',text:'حدّث الصفحة',onclick:function(){location.replace(location.pathname+'?v='+Date.now())}}))}
  f.appendChild(g3);
+ try{f.appendChild(focCard())}catch(e){}
  var rr=lecturesSection();if(rr)f.appendChild(rr);
  try{var g4=group('الجدول الأسبوعي','المواد على أيام الأسبوع'),tdn=sday().getDay(),dmw=S.marks[dkey(sday())]||{},any=false,nw2=new Date(),hm2=pad(nw2.getHours())+':'+pad(nw2.getMinutes());
  DAYS.forEach(function(d){var l=(S.schedule.week[String(d[0])]||[]).slice().sort(function(a,b){return (a.time||'99:99').localeCompare(b.time||'99:99')});if(l.length)any=true;var c=h('div',{class:'wk'+(d[0]===tdn?' today':'')},h('div',{class:'wkh'},h('strong',{text:d[1]}),d[0]===tdn?h('span',{class:'xchip',text:'النهارده'}):h('span',{class:'sub',text:l.length===1?'مادة':l.length===2?'مادتين':l.length?AR(l.length)+' مواد':'فاضي'})));
