@@ -240,7 +240,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ١:٣١ م';
+var UPDATED='الجمعة ٢٧ نوفمبر ٣:٠٤ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -668,6 +668,9 @@ function screenNews(){
  var count=rows.reduce(function(n,r){return n+r.items.length},0);
  f.appendChild(h('p',{class:'sub',text:count+' إعلانات. الفلتر بالتاريخ بيعتمد على يوم ظهور الإعلان، والإعلانات اللي من غير تاريخ بتظهر في «الكل» بس.'}));
  if(!rows.length)f.appendChild(h('div',{class:'callout'},h('strong',{text:'مفيش إعلانات'}),'مفيش إعلانات متأكد منها في الفترة دي للمدرسين المختارين.'));
+ if(ui.tf==='all'&&rows.length){var flat=[];rows.forEach(function(r){r.items.forEach(function(it){flat.push({t:r.t,it:it})})});flat.sort(function(a,b){var d=(b.it.date||'').localeCompare(a.it.date||'');return d!==0?d:iord(b.it)-iord(a.it)});
+  var fs=h('section',{class:'teacher'});flat.forEach(function(x){var it=x.it,a=h('article',{class:'item'});var m=h('div',{class:'meta'});if(S.seen.indexOf(it.id)<0)m.appendChild(h('span',{class:'new',text:'جديد'}));m.appendChild(h('span',{class:'tag',text:it.tag}));m.appendChild(h('span',{text:it.when}));a.appendChild(m);a.appendChild(h('p',{class:'sub',text:x.t.name+' · '+x.t.subject}));a.appendChild(h('h3',{class:'title',text:it.title}));a.appendChild(h('p',{text:it.text}));
+   var l=h('div',{class:'links'});it.links.forEach(function(y){l.appendChild(h('a',{href:y[1],target:'_blank',rel:'noopener noreferrer',text:y[0]}))});a.appendChild(l);fs.appendChild(a)});f.appendChild(fs);rows=[]}
  rows.forEach(function(r){var t=r.t,sec=h('section',{class:'teacher'});sec.appendChild(h('div',{class:'thead'},h('strong',{text:t.name}),h('span',{text:t.subject})));
   r.items.forEach(function(it){var a=h('article',{class:'item'});var m=h('div',{class:'meta'});if(S.seen.indexOf(it.id)<0)m.appendChild(h('span',{class:'new',text:'جديد'}));m.appendChild(h('span',{class:'tag',text:it.tag}));m.appendChild(h('span',{text:it.when}));a.appendChild(m);a.appendChild(h('h3',{class:'title',text:it.title}));a.appendChild(h('p',{text:it.text}));
    var l=h('div',{class:'links'});it.links.forEach(function(x){l.appendChild(h('a',{href:x[1],target:'_blank',rel:'noopener noreferrer',text:x[0]}))});a.appendChild(l);sec.appendChild(a)});
