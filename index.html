@@ -223,14 +223,14 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 .chmid b{font-size:15.5px}.chmid small{font-size:13px}
 .chrow.un{border-color:#c9a96a;box-shadow:0 4px 14px rgba(201,169,106,.25)}
 .chbadge{background:linear-gradient(145deg,#e0c68a,#c29a52)!important;color:#14233a!important;font-weight:700;min-width:22px;text-align:center;border-radius:999px!important;padding:2px 7px!important}
-.accbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 12px;padding:10px 12px;border-radius:18px;background:var(--card);border:1px solid var(--hair);box-shadow:var(--sh)}.accwho{display:flex;flex-direction:column;line-height:1.25;min-width:0}.accwho small{font-size:11px;color:var(--ink2)}.accwho b{font-size:15px;overflow:hidden;text-overflow:ellipsis}.accout{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #c9a96a;background:rgba(201,169,106,.14);color:var(--ink);font:inherit;font-size:13px;font-weight:700;cursor:pointer}.accout:active{transform:scale(.95)}</style>
+.accbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 12px;padding:10px 12px;border-radius:18px;background:var(--card);border:1px solid var(--hair);box-shadow:var(--sh)}.accwho{display:flex;flex-direction:column;line-height:1.25;min-width:0}.accwho small{font-size:11px;color:var(--ink2)}.accwho b{font-size:15px;overflow:hidden;text-overflow:ellipsis}.accout{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #c9a96a;background:rgba(201,169,106,.14);color:var(--ink);font:inherit;font-size:13px;font-weight:700;cursor:pointer}.accout:active{transform:scale(.95)}.logoutwrap{margin:18px 0 30px;text-align:center}.logoutbtn{width:100%;min-height:50px;border-radius:16px;border:1px solid rgba(220,90,90,.55);background:rgba(220,90,90,.10);color:#d65a5a;font:inherit;font-size:15px;font-weight:700;cursor:pointer}.logoutbtn:active{transform:scale(.97)}.wlc{text-align:center}.wlc .wzlogo.big{width:92px;height:92px;border-radius:28px}.wlc h1{font-size:24px;margin:6px 0 4px}.wlf{display:flex;flex-direction:column;gap:8px;margin:16px 0 10px;text-align:start}.wlr{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:rgba(201,169,106,.10);border:1px solid var(--hair)}.wli{flex:none;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(201,169,106,.2)}.wlr b{display:block;font-size:14.5px}.wlr small{display:block;color:var(--ink2);font-size:12.5px;line-height:1.4}</style>
 </head>
 <body>
 <div id="app"><main id="screen"></main><nav id="nav" hidden></nav></div>
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ١:٥٧ ص';
+var UPDATED='الجمعة ٢٧ نوفمبر ٢:٠٦ ص';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -889,7 +889,6 @@ function secMe(){var s=sxHead('حسابي','');
  var on=SY.mode==='on'&&SY.uid===AU.uid;
  s.appendChild(h('p',{class:'sub',text:on?('بياناتك بتتزامن تلقائي. '+(AUI.st||'')):'المزامنة مقفولة على الجهاز ده.'}));
  if(!on)s.appendChild(h('button',{class:'btn',type:'button',text:'شغّل المزامنة',onclick:function(){firstSync()}}));
- s.appendChild(h('button',{class:'btn ghost',type:'button',text:'تسجيل الخروج / حساب تاني',onclick:acctSignOut}));
  var dt=h('details',{class:'frm'},h('summary',{text:'خيارات متقدمة'}),h('p',{class:'sub',text:'مفيش استرجاع للباسورد بالإيميل. افتكر باسوردك.'}),h('button',{class:'btn ghost dng',type:'button',text:'امسح حسابي وبياناتي',onclick:acctDelete}));s.appendChild(dt);return s}
 function lockNote(){var s=sxHead('الليدربورد مقفول','شغّله الأول علشان تستخدم القسم ده.');s.appendChild(h('button',{class:'btn',type:'button',text:'روح للليدربورد',onclick:function(){AUI.sec='lb';render()}}));return s}
 function secLb(){var s=h('div',{});
@@ -1090,7 +1089,7 @@ function avBox(src,txt,cls){return src?h('span',{class:'pav '+(cls||'')},h('img'
 function pfold(g,key,def){var kids=[].slice.call(g.childNodes),hd=kids[0],open=ui.fold[key]===undefined?!!def:!!ui.fold[key],body=h('div',{class:'pfb'});kids.slice(1).forEach(function(k){body.appendChild(k)});body.hidden=!open;g.appendChild(body);hd.classList.add('pfh');hd.setAttribute('role','button');hd.setAttribute('tabindex','0');hd.setAttribute('aria-expanded',String(open));hd.appendChild(chev(open));function tg(){ui.fold[key]=!open;render()}hd.addEventListener('click',tg);hd.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tg()}})}
 function pgroup(a,b,ic){var g=h('section',{class:'pcard'});g.appendChild(h('div',{class:'phd'},h('span',{class:'pic'},icon(ic||'user')),h('div',{},h('p',{class:'plb',text:a}),h('h2',{text:b}))));return g}
 function screenProfile(){
- var f=document.createDocumentFragment();f.appendChild(h('h1',{text:'ملفي'}));f.appendChild(h('p',{class:'sub',text:'إعداداتك وحسابك.'}));if(typeof AU!=='undefined'&&AU&&AU.un){f.appendChild(h('div',{class:'accbar'},h('span',{class:'accwho'},h('small',{text:'داخل بحساب'}),h('b',{text:AU.un})),h('button',{class:'accout',type:'button',text:'تسجيل الخروج / حساب تاني',onclick:acctSignOut})))};
+ var f=document.createDocumentFragment();f.appendChild(h('h1',{text:'ملفي'}));f.appendChild(h('p',{class:'sub',text:'إعداداتك وحسابك.'}));
  var nm=(S.profile.name||'').trim();
  var hero=h('div',{class:'phero'});
  var htp=h('div',{class:'phtop'},avBox(PH.me,(nm||'؟').charAt(0),'big'),h('div',{class:'phn'},h('strong',{text:nm||'من غير اسم'}),h('span',{class:'sub',text:'طالب تالتة ثانوي'})));
@@ -1116,7 +1115,7 @@ f.appendChild(hero);try{f.appendChild(ptsCard())}catch(e){}try{if(AC)f.appendChi
  var sg=h('div',{class:'seg'});[['light','☀ فاتح'],['dark','☾ داكن']].forEach(function(o,oi){var key=oi?'dark':'light';sg.appendChild(h('button',{type:'button','aria-pressed':String(cur===key),text:o[1],onclick:function(){if(window.dashTheme)window.dashTheme.set(key);render()}}))});g3.appendChild(sg);f.appendChild(g3);
  var g4=pgroup('التواصل','تواصل معانا','chat');g4.appendChild(contactLinks());f.appendChild(g4);
  try{var pc=[].slice.call(f.childNodes).filter(function(n){return n.classList&&n.classList.contains('pcard')});pc.forEach(function(n,i){pfold(n,'pf'+i,i===0)})}catch(e){}
- f.appendChild(h('div',{class:'callout'},h('strong',{text:'عن التطبيق'}),'التطبيق بيحفظ اختياراتك وجدولك وعلاماتك وصورك على جهازك. لو عملت حساب، بياناتك بتتحفظ على حسابك. مفيش إشعارات على الموبايل.'));return f}
+ f.appendChild(h('div',{class:'callout'},h('strong',{text:'عن التطبيق'}),'التطبيق بيحفظ اختياراتك وجدولك وعلاماتك وصورك على جهازك. لو عملت حساب، بياناتك بتتحفظ على حسابك. مفيش إشعارات على الموبايل.'));if(typeof AU!=='undefined'&&AU&&AU.un)f.appendChild(h('div',{class:'logoutwrap'},h('button',{class:'logoutbtn',type:'button',text:'تسجيل الخروج',onclick:acctSignOut}),h('p',{class:'sub fine',text:'داخل بحساب '+AU.un+'. بعد الخروج تقدر تدخل بحساب تاني.'})));return f}
 function screenTeachers(){
  var first=S.mine===null||!!(OB&&OB.step==='teachers');if(ui.pick===null)ui.pick=(S.mine||[]).slice();
  var f=document.createDocumentFragment();if(OB&&OB.step==='teachers')f.appendChild(wizCard(3,'مدرسينك','اختار المدرسين اللي بتتابعهم. الرئيسية هتعرض إعلاناتهم بس.'));else{if(!first)f.appendChild(h('button',{class:'btn back',type:'button',text:'رجوع لملفي',onclick:function(){ui.pick=null;setTab('profile')}}));if(1)f.appendChild(header(first?'اختار مدرسينك':'عدّل مدرسينك','اختار المدرسين اللي بتتابعهم، وبعدها الرئيسية هتعرض إعلاناتهم بس. الاختيار بيتحفظ على جهازك.'))}
@@ -1128,22 +1127,27 @@ function screenTeachers(){
 function footer(){
  var f=h('footer',{class:'foot'});var fn=h('p',{class:'fine'});fn.appendChild(h('b',{text:'Created by Steven Hany'}));fn.appendChild(document.createTextNode(' \u00b7 '));fn.appendChild(h('bdi',{text:'جميع الحقوق محفوظة © ٢٠٢٦'}));f.appendChild(fn);return f}
 
-var OB=null;(function(){try{var done=localStorage.getItem('dash-onboard.v1')==='1';if(!done&&S.mine===null&&!(S.profile.name||'').trim())OB={step:'name'}}catch(e){}})();
+var OB=null;(function(){try{var done=localStorage.getItem('dash-onboard.v1')==='1';if(!done&&S.mine===null&&!(S.profile.name||'').trim())OB={step:'welcome'}}catch(e){}})();
 function obFinish(){OB=null;try{localStorage.setItem('dash-onboard.v1','1')}catch(e){}ui.tab='home';render()}
-function obNext(){if(!OB)return;if(OB.step==='name'){OB.step=AC?'acct':'teachers';AUI.mode='up'}else if(OB.step==='acct'){OB.step='teachers'}else if(OB.step==='teachers'){OB.step='done'}render()}
-function obBack(){if(!OB)return;if(OB.step==='done'){OB.step='teachers';ui.pick=(S.mine||[]).slice()}else if(OB.step==='teachers'){ui.pick=null;OB.step=AC?'acct':'name'}else if(OB.step==='acct'){OB.step='name'}render()}
+function obNext(){if(!OB)return;if(OB.step==='welcome'){OB.step=AC?'acct':'name';AUI.mode='up'}else if(OB.step==='acct'){OB.step='name'}else if(OB.step==='name'){OB.step='teachers'}else if(OB.step==='teachers'){OB.step='done'}render()}
+function obBack(){if(!OB)return;if(OB.step==='done'){OB.step='teachers';ui.pick=(S.mine||[]).slice()}else if(OB.step==='teachers'){ui.pick=null;OB.step='name'}else if(OB.step==='name'){OB.step=AC?'acct':'welcome'}else if(OB.step==='acct'){OB.step='welcome'}render()}
 function wzBack(){return h('button',{class:'btn ghost back',type:'button',text:'رجوع',onclick:obBack})}
 function wizCard(n,title,sub){var an=(window.__wzs!==n);window.__wzs=n;var f=h('div',{class:'wzcard'+(an?' anim':'')});var ic=document.querySelector('link[rel=icon]');
  f.appendChild(h('div',{class:'wzhead'},ic?h('img',{class:'wzlogo',alt:'',src:ic.href}):'',h('p',{class:'label',text:'Thanawya Plus'})));
  var wd=h('div',{class:'wzdots','aria-label':'الخطوة '+AR(n)+' من ٤'});[1,2,3,4].forEach(function(i){wd.appendChild(h('i',{class:i===n?'on':''}))});f.appendChild(wd);f.appendChild(h('p',{class:'wzstep',text:'الخطوة '+AR(n)+' من ٤'}));f.appendChild(h('h1',{text:title}));if(sub)f.appendChild(h('p',{class:'sub',text:sub}));return f}
 function screenWizard(){var st=OB.step,f;
- if(st==='name'){f=wizCard(1,'أهلًا بيك','اكتب اسمك، وضيف صورة لو حابب (اختياري). الاسم والصورة بيظهروا في ملفك، ولو عملت حساب هيظهروا في الليدربورد.');
+ if(st==='welcome'){var an=(window.__wzs!==0);window.__wzs=0;f=h('div',{class:'wzcard wlc'+(an?' anim':'')});var ic0=document.querySelector('link[rel=icon]');
+  f.appendChild(h('div',{class:'wzhead'},ic0?h('img',{class:'wzlogo big',alt:'',src:ic0.href}):'',h('p',{class:'label',text:'Thanawya Plus'})));
+  f.appendChild(h('h1',{text:'أهلًا بيك في Thanawya Plus'}));f.appendChild(h('p',{class:'sub',text:'رفيقك في تالتة ثانوي: كل مذاكرتك وامتحاناتك ومدرسينك في مكان واحد.'}));
+  var ft=h('div',{class:'wlf'});[['📅','جدولك وامتحاناتك','نظّم مذاكرة كل يوم وعدّاد للامتحان الجاي.'],['📢','إعلانات ومراجعات مدرسينك','بنعرض الحاجات الموثّقة بس، ومعاها لينك المصدر.'],['⭐','نقاط بتتحسب بالإنجاز','النقاط بتيجي من إنك تخلّص مهامك بس.'],['👥','أصحاب وشات وليدربورد','ضيف صحابك، اتكلموا وشوفوا مين ماشي كويس.'],['🎬','قصص وريلز','لحظات سريعة من صحابك ومحتوى يفتح نفسك.']].forEach(function(r){ft.appendChild(h('div',{class:'wlr'},h('span',{class:'wli','aria-hidden':'true',text:r[0]}),h('div',{},h('b',{text:r[1]}),h('small',{text:r[2]}))))});f.appendChild(ft);
+  f.appendChild(h('div',{class:'cta'},h('button',{class:'btn primary',type:'button',text:'يلا نبدأ',onclick:obNext})));f.appendChild(h('p',{class:'sub fine',text:'الخطوة الجاية: دخول أو حساب جديد، وبعدها بنظبط باقي حاجتك.'}));return f}
+ if(st==='name'){f=wizCard(2,'عرّفنا بنفسك','اكتب اسمك، وضيف صورة لو حابب (اختياري). الاسم والصورة بيظهروا في ملفك، ولو عملت حساب هيظهروا في الليدربورد.');
   var inp=h('input',{type:'text',maxlength:'40',placeholder:'اسمك',id:'wzn','aria-label':'اسمك',value:S.profile.name||'',autocomplete:'given-name'});var go=h('button',{class:'btn primary',type:'button',text:'التالي',onclick:function(){var v=inp.value.trim();if(v.length<2){m.textContent='اكتب اسمك (حرفين على الأقل).';return}S.profile.name=v.slice(0,40);save('dash-profile.v1',S.profile);obNext()}});var m=h('p',{class:'late',role:'alert'});
   inp.addEventListener('input',function(){S.profile.name=inp.value.slice(0,40)});
   inp.addEventListener('keydown',function(e){if(e.key==='Enter')go.click()});
   var ar=h('div',{class:'wzav'},avBox(PH.me,((S.profile.name||'').trim()||'؟').charAt(0),'big'));var ac=h('div',{class:'sacts'},photoPicker('me',PH.me?'غيّر الصورة':'ضيف صورة (اختياري)'));if(PH.me)ac.appendChild(h('button',{class:'btn sm',type:'button',text:'شيل الصورة',onclick:function(){dropPhoto('me')}}));ar.appendChild(ac);if(PMSG){ar.appendChild(h('p',{class:'late',text:PMSG}));PMSG=''}
   f.appendChild(ar);f.appendChild(h('label',{class:'field'},h('span',{text:'اسمك'}),h('span',{class:'inw'},h('span',{class:'inic','aria-hidden':'true',text:'✏️'}),inp)));f.appendChild(m);f.appendChild(h('div',{class:'cta'},go));ui.focus='wzn';return f}
- if(st==='acct'){f=wizCard(2,'حسابك','سجّل بيوزرنيم وباسورد (من غير إيميل) علشان بياناتك تتحفظ على أي جهاز. أو كمّل من غير حساب وكل حاجة تفضل على جهازك.');
+ if(st==='acct'){f=wizCard(1,'حسابك','سجّل بيوزرنيم وباسورد (من غير إيميل) علشان بياناتك تتحفظ على أي جهاز. أو كمّل من غير حساب وكل حاجة تفضل على جهازك.');
   if(AU){f.appendChild(h('p',{class:'sub',text:'داخل بـ '+(AU.un||'')}));f.appendChild(h('div',{class:'cta'},h('button',{class:'btn primary',type:'button',text:'التالي',onclick:obNext})))}
   else{f.appendChild(acctGroup(true));f.appendChild(h('button',{class:'lnkbtn',type:'button',text:'كمّل من غير حساب',onclick:function(){SY={uid:null,mode:'off'};save('dash-sync.v1',SY);obNext()}}));f.appendChild(h('p',{class:'sub fine',text:'من غير حساب مفيش ليدر بورد ولا مزامنة. تقدر تسجّل بعدين من ملفي.'}))}
   f.appendChild(wzBack());return f}
@@ -1158,7 +1162,7 @@ function screenWizard(){var st=OB.step,f;
 function render(){
  clockEl=null;var sc=document.getElementById('screen'),top=sc.scrollTop;sc.textContent='';
  var tab=S.mine===null?'teachers':ui.tab;
- var v;try{v=(OB&&(OB.step==='name'||OB.step==='acct'||OB.step==='done'||OB.step==='exam'))?screenWizard():tab==='home'?screenHome():tab==='news'?screenNews():tab==='plan'?screenPlan():tab==='reels'?screenReels():tab==='profile'?screenProfile():screenTeachers();}catch(err){v=document.createDocumentFragment();v.appendChild(h('p',{class:'ferr',text:'حصلت مشكلة في عرض الصفحة. (خطأ: '+String(err&&err.message||err).slice(0,80)+')'}));v.appendChild(h('button',{class:'btn',type:'button',text:'حدّث الصفحة',onclick:function(){location.replace(location.pathname+'?v='+Date.now())}}))}
+ var v;try{v=(OB&&(OB.step==='welcome'||OB.step==='name'||OB.step==='acct'||OB.step==='done'||OB.step==='exam'))?screenWizard():tab==='home'?screenHome():tab==='news'?screenNews():tab==='plan'?screenPlan():tab==='reels'?screenReels():tab==='profile'?screenProfile():screenTeachers();}catch(err){v=document.createDocumentFragment();v.appendChild(h('p',{class:'ferr',text:'حصلت مشكلة في عرض الصفحة. (خطأ: '+String(err&&err.message||err).slice(0,80)+')'}));v.appendChild(h('button',{class:'btn',type:'button',text:'حدّث الصفحة',onclick:function(){location.replace(location.pathname+'?v='+Date.now())}}))}
  sc.classList.toggle('rvscr',tab==='reels');sc.appendChild(v);if(tab!=='reels')sc.appendChild(footer());sc.scrollTop=top;renderNav();if(OB)document.getElementById('nav').hidden=true;rvShow(tab==='reels'&&!!document.getElementById('rvh'));if(ui.focus){var fid=ui.focus===true?'subin':ui.focus;ui.focus=false;var fi=document.getElementById(fid);if(fi){fi.focus({preventScroll:true});fi.scrollIntoView({block:'nearest'})}}}
 if(clockTimer)clearInterval(clockTimer);clockTimer=setInterval(clockTick,1000);
 setInterval(function(){var a=document.activeElement;rollover();if((ui.tab==='home'||ui.tab==='plan')&&!(a&&a.tagName==='INPUT'))render()},60000);
