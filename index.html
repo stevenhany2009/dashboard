@@ -359,7 +359,7 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ٦:٠٤ م';
+var UPDATED='الجمعة ٢٧ نوفمبر ٦:١٥ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -902,7 +902,7 @@ function acctGroup(wz){var g=wz?h('div',{}):pgroup('الحساب','حسابك و
   g.appendChild(h('button',{class:'btn gobtn'+(AUI.busy?' busy':''),type:'button',disabled:AUI.busy,text:AUI.busy?'استنى...':up?'اعمل الحساب':'ادخل',onclick:function(){acctAuth(up?'up':'in',iu.value,ip.value,ip2.value)}}));
   if(AUI.msg)g.appendChild(h('p',{class:'pmsg',role:'status',text:AUI.msg}));
   g.appendChild(h('p',{class:'nrec',text:'⚠️ مفيش استرجاع للباسورد (من غير إيميل). اختار باسورد تفتكره.'}));
-  g.appendChild(h('p',{class:'sub fine',text:'بنحفظ اليوزرنيم وبيانات مذاكرتك. اسمك وصورتك (لو ضفتها) ونقاطك بتظهر لباقي المستخدمين في الليدربورد. جدولك وامتحاناتك محدش بيشوفها.'}));return g}
+  g.appendChild(h('p',{class:'sub fine',text:'بنحفظ اليوزرنيم وبيانات مذاكرتك. اسمك وصورتك (لو ضفتها) ونقاطك بتظهر لكل المستخدمين اللي سجلوا دخول في التطبيق (الإيميل عمره ما بيظهر). جدولك وامتحاناتك محدش بيشوفها.'}));return g}
  var sec=AUI.sec||'me';var tabs=[['me','حسابي'],['lb','الليدربورد'],['fr','أصدقائي'],['gr','مجموعاتي']];if(AUI.adm)tabs.push(['ad','أدمن']);
  var TI={me:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.2 3.6-7 8-7s8 2.8 8 7"/>',lb:'<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4M12 13v4M8 21h8M10 17h4"/>',fr:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.4c1.8.8 3 2.7 3 5.6"/>',gr:'<rect x="3" y="4" width="18" height="12" rx="4"/><path d="M8 20l3-4M7.5 10h.01M12 10h.01M16.5 10h.01"/>',ad:'<path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/>'};
  var nav=h('div',{class:'stabs'});tabs.forEach(function(o){var bt=h('button',{type:'button','aria-pressed':String(o[0]===sec),onclick:function(){AUI.sec=o[0];render()}});var ic=document.createElement('span');ic.className='sti';ic.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+TI[o[0]]+'</svg>';bt.appendChild(ic);var lb=document.createElement('span');lb.className='stl';lb.textContent=o[1];bt.appendChild(lb);nav.appendChild(bt)});g.appendChild(nav);
@@ -913,7 +913,7 @@ function rpc(n,b){return sbAuthed('/rest/v1/rpc/'+n,{method:'POST',body:b||{}})}
 function lbArgs(){var l=(S.pts&&S.pts.l)||{},td=dkey(sday()),st=0,d=sday();if(!l['full:'+dkey(d)])d=dayAdd(d,-1);while(l['full:'+dkey(d)]&&st<400){st++;d=dayAdd(d,-1)}
  return {p_nick:boardName()||LB.nick,p_points:ptsTotal(),p_name:((S.profile.name||'').replace(/@/g,'').trim().slice(0,40))||null,p_avatar:LB.av||null,p_streak:st,p_fin:!!l['full:'+td],p_share:LB.share!==false}}
 function socialRender(){if(ui.tab==='profile')render()}
-function socialLoad(){if(!AU)return;admLoad();rpc('is_admin').then(function(x){AUI.adm=x.ok&&x.j===true;if(AUI.adm){rpc('admin_board').then(function(y){AUI.ab=y.ok&&Array.isArray(y.j)?y.j:[];socialRender()});rpc('admin_stories').then(function(y){AUI.as=y.ok&&Array.isArray(y.j)?y.j:[];socialRender()})}socialRender()});
+function socialLoad(){if(!AU)return;admLoad();if(!PH.me&&LB.on){rpc('get_my_avatar').then(function(x){var r=x.ok&&Array.isArray(x.j)?x.j[0]:null;var d=r&&(r.big||r.small);if(typeof d==='string'&&d.indexOf('data:image/')===0&&!PH.me){PH.me=d;mem['dash-photos.v1']=PH;save('dash-photos.v1',PH);if(r.small)LB.av=r.small;if(typeof r.big==='string')lss('dash-avbig.v1',r.big);save('dash-lb.v1',LB);render()}})}rpc('is_admin').then(function(x){AUI.adm=x.ok&&x.j===true;if(AUI.adm){rpc('admin_board').then(function(y){AUI.ab=y.ok&&Array.isArray(y.j)?y.j:[];socialRender()});rpc('admin_stories').then(function(y){AUI.as=y.ok&&Array.isArray(y.j)?y.j:[];socialRender()})}socialRender()});
  if(!LB.on)return;rpc('my_code').then(function(x){if(x.ok&&typeof x.j==='string')AUI.code=x.j;socialRender()});friendsLoad();
  rpc('get_my_week').then(function(x){if(x.ok&&typeof x.j==='number')AUI.myw=x.j;socialRender()});rpc('ch_week_map').then(function(x){if(x.ok&&x.j&&typeof x.j==='object'){AUI.cw=x.j;socialRender()}});groupsLoad()}
 function admLoad(){if(!AU)return;sbAuthed('/rest/v1/admin_messages?select=id,body,created_at&order=created_at.desc&limit=5').then(function(x){if(x.ok&&Array.isArray(x.j)){ADMN=x.j.map(function(m){return {id:m.id,text:m.body,at:m.created_at}});AUI.am=x.j;if(ui.tab==='home'||ui.tab==='profile')render()}})}
@@ -1483,7 +1483,7 @@ function photoFile(key,fl){
 }
 function photoPicker(key,label){var l=h('label',{class:'btn sm filebtn'},h('span',{text:label}));var inp=h('input',{type:'file',accept:'image/*',class:'fileinp','aria-label':label});inp.addEventListener('change',function(){var f=inp.files&&inp.files[0];inp.value='';if(f)photoFile(key,f)});l.appendChild(inp);return l}
 function pickPhoto(key){}
-function dropPhoto(key){delete PH[key];save('dash-photos.v1',PH);if(key==='me'){lss('dash-avbig.v1',null);avSync();setTimeout(bigPush,2500)}render()}
+function dropPhoto(key){delete PH[key];save('dash-photos.v1',PH);if(key==='me'){if(AU)rpc('clear_avatar');lss('dash-avbig.v1',null);avSync();setTimeout(bigPush,2500)}render()}
 function contactLinks(){var w=h('div',{class:'contact'});
  w.appendChild(h('a',{class:'wa',href:'https://wa.me/201221523919',target:'_blank',rel:'noopener noreferrer',text:'تواصل معايا على واتساب'}));
  w.appendChild(h('a',{href:'https://www.instagram.com/steven_moris21?hvrq=NTVscXlvdjhnb25z',target:'_blank',rel:'noopener noreferrer',text:'انستجرام'}));
