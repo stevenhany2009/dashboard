@@ -236,7 +236,7 @@ nav button[aria-current=page]{color:var(--head);font-weight:700;background:var(-
 <script>
 (function(){
 'use strict';
-var UPDATED='الجمعة ٢٧ نوفمبر ٢:١٣ ص';
+var UPDATED='الجمعة ٢٧ نوفمبر ٢:٣٢ ص';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -1110,10 +1110,21 @@ function ltimes(){var g=group('نزول المحاضرات','مواعيد الم
  if(none.length){var c3=h('div',{class:'lt'},h('strong',{text:'مفيش جدول معلن'}));c3.appendChild(h('div',{class:'ltl'},h('span',{class:'tx'},none.join('، ')+': محتاج تدخل المنصة')));g.appendChild(c3)}
  g.appendChild(h('p',{class:'ltn',text:'مواعيد نزول المحاضرات الجديدة'}));
  return g}
+function examsCard(){
+ var gx=pgroup('الامتحانات','امتحاناتي','cal');
+ gx.appendChild(h('p',{class:'sub',text:'ضيف امتحاناتك بالتاريخ والساعة بتوقيت القاهرة، والعداد في الرئيسية بيعد لأقربهم.'}));
+ var xc=h('div',{class:'set xcard'}),xl=S.exams.slice().sort(function(a,b){return a.at-b.at}),xn=Date.now();
+ if(!xl.length)xc.appendChild(h('p',{class:'xempty',text:'لسه ما ضفتش امتحانات. ضيف أول امتحان من تحت.'}));
+ xl.forEach(function(e){var dd=Math.ceil((e.at-xn)/86400000),past=e.at+86400000<=xn,chip=past?'عدّى':(e.at<=xn?'النهارده':dd<=1?'بكرة':'بعد '+AR(dd)+' يوم');
+  xc.appendChild(h('div',{class:'xe'+(past?' past':'')},h('div',{class:'xei'},h('strong',{text:e.subject}),h('span',{class:'sub',text:cairoLabel(e.at,e.timed)})),h('span',{class:'xchip',text:chip}),h('button',{class:'xdel',type:'button','aria-label':'احذف '+e.subject,text:'✕',onclick:function(){S.exams=S.exams.filter(function(x){return x.id!==e.id});save('dash-exams.v1',S.exams);render()}})))});
+ var xs=h('input',{type:'text',maxlength:'40',placeholder:'مثلاً: فيزياء'}),xd=h('input',{type:'date'}),xt=h('input',{type:'time'}),xm=h('p',{class:'xmsg',text:''});
+ var fm=h('div',{class:'xform'},h('p',{class:'xft',text:'ضيف امتحان'}),h('label',{class:'field'},h('span',{text:'المادة'}),xs),h('div',{class:'xgrid'},h('label',{class:'field'},h('span',{text:'التاريخ'}),xd),h('label',{class:'field'},h('span',{text:'الساعة (اختياري)'}),xt)),h('p',{class:'sub',text:'من غير ساعة العداد بيعد لحد بداية اليوم.'}),
+  h('button',{class:'btn primary xadd',type:'button',text:'ضيف الامتحان',onclick:function(){var s=xs.value.trim();if(!s||!xd.value){xm.textContent='اكتب المادة واختار التاريخ.';return}var at=cairoMs(xd.value,xt.value||'00:00');if(isNaN(at)){xm.textContent='التاريخ مش مظبوط.';return}S.exams.push({id:'x'+Date.now(),subject:s.slice(0,40),at:at,timed:!!xt.value});save('dash-exams.v1',S.exams);render()}}),xm);
+ xc.appendChild(fm);gx.appendChild(xc);return gx}
 function screenPlan(){
  var f=document.createDocumentFragment();f.appendChild(header('جدول المذاكرة','علّم على كل مادة خلصتها ولا لأ. التذكير بيظهر هنا لما تفتح الصفحة.'));
- var s=h('div',{class:'seg',role:'group','aria-label':'العرض'});[['today','النهارده'],['edit','عدّل جدولي'],['times','نزول المحاضرات'],['exam','قبل الشامل']].forEach(function(o){s.appendChild(h('button',{type:'button','aria-pressed':ui.pmode===o[0],text:o[1],onclick:function(){ui.pmode=o[0];render()}}))});f.appendChild(s);
- f.appendChild(ui.pmode==='today'?todayView():ui.pmode==='edit'?editView():ui.pmode==='times'?ltimes():examView());
+ var s=h('div',{class:'seg',role:'group','aria-label':'العرض'});[['today','النهارده'],['edit','عدّل جدولي'],['times','نزول المحاضرات'],['exam','قبل الشامل'],['myex','امتحاناتي']].forEach(function(o){s.appendChild(h('button',{type:'button','aria-pressed':ui.pmode===o[0],text:o[1],onclick:function(){ui.pmode=o[0];render()}}))});f.appendChild(s);
+ f.appendChild(ui.pmode==='today'?todayView():ui.pmode==='edit'?editView():ui.pmode==='times'?ltimes():ui.pmode==='myex'?examsCard():examView());
  f.appendChild(h('div',{class:'callout'},h('strong',{text:'عن التذكيرات'}),'الصفحة مش بتبعت إشعارات على موبايلك. بتظهر هنا ميعاد المادة، وإنها فات ميعادها، وتنبيه «قفّل يومك» بعد ٩ بالليل.'));return f}
 var PMSG='';
 function photoFile(key,fl){
@@ -1147,16 +1158,6 @@ f.appendChild(hero);try{f.appendChild(ptsCard())}catch(e){}try{if(AC)f.appendChi
  var g2=pgroup('المدرسين','مدرسينك','users');
  g2.appendChild(h('button',{type:'button',class:'row',onclick:function(){ui.pick=null;setTab('teachers')}},h('span',{},'عدّل مدرسينك',h('span',{class:'sub',text:' · '+mine().length+' مختارين من '+TEACHERS.length})),h('span',{class:'chev','aria-hidden':'true',text:'‹'})));
  f.appendChild(g2);
- var gx=pgroup('الامتحانات','امتحاناتي','cal');
- gx.appendChild(h('p',{class:'sub',text:'ضيف امتحاناتك بالتاريخ والساعة بتوقيت القاهرة، والعداد في الرئيسية بيعد لأقربهم.'}));
- var xc=h('div',{class:'set xcard'}),xl=S.exams.slice().sort(function(a,b){return a.at-b.at}),xn=Date.now();
- if(!xl.length)xc.appendChild(h('p',{class:'xempty',text:'لسه ما ضفتش امتحانات. ضيف أول امتحان من تحت.'}));
- xl.forEach(function(e){var dd=Math.ceil((e.at-xn)/86400000),past=e.at+86400000<=xn,chip=past?'عدّى':(e.at<=xn?'النهارده':dd<=1?'بكرة':'بعد '+AR(dd)+' يوم');
-  xc.appendChild(h('div',{class:'xe'+(past?' past':'')},h('div',{class:'xei'},h('strong',{text:e.subject}),h('span',{class:'sub',text:cairoLabel(e.at,e.timed)})),h('span',{class:'xchip',text:chip}),h('button',{class:'xdel',type:'button','aria-label':'احذف '+e.subject,text:'✕',onclick:function(){S.exams=S.exams.filter(function(x){return x.id!==e.id});save('dash-exams.v1',S.exams);render()}})))});
- var xs=h('input',{type:'text',maxlength:'40',placeholder:'مثلاً: فيزياء'}),xd=h('input',{type:'date'}),xt=h('input',{type:'time'}),xm=h('p',{class:'xmsg',text:''});
- var fm=h('div',{class:'xform'},h('p',{class:'xft',text:'ضيف امتحان'}),h('label',{class:'field'},h('span',{text:'المادة'}),xs),h('div',{class:'xgrid'},h('label',{class:'field'},h('span',{text:'التاريخ'}),xd),h('label',{class:'field'},h('span',{text:'الساعة (اختياري)'}),xt)),h('p',{class:'sub',text:'من غير ساعة العداد بيعد لحد بداية اليوم.'}),
-  h('button',{class:'btn primary xadd',type:'button',text:'ضيف الامتحان',onclick:function(){var s=xs.value.trim();if(!s||!xd.value){xm.textContent='اكتب المادة واختار التاريخ.';return}var at=cairoMs(xd.value,xt.value||'00:00');if(isNaN(at)){xm.textContent='التاريخ مش مظبوط.';return}S.exams.push({id:'x'+Date.now(),subject:s.slice(0,40),at:at,timed:!!xt.value});save('dash-exams.v1',S.exams);render()}}),xm);
- xc.appendChild(fm);gx.appendChild(xc);f.appendChild(gx);
  var g3=pgroup('المظهر','الوضع','sun');var cur=window.dashTheme?window.dashTheme.get():'light';
  var sg=h('div',{class:'seg'});[['light','☀ فاتح'],['dark','☾ داكن']].forEach(function(o,oi){var key=oi?'dark':'light';sg.appendChild(h('button',{type:'button','aria-pressed':String(cur===key),text:o[1],onclick:function(){if(window.dashTheme)window.dashTheme.set(key);render()}}))});g3.appendChild(sg);f.appendChild(g3);
  var g4=pgroup('التواصل','تواصل معانا','chat');g4.appendChild(contactLinks());f.appendChild(g4);
