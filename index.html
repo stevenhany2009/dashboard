@@ -416,6 +416,14 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
     50% { content: ".."; }
     75% { content: "..."; }
   }
+.zaifab{position:fixed;inset-inline-end:16px;bottom:92px;width:56px;height:56px;border-radius:50%;border:0;background:linear-gradient(135deg,#14233a,#2a4468);color:#e8c98a;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(20,35,58,.35);z-index:40;cursor:pointer;padding:0}.zaifab svg{width:28px;height:28px}.zaifab:active{transform:scale(.94)}
+.zaip{position:fixed;inset:0;z-index:60;background:var(--page);display:flex;flex-direction:column;max-width:720px;margin:0 auto}.zaip[hidden]{display:none}
+.zaih{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--deep);color:#f4efe4}.zaih b{flex:1;font-size:17px}.zaih button{background:transparent;border:0;color:#f4efe4;font:inherit;font-size:15px;min-height:44px;padding:0 10px;cursor:pointer}
+.zaim{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.zaib{max-width:86%;padding:10px 13px;border-radius:16px;line-height:1.75;font-size:15.5px;white-space:pre-wrap;word-break:break-word}.zaib.me{align-self:flex-start;background:var(--deep);color:#f4efe4;border-bottom-right-radius:4px}.zaib.bot{align-self:flex-end;background:var(--card);color:var(--ink);border:1px solid var(--hair);border-bottom-left-radius:4px}.zaib.err{align-self:center;background:#f0ebdf;color:#5a4a22;font-size:14px;text-align:center}
+.zain{font-size:12.5px;color:var(--ink2);text-align:center;padding:4px 14px 0;line-height:1.6}.zaiL{font-size:13px;color:var(--teal);text-align:center;padding:2px 0}
+.zaif{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--hair);background:var(--page)}.zaif textarea{flex:1;box-sizing:border-box;resize:none;height:46px;line-height:1.4;overflow:hidden;scrollbar-width:none;border:1px solid var(--hair);border-radius:14px;padding:9px 12px;font:inherit;font-size:16px;background:var(--card);color:var(--ink)}.zaif button{min-width:64px;border:0;border-radius:14px;background:var(--deep);color:#e8c98a;font:inherit;font-weight:700;cursor:pointer}.zaif button:disabled{opacity:.5}
+.zaid{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:var(--ink2);animation:zaid 1s infinite alternate}.zaid:nth-child(2){animation-delay:.2s}.zaid:nth-child(3){animation-delay:.4s}@keyframes zaid{from{opacity:.25}to{opacity:1}}@media (prefers-reduced-motion:reduce){.zaid{animation:none}}
 </style>
 
 <div id="th-loader" aria-label="جاري التحميل">
@@ -436,7 +444,7 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 <script>
 (function(){
 'use strict';
-var UPDATED='السبت ٢٨ نوفمبر ٢:٣٧ ص';
+var UPDATED='السبت ٢٨ نوفمبر ٥:٤٠ ص';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -2253,10 +2261,44 @@ function render(){
  clockEl=null;var sc=document.getElementById('screen'),top=sc.scrollTop;sc.textContent='';
  var tab=S.mine===null?'teachers':ui.tab;
  var v;try{v=(OB&&(OB.step==='welcome'||OB.step==='name'||OB.step==='acct'||OB.step==='done'||OB.step==='exam'))?screenWizard():tab==='home'?screenHome():tab==='news'?screenNews():tab==='plan'?screenPlan():tab==='reels'?screenReels():tab==='profile'?screenProfile():screenTeachers();}catch(err){v=document.createDocumentFragment();v.appendChild(h('p',{class:'ferr',text:'حصلت مشكلة في عرض الصفحة. (خطأ: '+String(err&&err.message||err).slice(0,80)+')'}));v.appendChild(h('button',{class:'btn',type:'button',text:'حدّث الصفحة',onclick:function(){location.replace(location.pathname+'?v='+Date.now())}}))}
- sc.classList.toggle('rvscr',tab==='reels');sc.classList.toggle('hhome',tab==='home'&&!OB);sc.appendChild(v);if(tab!=='reels')sc.appendChild(footer());sc.scrollTop=top;renderNav();if(OB)document.getElementById('nav').hidden=true;rvShow(tab==='reels'&&!!document.getElementById('rvh'));if(ui.focus){var fid=ui.focus===true?'subin':ui.focus;ui.focus=false;var fi=document.getElementById(fid);if(fi){fi.focus({preventScroll:true});fi.scrollIntoView({block:'nearest'})}}}
+ sc.classList.toggle('rvscr',tab==='reels');sc.classList.toggle('hhome',tab==='home'&&!OB);sc.appendChild(v);if(tab!=='reels')sc.appendChild(footer());sc.scrollTop=top;renderNav();zaiSync();if(OB)document.getElementById('nav').hidden=true;rvShow(tab==='reels'&&!!document.getElementById('rvh'));if(ui.focus){var fid=ui.focus===true?'subin':ui.focus;ui.focus=false;var fi=document.getElementById(fid);if(fi){fi.focus({preventScroll:true});fi.scrollIntoView({block:'nearest'})}}}
 if(clockTimer)clearInterval(clockTimer);clockTimer=setInterval(clockTick,1000);
 setInterval(function(){var a=document.activeElement;rollover();if((ui.tab==='home'||ui.tab==='plan')&&!(a&&a.tagName==='INPUT'))render()},60000);
 rollover();document.addEventListener('visibilitychange',function(){if(!document.hidden&&rollover()&&(ui.tab==='home'||ui.tab==='plan'))render()});
+var zaiMsgs=[],zaiBusy=false,zaiLeft=null,zaiP=null;
+function zaiIcon(){var s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('fill','none');s.setAttribute('stroke','currentColor');s.setAttribute('stroke-width','1.8');s.setAttribute('stroke-linecap','round');s.setAttribute('stroke-linejoin','round');var p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d','M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z');s.appendChild(p);return s}
+function zaiSync(){var f=document.getElementById('zaifab');var on=ui.tab==='home'&&!OB&&S.mine!==null;if(!on){if(f)f.remove();return}if(f)return;f=h('button',{id:'zaifab',class:'zaifab',type:'button','aria-label':'المساعد الذكي',onclick:zaiOpen});f.appendChild(zaiIcon());document.body.appendChild(f)}
+function zaiAdd(cls,txt){var m=document.getElementById('zaim');if(!m)return null;var b=h('div',{class:'zaib '+cls,text:txt});m.appendChild(b);m.scrollTop=m.scrollHeight;return b}
+function zaiLeftTxt(){var e=document.getElementById('zail');if(e)e.textContent=zaiLeft===null?'':(zaiLeft>0?'باقي لك '+zaiLeft+' سؤال النهارده':'خلصت أسئلة النهارده، ارجع بكره')}
+function zaiOpen(){if(zaiP){zaiP.hidden=false;return}
+ var p=h('div',{class:'zaip',role:'dialog','aria-label':'المساعد الذكي'});zaiP=p;
+ var hd=h('div',{class:'zaih'});hd.appendChild(h('b',{text:'المساعد الذكي'}));hd.appendChild(h('button',{type:'button',text:'إغلاق',onclick:function(){p.hidden=true}}));p.appendChild(hd);
+ p.appendChild(h('div',{class:'zain',text:'مساعد بيشرح منهج تالتة ثانوي. ممكن يغلط، راجع المعلومة المهمة مع المدرس أو الكتاب.'}));
+ p.appendChild(h('div',{class:'zaiL',id:'zail'}));
+ p.appendChild(h('div',{class:'zaim',id:'zaim'}));
+ var fm=h('form',{class:'zaif'});var ta=h('textarea',{id:'zaiin',rows:'1',maxlength:'700',placeholder:'اكتب سؤالك في المنهج',enterkeyhint:'send','aria-label':'سؤالك'});var bt=h('button',{type:'submit',id:'zaibt',text:'ابعت'});ta.addEventListener('input',function(){ta.style.height='46px';ta.style.height=Math.min(110,Math.max(46,ta.scrollHeight+2))+'px'});fm.appendChild(ta);fm.appendChild(bt);
+ fm.addEventListener('submit',function(e){e.preventDefault();zaiSend()});p.appendChild(fm);document.body.appendChild(p);
+ zaiAdd('bot','أهلا، اسألني في أي حاجة من منهج تالتة ثانوي وأنا أشرحهالك ببساطة.');
+ if(!AU)zaiAdd('err','لازم تسجل دخول الأول عشان تستخدم المساعد. روح ملفي وسجل بحساب.');
+ for(var i=0;i<zaiMsgs.length;i++)zaiAdd(zaiMsgs[i].role==='user'?'me':'bot',zaiMsgs[i].content);zaiLeftTxt()}
+function zaiSend(){if(zaiBusy)return;var ta=document.getElementById('zaiin'),q=(ta.value||'').trim();if(!q)return;
+ if(!AU){zaiAdd('err','لازم تسجل دخول الأول عشان تستخدم المساعد.');return}
+ if(!navigator.onLine){zaiAdd('err','مفيش إنترنت دلوقتي، جرب تاني.');return}
+ zaiBusy=true;document.getElementById('zaibt').disabled=true;ta.value='';ta.style.height='46px';zaiAdd('me',q);zaiMsgs.push({role:'user',content:q.slice(0,700)});
+ var wait=zaiAdd('bot','');for(var i=0;i<3;i++)wait.appendChild(h('span',{class:'zaid'}));
+ function fin(txt,cls,keep){if(wait&&wait.parentNode)wait.remove();if(keep===false)zaiMsgs.pop();zaiAdd(cls,txt);zaiBusy=false;var b=document.getElementById('zaibt');if(b)b.disabled=false;zaiLeftTxt()}
+ var ctl=typeof AbortController!=='undefined'?new AbortController():null,to=setTimeout(function(){if(ctl)ctl.abort()},45000);
+ ensureFresh().then(function(){if(!AU)throw new Error('noauth');return fetch(SB.url+'/functions/v1/tutor',{method:'POST',signal:ctl?ctl.signal:undefined,headers:{'Content-Type':'application/json',apikey:SB.key,Authorization:'Bearer '+AU.at},body:JSON.stringify({messages:zaiMsgs.slice(-6)})})})
+ .then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{s:r.status,j:j}})})
+ .then(function(x){clearTimeout(to);var j=x.j||{};if(typeof j.left==='number')zaiLeft=j.left;
+  if(j.ok&&j.text){zaiMsgs.push({role:'assistant',content:String(j.text)});fin(String(j.text),'bot')}
+  else if(j.reason==='user')fin('خلصت أسئلة النهارده. ارجع بكره وكمل.','err',false)
+  else if(j.reason==='hour')fin('كتير في وقت قصير. استنى شوية وجرب تاني.','err',false)
+  else if(j.reason==='global')fin('المساعد وصل للحد النهارده لكل الطلبة. جرب بكره.','err',false)
+  else if(j.reason==='busy')fin('المساعد مشغول دلوقتي. جرب بعد دقيقة.','err',false)
+  else if(x.s===401)fin('لازم تسجل دخول تاني عشان تستخدم المساعد.','err',false)
+  else fin('المساعد مش متاح دلوقتي. جرب بعد شوية.','err',false)})
+ .catch(function(){clearTimeout(to);fin('حصلت مشكلة في الاتصال. جرب تاني.','err',false)})}
 ptsSync();render();timerTick();acctBoot();
 rvPoolFetch();(function(){['https://www.youtube-nocookie.com','https://i.ytimg.com','https://www.youtube.com'].forEach(function(u){var l=document.createElement('link');l.rel='preconnect';l.href=u;if(u.indexOf('i.ytimg')<0)l.crossOrigin='';document.head.appendChild(l)})})();setTimeout(function(){try{if(S.mine&&ui.tab!=='reels')rvBuild()}catch(e){}},900);
 })();
