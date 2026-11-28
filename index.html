@@ -480,6 +480,17 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 .lecitem:only-child{flex-basis:100%;max-width:none}
 .hhome>.htop{overflow:hidden}.hhome .htx h1{display:block!important;flex:0 1 auto!important;min-width:0!important;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.7}.hhome .htx{overflow:hidden}
 .hhome .htop .meav{flex:none}
+.hhome>.htop{height:auto!important;min-height:0;padding:10px 14px 12px!important;align-items:center;gap:12px}
+.hhome>.htop .htx{flex-direction:column!important;align-items:stretch!important;justify-content:center!important;gap:4px!important;overflow:visible}
+.hhome>.htop .htx .brand{align-self:flex-start}
+.hhome>.htop .htx h1{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal!important;overflow:hidden;text-overflow:ellipsis;background:none!important;padding:0 2px!important;border-radius:0!important;font-size:14px!important;font-weight:600!important;line-height:1.5;color:#7a5f2a!important;word-break:break-word;overflow-wrap:anywhere}
+[data-theme=dark] .hhome>.htop .htx h1{color:#e8d6a8!important}
+.hhome>.htop{display:grid!important;grid-template-columns:1fr auto;grid-template-rows:auto auto;align-items:center;column-gap:10px;row-gap:6px;padding:12px 14px 13px!important}
+.hhome>.htop .htx{display:contents!important}
+.hhome>.htop .htx .brand{grid-column:1;grid-row:1;align-self:center!important;justify-self:start;font-size:20px!important}
+.hhome>.htop .meav{grid-column:2;grid-row:1;width:40px!important;height:40px!important;margin:0}
+.hhome>.htop .htx h1{grid-column:1/-1;grid-row:2;width:100%;text-align:start;padding:8px 2px 0!important;border-top:1px solid rgba(185,149,79,.3);font-size:14px!important}
+.hhome .brand::before{display:none!important}.hhome>.htop .htx .brand{font-size:23px!important;letter-spacing:-.2px}.hhome .brand .zhpl{margin-inline-start:7px}
 </style>
 </head>
 <body>
@@ -579,7 +590,7 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 <script>
 (function(){
 'use strict';
-var UPDATED='السبت ٢٨ نوفمبر ٦:٠٥ م';
+var UPDATED='السبت ٢٨ نوفمبر ٦:٢٧ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
