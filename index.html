@@ -478,6 +478,8 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 [data-theme=dark] .zhgh{background:rgba(185,149,79,.18);color:#f3e3bd}
 .lect{display:flex;flex-direction:column;gap:3px;margin:8px 2px 0;font-size:13px;line-height:1.45}.lectt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.lect a{align-self:flex-start;min-height:32px;display:inline-flex;align-items:center}.lecp .rplay svg{fill:currentColor;stroke:none;display:block}
 .lecitem:only-child{flex-basis:100%;max-width:none}
+.hhome>.htop{overflow:hidden}.hhome .htx h1{display:block!important;flex:0 1 auto!important;min-width:0!important;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.7}.hhome .htx{overflow:hidden}
+.hhome .htop .meav{flex:none}
 </style>
 </head>
 <body>
@@ -577,7 +579,7 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 <script>
 (function(){
 'use strict';
-var UPDATED='السبت ٢٨ نوفمبر ٦:٠٠ م';
+var UPDATED='السبت ٢٨ نوفمبر ٦:٠٥ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
