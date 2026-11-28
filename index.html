@@ -458,7 +458,7 @@ html[data-theme=dark] .chday span{background:rgba(30,45,70,.8)}
 <script>
 (function(){
 'use strict';
-var UPDATED='السبت ٢٨ نوفمبر ٤:٢٥ م';
+var UPDATED='السبت ٢٨ نوفمبر ٤:٣٢ م';
 function verCheck(){try{fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var UPDATED='([^']*)'/);if(m&&m[1]!==UPDATED&&sessionStorage.getItem('srTried')!==m[1]){sessionStorage.setItem('srTried',m[1]);location.replace(location.pathname+'?v='+Date.now())}}).catch(function(){})}catch(e){}}
 setInterval(function(){if(!document.hidden){frPoll();chUnread()}},30000);setTimeout(function(){frPoll();chUnread()},4000);setTimeout(verCheck,1500);setInterval(verCheck,300000);document.addEventListener('visibilitychange',function(){if(!document.hidden)verCheck()});
 var DAYS=[[6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']];
@@ -1529,18 +1529,20 @@ box.appendChild(zQuiz([{q:'محلول NH₃ يكون pH أكبر من ٧.',a:tru
 function zSup(n){return String(n).replace(/\d/g,function(d){return '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]})}
 function zLtr(t){return '\u2066'+t+'\u2069'}
 function zArrow(g,x,y,up,col){g.appendChild(zS('polygon',{points:up?(x+','+(y-9)+' '+(x-6)+','+(y+4)+' '+(x+6)+','+(y+4)):(x+','+(y+9)+' '+(x-6)+','+(y-4)+' '+(x+6)+','+(y-4)),fill:col||'#d4a93c'}))}
-function zExpTM(){var E=[['Sc',3,2,1,{3:['عديم اللون','',0]}],['Ti',4,2,2,{3:['بنفسجي','#8e5bb5'],4:['عديم اللون','']}],['V',5,2,3,{2:['بنفسجي (لافندر)','#8a7bc4'],3:['أخضر','#4f9a55'],4:['أزرق','#3d7fd0'],5:['أصفر','#e6c53a',1]}],['Cr',6,1,5,{2:['أزرق','#3f6fcf'],3:['أخضر','#3f9a5a'],6:['برتقالي (ثاني كرومات)','#e8801f',1]}],['Mn',7,2,5,{2:['وردي باهت','#f1c3d3'],4:['بني (MnO₂)','#7a5230'],6:['أخضر (منجنات)','#2f8f4e'],7:['بنفسجي (برمنجنات)','#8a2a9a',1]}],['Fe',8,2,6,{2:['أخضر باهت','#a8d5a0'],3:['أصفر / بني مصفر','#e0b341']}],['Co',9,2,7,{2:['وردي','#e68aa8']}],['Ni',10,2,8,{2:['أخضر','#5db37e']}],['Cu',11,1,10,{1:['عديم اللون',''],2:['أزرق','#3d88d6']}],['Zn',12,2,10,{2:['عديم اللون','']}]],
+function zExpTM(){var E=[['Sc',3,2,1,{0:['فلز لامع فضي','#c5ccd3'],3:['عديم اللون','',0]}],['Ti',4,2,2,{0:['فلز لامع فضي','#c5ccd3'],3:['بنفسجي','#8e5bb5'],4:['عديم اللون','']}],['V',5,2,3,{0:['فلز لامع فضي','#c5ccd3'],2:['بنفسجي (لافندر)','#8a7bc4'],3:['أخضر','#4f9a55'],4:['أزرق','#3d7fd0'],5:['أصفر','#e6c53a',1]}],['Cr',6,1,5,{0:['فلز لامع فضي','#c5ccd3'],2:['أزرق','#3f6fcf'],3:['أخضر','#3f9a5a'],6:['برتقالي (ثاني كرومات)','#e8801f',1]}],['Mn',7,2,5,{0:['فلز لامع فضي','#c5ccd3'],2:['وردي باهت','#f1c3d3'],4:['بني (MnO₂)','#7a5230'],6:['أخضر (منجنات)','#2f8f4e'],7:['بنفسجي (برمنجنات)','#8a2a9a',1]}],['Fe',8,2,6,{0:['فلز لامع فضي','#c5ccd3'],2:['أخضر باهت','#a8d5a0'],3:['أصفر / بني مصفر','#e0b341']}],['Co',9,2,7,{0:['فلز لامع فضي','#c5ccd3'],2:['وردي','#e68aa8']}],['Ni',10,2,8,{0:['فلز لامع فضي','#c5ccd3'],2:['أخضر','#5db37e']}],['Cu',11,1,10,{0:['فلز نحاسي (أحمر مائل للبني)','#b8663a'],1:['عديم اللون',''],2:['أزرق','#3d88d6']}],['Zn',12,2,10,{0:['فلز لامع فضي','#c5ccd3'],2:['عديم اللون','']}]],
  NM={Sc:'سكانديوم',Ti:'تيتانيوم',V:'فاناديوم',Cr:'كروم',Mn:'منجنيز',Fe:'حديد',Co:'كوبالت',Ni:'نيكل',Cu:'نحاس',Zn:'خارصين'},
- st={e:5,o:3},box=h('div',{class:'zlx'}),svgw=h('div',{class:'zlsvg'}),rd=h('div'),msg=h('p',{class:'zldir'}),ctl=h('div',{class:'zlct'}),stw=h('div'),stp=h('div',{class:'zlct'});
+ st={e:5,o:0},box=h('div',{class:'zlx'}),svgw=h('div',{class:'zlsvg'}),rd=h('div'),msg=h('p',{class:'zldir'}),ctl=h('div',{class:'zlct'}),stw=h('div'),stp=h('div',{class:'zlct'});
 function sts(e){return Object.keys(e[4]).map(Number).sort(function(a,b){return a-b})}
 function chg(o){return o+'+'}
 function sup(o){return zSup(o)+'⁺'}
-function draw(){var e=E[st.e],o=st.o,x=e[4][o],n=e[1]-o,s4=e[2],d0=e[3],un=n<=5?n:10-n,g=zS('svg',{viewBox:'0 0 320 150',width:'100%','aria-hidden':'true'}),sy=e[0]+(o===1?'⁺':sup(o)),cl=x[1];
+function draw(){var e=E[st.e],o=st.o,x=e[4][o],d0=e[3],n=o===0?d0:e[1]-o,s4=e[2],un=(n<=5?n:10-n)+(o===0&&s4===1?1:0),g=zS('svg',{viewBox:'0 0 320 150',width:'100%','aria-hidden':'true'}),sy=e[0]+(o===0?'':o===1?'⁺':sup(o)),cl=x[1];
  g.appendChild(zS('path',{d:'M30,12 H86 V100 Q86,130 58,130 Q30,130 30,100 Z',fill:'var(--card)',stroke:'currentColor','stroke-width':'2'}));
  g.appendChild(zS('path',{d:'M32,50 H84 V100 Q84,128 58,128 Q32,128 32,100 Z',fill:cl||'#dfe8ee','fill-opacity':cl?'0.9':'0.45'}));
  g.appendChild(zT(58,146,zLtr(sy),{'font-size':'13','font-weight':'bold'}));
  g.appendChild(zT(130,44,zLtr('4s'),{'font-size':'12','font-weight':'bold'}));
  g.appendChild(zS('rect',{x:115,y:56,width:30,height:30,fill:'none',stroke:'currentColor','stroke-width':'1.6','stroke-opacity':'.55'}));
+ if(o===0&&s4>=1)g.appendChild(zT(125,78,'↑',{'font-size':'20','font-weight':'bold',fill:'#1f6fb3'}));
+ if(o===0&&s4===2)g.appendChild(zT(136,78,'↓',{'font-size':'20','font-weight':'bold',fill:'#b3263e'}));
  g.appendChild(zT(240,44,zLtr('3d'),{'font-size':'12','font-weight':'bold'}));
  for(var k=0;k<5;k++){var bx=158+k*32;g.appendChild(zS('rect',{x:bx,y:56,width:30,height:30,fill:'none',stroke:'currentColor','stroke-width':'1.6'}));
   if(k<n)g.appendChild(zT(bx+10,78,'↑',{'font-size':'20','font-weight':'bold',fill:'#1f6fb3'}));
@@ -1548,11 +1550,11 @@ function draw(){var e=E[st.e],o=st.o,x=e[4][o],n=e[1]-o,s4=e[2],d0=e[3],un=n<=5?
  g.appendChild(zT(205,112,'كل مربع = أوربيتال',{'font-size':'10',opacity:'.7'}));
  svgw.textContent='';svgw.appendChild(g);
  var cd=x[2]?'(استثناء: اللون من انتقال الشحنة مش من 3d)':'';
- msg.textContent='الذرة المتعادلة '+(s4>=1?'بتفقد إلكترونات 4s الأول وبعدين 3d. ':'')+'لما عدد التأكسد بقى +'+AR(o)+' '+(n===0?'مفضلش إلكترونات في 3d (فاضي)':'فضل '+AR(n)+' إلكترون في 3d'+(n===10?' (ممتلئ)':''))+'، والأيون '+(x[1]?'ملون ':'عديم اللون ')+cd;
- rd.textContent='';rd.appendChild(zRead([['العنصر',NM[e[0]]+' '+zLtr(e[0])],['عدد التأكسد',zLtr('+'+o)],['الذرة المتعادلة',zLtr('[Ar] 4s'+zSup(s4)+' 3d'+zSup(d0))],['توزيع الأيون',zLtr('[Ar] 3d'+zSup(n))],['عدد الإلكترونات المفردة',AR(un)],['العزم المغناطيسي (للإلكترونات المفردة)',zLtr(zN(Math.sqrt(un*(un+2)),2)+' BM')],['الخواص المغناطيسية',un>0?'بارامغناطيسي':'دايامغناطيسي'],['اللون',x[0]]]))}
+ msg.textContent=o===0?'دي الذرة المتعادلة على طبيعتها: إلكترونات 4s و 3d كلها موجودة. زوّد عدد التأكسد وشوف إلكترونات 4s بتروح الأول وبعدين 3d.':'الذرة المتعادلة بتفقد إلكترونات 4s الأول وبعدين 3d. لما عدد التأكسد بقى +'+AR(o)+' '+(n===0?'مفضلش إلكترونات في 3d (فاضي)':'فضل '+AR(n)+' إلكترون في 3d'+(n===10?' (ممتلئ)':''))+'، والأيون '+(x[1]?'ملون ':'عديم اللون ')+cd;
+ rd.textContent='';rd.appendChild(zRead([['العنصر',NM[e[0]]+' '+zLtr(e[0])],['عدد التأكسد',o===0?'٠ (ذرة متعادلة)':zLtr('+'+o)],['التوزيع المختصر',zLtr(o===0?'[Ar] 4s'+zSup(s4)+' 3d'+zSup(d0):'[Ar] 3d'+zSup(n))],['التوزيع الكامل',zLtr('1s² 2s² 2p⁶ 3s² 3p⁶ '+(o===0?'4s'+zSup(s4)+' 3d'+zSup(d0):'3d'+zSup(n)))],['عدد الإلكترونات المفردة',AR(un)],['العزم المغناطيسي (للإلكترونات المفردة)',zLtr(zN(Math.sqrt(un*(un+2)),2)+' BM')],['الخواص المغناطيسية',un>0?'بارامغناطيسي':'دايامغناطيسي'],[o===0?'لون الفلز':'اللون',x[0]]]))}
 function buildSt(){var e=E[st.e],a=sts(e);if(a.indexOf(st.o)<0)st.o=a[0];stw.textContent='';
- stw.appendChild(h('p',{class:'zldir',text:'عدد التأكسد (الحالات المعروفة للعنصر):'}));
- stw.appendChild(zSeg(a.map(function(v){return [String(v),zLtr('+'+v)]}),String(st.o),function(v){st.o=+v;draw()}));
+ stw.appendChild(h('p',{class:'zldir',text:'ابدأ بالذرة على طبيعتها، وبعدين غيّر عدد التأكسد (الحالات المعروفة للعنصر):'}));
+ stw.appendChild(zSeg(a.map(function(v){return [String(v),v===0?'ذرة':zLtr('+'+v)]}),String(st.o),function(v){st.o=+v;draw()}));
  var bar=h('div',{class:'zlqb'});
  bar.appendChild(h('button',{type:'button',class:'btn',text:'قلّل عدد التأكسد',onclick:function(){var i=a.indexOf(st.o);if(i>0){st.o=a[i-1];buildSt();draw()}}}));
  bar.appendChild(h('button',{type:'button',class:'btn',text:'زوّد عدد التأكسد',onclick:function(){var i=a.indexOf(st.o);if(i<a.length-1){st.o=a[i+1];buildSt();draw()}}}));
